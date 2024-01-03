@@ -1,0 +1,25 @@
+
+# Binaries
+Programs/Binaries/Engine
+
+# Build
+Programs/Build/Engine
+
+# Visual Studio
+.vs/
+VisualSolutions/
+
+# Idea
+.idea/
+
+# CMake
+CMakeLists.txt
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# .NET
+*.DotSettings.user
+obj/
+bin/

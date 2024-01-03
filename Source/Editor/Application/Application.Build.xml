@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Module>
+
+  <ModuleName>Nenuphar.Editor.Application</ModuleName>
+  <OutputType>Exe</OutputType>
+
+  <Dependencies>
+
+    <Dependency>
+      <Name>Nenuphar.Editor.Core</Name>
+    </Dependency>
+
+    <Dependency>
+      <Name>Nenuphar.Engine.Core</Name>
+    </Dependency>
+
+    <Dependency>
+      <Name>Nenuphar.Engine.ApplicationCore</Name>
+    </Dependency>
+
+  </Dependencies>
+
+</Module>
