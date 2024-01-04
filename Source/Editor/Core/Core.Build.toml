@@ -1,0 +1,5 @@
+
+[Module]
+Name = "NenupharEditor.Core"
+OutputType = "Static"
+

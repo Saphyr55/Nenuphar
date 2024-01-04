@@ -1,0 +1,5 @@
+
+[Module]
+Name = "NenupharEngine.Core"
+OutputType = "Static"
+
