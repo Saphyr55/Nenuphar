@@ -2,13 +2,13 @@
 
 <Module>
 
-  <ModuleName>Nenuphar.Engine.ApplicationCore</ModuleName>
-  <OutputType>Exe</OutputType>
+  <ModuleName>NenupharEngine.ApplicationCore</ModuleName>
+  <OutputType>Static</OutputType>
 
   <Dependencies>
 
     <Dependency>
-      <Name>Nenuphar.Engine.Core</Name>
+      <Name>NenupharEngine.Core</Name>
     </Dependency>
 
   </Dependencies>

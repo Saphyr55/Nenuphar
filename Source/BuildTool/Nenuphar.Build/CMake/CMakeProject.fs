@@ -1,6 +1,7 @@
 ﻿module Nenuphar.Build.CMake.CMakeProject
 
-open Nenuphar.Build.Project.Project
+open System.IO
+open Nenuphar.Build.Project.NPProject
 
 
 module Mapper =
@@ -17,17 +18,17 @@ module Mapper =
     let rec mapNenupharProject
         (project: NenupharProject)
         : CMakeDeclaration List =
-        
+                
         [ Project(wrapString project.Name)
-          Variable("CMAKE_CXX_STANDARD", project.CPPVersion)
+          Variable("CMAKE_CXX_STANDARD", Option.defaultValue "20" project.CPPVersion)
           Variable("CMAKE_CXX_STANDARD_REQUIRED", On.CapitalizedName)
-          Variable("CMAKE_RUNTIME_OUTPUT_DIRECTORY", project.BinariesLocation)
-          Variable("CMAKE_LIBRARY_OUTPUT_DIRECTORY ", project.OutputLocation)
-          Variable("CMAKE_ARCHIVE_OUTPUT_DIRECTORY ", project.OutputLocation) ]
+          Variable("CMAKE_RUNTIME_OUTPUT_DIRECTORY", wrapPath project.BinariesLocation)
+          Variable("CMAKE_LIBRARY_OUTPUT_DIRECTORY ", wrapPath project.OutputLocation)
+          Variable("CMAKE_ARCHIVE_OUTPUT_DIRECTORY ", wrapPath project.OutputLocation) ]
         @
         ( project.Modules
         |> Seq.collect mapModule
-        |> Seq.toList)
+        |> Seq.toList )
         
     
     and mapModule (m: Module) : CMakeDeclaration List =
@@ -51,7 +52,6 @@ module Mapper =
         |> Seq.toList
          
                   
- 
 let createCMakeListsFile
     (projects : NenupharProject List)
     : CMakeLists =

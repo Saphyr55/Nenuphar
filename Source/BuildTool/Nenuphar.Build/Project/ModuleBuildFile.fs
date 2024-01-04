@@ -1,4 +1,4 @@
-﻿module rec Nenuphar.Build.Project.BuildFile
+﻿module rec Nenuphar.Build.Project.ModuleBuildFile
 
 open System.IO
 open System.Xml.Linq
@@ -14,7 +14,7 @@ type OutputTypeElement =
     | Exe
 
 
-type BuildModuleFile = 
+type ModuleBuildFile = 
     { ModuleName: string
       Location: string
       OutputType: OutputTypeElement

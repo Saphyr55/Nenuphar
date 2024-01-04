@@ -3,7 +3,7 @@
 open System
 open System.IO
 open System.Text
-open Nenuphar.Build.Project.Project
+open Nenuphar.Build.Project.NPProject
 
 
 type Switch = 
@@ -86,7 +86,7 @@ and CMakeDeclaration =
     member this.Content : string =
         let newLineP4 = "\n    "
         let newLineP2 = "\n  "
-        let wrapPaths paths = String.Join ("\n    \n", paths |> Seq.map wrapPath)
+        let wrapPaths paths = String.Join (newLineP4, paths |> Seq.map wrapPath)
         
         match this with
         | NewLine -> "\n"

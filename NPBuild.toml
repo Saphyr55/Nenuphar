@@ -1,0 +1,27 @@
+# Nénuphar Projects
+
+
+[Configuration]
+Location = "/Config"
+
+
+[Project.Engine]
+Name = "NenupharEngine"
+Version = "0.0.0"
+Location = "Source/Engine"
+Template = "Modular"
+BinariesLocation = "Bin/Engine"
+BuildLocation = "Build/Engine"
+CPPVersion = "20"
+
+
+[Project.Editor]
+Name = "NenupharEditor"
+Version = "0.0.0"
+Location = "Source/Editor"
+Template = "Modular"
+Dependencies = [ "Nenuphar.Editor" ]
+BinariesLocation = "Bin/Editor"
+BuildLocation = "Build/Editor"
+CPPVersion = "20"
+

@@ -2,7 +2,7 @@
 
 <Module>
 
-  <ModuleName>Nenuphar.Editor.Core</ModuleName>
+  <ModuleName>NenupharEditor.Core</ModuleName>
   <OutputType>Static</OutputType>
 
 </Module>

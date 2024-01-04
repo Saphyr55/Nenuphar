@@ -19,7 +19,7 @@ indent_style = space
 indent_size = 2
 
 # NPBuild 
-[*.{nproj}]
+[NPBuild.toml]
 indent_style = space
 indent_size = 2
 
@@ -34,6 +34,6 @@ indent_style = space
 indent_size = 4
 
 # YAML, XML files
-[*.{yaml,xml, nproj}]
+[*.{yaml,xml}]
 indent_style = space
 indent_size = 2

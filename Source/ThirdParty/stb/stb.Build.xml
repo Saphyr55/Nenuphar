@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<External>
+
+  <Name>stb</Name>
+  <Location>.</Location>
+
+  <Properties Label="Build">
+
+    <IncludeLocation>.</IncludeLocation>
+
+    <PublicFile>stb/stb_image.h</PublicFile>
+    <PrivateFile>stb/stb_image.c</PrivateFile>
+
+  </Properties>
+
+
+</External>

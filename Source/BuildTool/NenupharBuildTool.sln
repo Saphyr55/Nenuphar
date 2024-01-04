@@ -7,7 +7,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Nenuphar.Build", "Nenuphar.
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Nenuphar.Analysis", "Nenuphar.Analysis\Nenuphar.Analysis.fsproj", "{D7767A63-B27C-42B9-8DD1-2867EC73748E}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Nenuphar", "Nenuphar\Nenuphar.fsproj", "{7AC4095B-3514-43D0-8E4D-FA07DEFF13D6}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "NPBuild", "NPBuild\NPBuild.fsproj", "{7AC4095B-3514-43D0-8E4D-FA07DEFF13D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

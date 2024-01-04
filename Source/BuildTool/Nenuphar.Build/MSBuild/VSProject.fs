@@ -2,7 +2,7 @@
 
 open System.IO
 open Microsoft.Build.Construction
-open Nenuphar.Build.Project.Project
+open Nenuphar.Build.Project.NPProject
 
 
 type MSCondition = string

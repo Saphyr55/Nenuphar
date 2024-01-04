@@ -5,8 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Project\BuildFile.fs" />
+    <Compile Include="Project\NPBuildFileError.fs" />
+    <Compile Include="Project\NPBuildFile.fs" />
+    <Compile Include="Project\ModuleBuildFile.fs" />
     <Compile Include="Project\Project.fs" />
+    <Compile Include="Project\NPSemanticBuildFile.fs" />
     <Compile Include="MSBuild\VSProject.fs" />
     <Compile Include="MSBuild\VSSolutionFile.fs" />
     <Compile Include="CMake\CMakeLists.fs" />
@@ -20,6 +23,7 @@
   <ItemGroup>
     <PackageReference Include="FSharp.Compiler.Service" Version="43.8.100" />
     <PackageReference Include="Microsoft.Build" Version="17.8.3" />
+    <PackageReference Include="Tomlyn" Version="0.17.0" />
   </ItemGroup>
 
 </Project>

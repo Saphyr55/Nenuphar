@@ -2,21 +2,21 @@
 
 <Module>
 
-  <ModuleName>Nenuphar.Editor.Application</ModuleName>
+  <ModuleName>NenupharEditor.Application</ModuleName>
   <OutputType>Exe</OutputType>
 
   <Dependencies>
 
     <Dependency>
-      <Name>Nenuphar.Editor.Core</Name>
+      <Name>NenupharEditor.Core</Name>
     </Dependency>
 
     <Dependency>
-      <Name>Nenuphar.Engine.Core</Name>
+      <Name>NenupharEngine.Core</Name>
     </Dependency>
 
     <Dependency>
-      <Name>Nenuphar.Engine.ApplicationCore</Name>
+      <Name>NenupharEngine.ApplicationCore</Name>
     </Dependency>
 
   </Dependencies>

@@ -2,7 +2,7 @@
 
 <Module>
 
-  <ModuleName>Nenuphar.Engine.Core</ModuleName>
+  <ModuleName>NenupharEngine.Core</ModuleName>
   <OutputType>Static</OutputType>
 
 </Module>
