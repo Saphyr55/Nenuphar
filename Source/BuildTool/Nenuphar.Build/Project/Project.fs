@@ -3,6 +3,7 @@ module rec Nenuphar.Build.Project.NPProject
 open System
 open System.IO
 open Nenuphar.Build.Project.ModuleBuildFile
+open Nenuphar.Build.Project.NPBuildFileError
 
 
 type Location = string
@@ -37,7 +38,7 @@ type FileType =
            ("*.jpeg", Image) |]
 
 
-let PatternBuildXml = "*.Build.xml"
+let PatternBuildToml = "*.Build.toml"
 
 type ModuleName = ModuleName of string
 
@@ -86,21 +87,32 @@ type NenupharProject =
     member this.Modules : Module List =
         
         Directory.EnumerateDirectories(this.Location)
-        |> Seq.collect this.buildFilesFromPath
+        |> Seq.map this.buildFilesFromPath
+        |> Seq.filter Option.isSome
+        |> Seq.map Option.get
         |> Seq.map this.directoryToModule
         |> Seq.toList
-        
-
-    member private this.buildFilesFromPath path =   
-                
-        let path = Path.GetFullPath path
-        let buildFilesXml = Directory.EnumerateFiles(path, PatternBuildXml)
-
-        [| buildFilesXml |> Seq.map (interpretBuildFile XML) |]
-        |> Seq.concat  
-        |> Seq.distinct
 
     
+    member private this.buildFilesFromPath path : ModuleBuildFile option =   
+        
+        let path = Path.GetFullPath path
+        let buildFileToml =
+            Directory.EnumerateFiles(path, PatternBuildToml)
+            |> Seq.tryHead
+            |> Option.map (interpretModuleBuildFile TomlFile)
+            
+        match buildFileToml with
+        | Option.None -> Option.None
+        | Some r ->
+            match r with
+            | Error errors ->
+                logErrors errors.Value
+                Option.None
+            | Ok v -> Some v
+        
+        
+        
     member private this.directoryToModule
         (buildFile: ModuleBuildFile) : Module =
 
@@ -129,7 +141,7 @@ type NenupharProject =
     
     
     member _.mapOutputTypeElement = function
-        | OutputTypeElement.Exe -> Executable
+        | OutputTypeElement.Executable -> Executable
         | OutputTypeElement.Shared -> Shared
         | OutputTypeElement.Static -> Static
 

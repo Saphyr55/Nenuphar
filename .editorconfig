@@ -19,7 +19,7 @@ indent_style = space
 indent_size = 2
 
 # NPBuild 
-[NPBuild.toml]
+[{NPBuild.toml,*.Build.toml}]
 indent_style = space
 indent_size = 2
 

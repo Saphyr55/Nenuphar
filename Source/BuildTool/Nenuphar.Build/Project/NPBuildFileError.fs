@@ -39,7 +39,7 @@ let appendRError errors opt =
     end
 
 
-let expectOnContain<'a> errors (dic: IDictionary<string, obj>) key sectionName =
+let expectOnContain<'a> (dic: IDictionary<string, obj>) key sectionName =
 
         let notFoundErr =
             errorMessage $"Missing '{key}' in '{sectionName}' section."
@@ -48,16 +48,16 @@ let expectOnContain<'a> errors (dic: IDictionary<string, obj>) key sectionName =
             errorMessage $"Mismatch type with '{key}' in '{sectionName}' section." 
 
         match dic.ContainsKey(key) with
-        | false -> errors @ [ notFoundErr ] |> Error
+        | false -> [ notFoundErr ] |> Error
         | true ->
             let value = dic[key]
             try
                 value :?> 'a |> Ok
             with _ ->
-                errors @ [ misMatchErr ] |> Error
+                [ misMatchErr ] |> Error
 
 
-let optOnContain<'a> errors (dic: IDictionary<string, obj>) key sectionName =
+let optOnContain<'a> (dic: IDictionary<string, obj>) key sectionName =
 
         let misMatchErr =
             errorMessage $"Mismatch type with '{key}' in '{sectionName}' section." 
@@ -69,7 +69,7 @@ let optOnContain<'a> errors (dic: IDictionary<string, obj>) key sectionName =
             try
                 value :?> 'a |> Some |> Ok
             with _ ->
-                errors @ [ misMatchErr ] |> Error
+                [ misMatchErr ] |> Error
 
 
 let logErrors errors =
@@ -78,9 +78,8 @@ let logErrors errors =
         errors
         |> Seq.map (fun (NPError msg) -> msg)
         |> Seq.toList
-        
-    let msg =
-        "NPBuild Error: Errors in NPBuild.toml file.\n" +
+
+    let msg = 
         String.Join(" \n", errors)
 
-    eprintf $"{msg}"
+    eprintf $"{msg}\n"

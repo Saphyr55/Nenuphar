@@ -34,13 +34,13 @@ module Env =
     
 [<EntryPoint>]
 let main args =
-    
+
     let root =
         if args.Length > 0 then
             args.GetValue(0) :?> string
         else
             Directory.GetCurrentDirectory()
-    
+
     let resultFile = NPBuildFile.FromDirectory root
 
     match resultFile with

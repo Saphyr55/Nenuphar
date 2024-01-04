@@ -4,14 +4,17 @@ open System.IO
 open System.Xml.Linq
 open FSharp.Compiler.CodeAnalysis
 open Microsoft.FSharp.Core
-
+open Nenuphar.Build.Project.NPBuildFileError
+open Tomlyn
+open NPBuildFileError
+open Tomlyn.Model
 
 type Dependency = Dependency of string
 
 type OutputTypeElement =
     | Static
     | Shared
-    | Exe
+    | Executable
 
 
 type ModuleBuildFile = 
@@ -21,91 +24,115 @@ type ModuleBuildFile =
       Dependencies: Dependency List }
 
 
-type BuildFileType =
+type ModuleBuildFileType =
     | FSharpScript
-    | XML
+    | TomlFile
 
 
-let interpretBuildFile bft path =
+let interpretModuleBuildFile bft path =
     match bft with
     | FSharpScript -> FSharpBuild.parse path
-    | XML -> XMLBuild.parse path
+    | TomlFile -> TomlBuild.parse path
 
 
-module XMLBuild = 
-
+module TomlBuild = 
+    
     let parse (path: string) =
-
+        
+        let errors = ref []
         let location = Path.GetDirectoryName path        
         let content = File.ReadAllText path
-        let doc = XDocument.Parse content
-        let dependencies = parseDependencies doc 
-        let moduleName = parseModuleName doc
-        
-        if Option.isNone moduleName then
-            "Missing Element: Need to have a module name.\n" +
-            $"File: {path}"
-            |> failwith
-        else ()
-            
-        let outputTypeElement =
-            parseOutputTypeElement doc
-            |> Option.defaultValue (Static)
-                
-        { ModuleName = moduleName |> Option.get
-          Location = location
-          OutputType = outputTypeElement
-          Dependencies = dependencies }
+        let table = Toml.ToModel content
 
-        
-    let parseOutputTypeElement (doc: XDocument) =
-        
-        query {
-            for element in doc.Descendants "OutputType" do
-                select element
-        }
-        |> Seq.tryLast
-        |> Option.map parseOutputTypeElementName
+        let moduleTable =
+            expectOnContain<TomlTable>
+                table
+                "Module"
+                "globals"
+
+        let appendErrors errs =
+            errors.Value <- errors.Value @ errs
+            errors.Value
+
+        let values = 
+            moduleTable
+            |> Result.bind (fun mt ->
+                parseModuleName mt
+                |> Result.map (fun n -> mt, n)
+                |> Result.mapError appendErrors)
+
+            |> Result.bind (fun (mt, name) ->
+                parseOutputTypeElement mt
+                |> Result.map (fun ote -> mt, name, ote)
+                |> Result.mapError appendErrors)
+
+            |> Result.bind (fun (mt, name, ote) ->
+                parseDependencies mt
+                |> Result.map (fun deps -> name, Option.defaultValue "Static" ote, deps)
+                |> Result.mapError appendErrors)
+
+            |> Result.map (fun (name, outputTypeEl, deps) ->
+                Some (name, parseOutputTypeElementName outputTypeEl, deps))
+            
+            |> Result.mapError appendErrors
+            |> Result.defaultValue None
+
+        match values with
+        | None -> Error errors
+        | Some (name, outputType, deps) -> 
+            { ModuleName = name
+              Location = location
+              OutputType = outputType
+              Dependencies = deps } |> Ok
+
     
+    let parseOutputTypeElement
+        (table: TomlTable)
+        : Result<string option, NPError list> =
+
+        optOnContain<string>
+                table
+                "OutputType"
+                "Module"
     
-    let parseOutputTypeElementName (name: XElement) =
-        match name.Value with
+    let parseOutputTypeElementName name =
+        match name with
         | "Static" -> Static
         | "Shared" -> Shared
-        | "Exe" | "Application" | "App" -> Exe
-        | _ -> failwith $"Error: Unknown {name.Value} as value."
+        | "Exe" | "Executable" 
+        | "App" | "Application"
+        | "Binary" -> Executable
+        | _ -> failwith $"Error: Unknown {name} as value."
         
     
+    let parseModuleName (table: TomlTable) : Result<string, NPError list> =
+        
+        expectOnContain<string> table "Name" "Module"
+        
+        
+    let parseDependencies (table: TomlTable) =
+        
+        let dependencies =
+            optOnContain<TomlArray>
+                table "Dependencies" "Module"
+        
+        let mapDep (dep: obj) =
+            let dep = dep :?> TomlTable
+            Dependency <| (dep["Name"] :?> string)
+
+        let mapDeps (deps: TomlArray option) =
+            match deps with
+            | None -> Ok []
+            | Some deps ->
+                deps
+                |> Seq.map mapDep
+                |> Seq.toList
+                |> Ok
+
+        match dependencies with
+        | Error errors -> Error errors
+        | Ok dependencies -> mapDeps dependencies
     
-    let parseModuleName (doc: XDocument) =
-
-        query {
-            for element in doc.Descendants "ModuleName" do
-                select element
-        }
-        |> Seq.tryLast
-        |> Option.map (_.Value)
-
-      
-    let parseDependencies (doc: XDocument) =
-        
-        let dependencies = 
-            query {
-                for element in doc.Descendants "Dependencies" do
-                    select element
-            }
-
-        let dependencies = 
-             query {
-                for element in dependencies.Descendants "Dependency" do
-                    select element
-            }
-        
-        dependencies
-        |> Seq.map (fun dep -> Dependency dep.Value )
-        |> Seq.toList        
-
-
 
 module FSharpBuild =
         

@@ -75,7 +75,7 @@ and Project =
     
     static member FromModel (model: TomlTable) =
         
-        let errors = []
+        let errors = ref []
 
         let makeProj (couple: KeyValuePair<string,obj>) =
             Project.MapProject
@@ -90,7 +90,7 @@ and Project =
             |> Seq.toList
 
         let result = Ok []
-        
+
         let projects =
             projects |>
             List.fold (fun acc result -> begin
@@ -103,21 +103,21 @@ and Project =
         projects
 
     static member private MapProject
-        (errors: NPError list)
+        (errors: NPError list ref)
         (subSectionName: Name)
         (project: TomlTable) =
 
         let onContain f name = 
-             f errors project name subSectionName
+             f project name subSectionName
 
         let rst name =
-            match  onContain expectOnContain<string> name with
-            | Error errs -> errors @ errs |> Error
+            match onContain expectOnContain<string> name with
+            | Error errs -> !errors @ errs |> Error
             | Ok c -> Ok c
 
         let opt name =
             match onContain optOnContain<string> name with
-            | Error errs -> errors @ errs |> Error
+            | Error errs -> !errors @ errs |> Error
             | Ok c -> Ok c
 
         rst "Name" |> Result.bind begin
