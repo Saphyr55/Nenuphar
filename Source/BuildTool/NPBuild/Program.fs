@@ -1,40 +1,17 @@
-open System
 open System.IO
-open Nenuphar.Build.MSBuild
+open Microsoft.FSharp.Core
 open Nenuphar.Build.CMake
 open Nenuphar.Build.Project
 open Nenuphar.Build.Project.NPBuildFileError
-open Nenuphar.Build.Project.NPProject
 open Nenuphar.Build.Project.NPSemanticBuildFile
-
-
-module Env =
-
-    let engineProject root : NenupharProject =
-        
-        { Name = "NenupharEngine"
-          BinariesLocation = Path.Combine [|root; "Bin/Engine/" |]
-          Location = Path.Combine [|root; "Source/Engine/" |]
-          OutputLocation = Path.Combine [|root; "Build/Engine/" |]
-          Version = Some "0.0.0"
-          CPPVersion = Some "20" }
-
-    
-    let createVXCProject engineProject =
- 
-        let saveModule (m, pre) =
-            VSProject.saveModule m pre engineProject.OutputLocation
-
-        let vcxProjRoot m = (m, VSProject.vcxProjRoot m)
-
-        engineProject.Modules
-        |> Seq.map vcxProjRoot  
-        |> Seq.iter saveModule
 
     
 [<EntryPoint>]
 let main args =
 
+    let success = 0
+    let failure = 1
+    
     let root =
         if args.Length > 0 then
             args.GetValue(0) :?> string
@@ -42,21 +19,26 @@ let main args =
             Directory.GetCurrentDirectory()
 
     let resultFile = NPBuildFile.FromDirectory root
-
-    match resultFile with
-    | Error BuildFileNotFound ->
-        eprintf "NPBuild Error: NPBuild.toml not found."
+    
+    let logNotFoundError =
+        errorMessage "NPBuild.toml not found." :: []
+        |> logErrors
+        
+    match resultFile with 
+    | Error _ -> logNotFoundError; failure
     | Ok result ->
         match result with
-        | Error errors -> logErrors errors
+        | Error errors -> logErrors errors; failure
         | Ok buildFile ->
             let projects = nenupharProjectsOfBuildFile root buildFile
             match projects with
-            | Error errors -> logErrors errors
+            | Error errors -> logErrors errors; failure
             | Ok projects -> begin
-                let cmakeListsFile = CMakeProject.createCMakeListsFile projects
-                cmakeListsFile.Save
-                <| Path.Combine [|root; "CMakeLists.txt"|] 
+                let cmakeListsFile =
+                    CMakeProject.createCMakeListsFile projects
+                CMakeProject.getCMakeListsFileName root
+                |> cmakeListsFile.Save
+                success
             end
-    0
+
     

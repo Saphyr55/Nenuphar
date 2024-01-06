@@ -9,6 +9,7 @@ open Tomlyn
 open NPBuildFileError
 open Tomlyn.Model
 
+
 type Dependency = Dependency of string
 
 type OutputTypeElement =
@@ -132,7 +133,7 @@ module TomlBuild =
         match dependencies with
         | Error errors -> Error errors
         | Ok dependencies -> mapDeps dependencies
-    
+
 
 module FSharpBuild =
         

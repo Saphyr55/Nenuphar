@@ -2,7 +2,7 @@
 
 
 [Configuration]
-Location = "/Config"
+Location = "Config"
 
 
 [Project.Engine]

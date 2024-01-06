@@ -4,6 +4,10 @@ open System.IO
 open Nenuphar.Build.Project.NPProject
 
 
+let getCMakeListsFileName path =
+    Path.Combine [|path; "CMakeLists.txt"|]
+
+
 module Mapper =
     
     let contentOfOutputType (m: Module): CMakeDeclaration =
