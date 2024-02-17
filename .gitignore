@@ -16,11 +16,7 @@ VisualSolutions/
 
 # Idea
 .idea/
-
-
-# CMake
-CMakeLists.txt
-
+cmake-*/
 
 # Visual Studio Code
 .vscode/

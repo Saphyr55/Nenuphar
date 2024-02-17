@@ -20,19 +20,22 @@ let main args =
 
     let resultFile = NPBuildFile.FromDirectory root
     
-    let logNotFoundError =
+    match resultFile with 
+    | Error BuildFileNotFound ->
         errorMessage "NPBuild.toml not found." :: []
         |> logErrors
-        
-    match resultFile with 
-    | Error _ -> logNotFoundError; failure
+        failure
     | Ok result ->
         match result with
-        | Error errors -> logErrors errors; failure
+        | Error errors ->
+            logErrors errors
+            failure
         | Ok buildFile ->
             let projects = nenupharProjectsOfBuildFile root buildFile
             match projects with
-            | Error errors -> logErrors errors; failure
+            | Error errors ->
+                logErrors errors
+                failure
             | Ok projects -> begin
                 let cmakeListsFile =
                     CMakeProject.createCMakeListsFile projects

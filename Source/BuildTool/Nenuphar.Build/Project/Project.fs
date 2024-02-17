@@ -38,7 +38,7 @@ type FileType =
            ("*.jpeg", Image) |]
 
 
-let PatternBuildToml = "*.Build.toml"
+let PatternBuildToml = "NPBuild.toml"
 
 type ModuleName = ModuleName of string
 
@@ -110,7 +110,6 @@ type NenupharProject =
                 logErrors errors.Value
                 Option.None
             | Ok v -> Some v
-        
         
         
     member private this.directoryToModule

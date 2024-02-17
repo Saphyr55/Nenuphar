@@ -1,7 +1,7 @@
-#include "Core/Core.hpp"
+#include "Dramatic/Core.hpp"
+#include "Dramatic/Common/Logger/Logger.hpp"
 
-
-auto CreateSystem() -> System
+namespace Dramatic
 {
-    return System();
+
 }
