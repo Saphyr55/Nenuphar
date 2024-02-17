@@ -1,9 +1,7 @@
 # Nénuphar Projects
 
-
 [Configuration]
 Location = "Config"
-
 
 [Project.Engine]
 Name = "NenupharEngine"

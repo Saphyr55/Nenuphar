@@ -20,11 +20,20 @@ let main args =
 
     let resultFile = NPBuildFile.FromDirectory root
     
+<<<<<<< HEAD
     match resultFile with 
     | Error BuildFileNotFound ->
         errorMessage "NPBuild.toml not found." :: []
         |> logErrors
         failure
+=======
+    let logNotFoundError () =
+        errorMessage "NPBuild.toml not found." :: [] 
+        |> logErrors
+        
+    match resultFile with 
+    | Error _ -> logNotFoundError (); failure
+>>>>>>> 2d5ed73ecd39a49e71679de5494a96e5bdc9c70a
     | Ok result ->
         match result with
         | Error errors ->
