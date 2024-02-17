@@ -1,15 +1,14 @@
 #include "Noname/Noname.hpp"
-#include "Dramatic/ApplicationCore/Window.hpp"
-#include "Dramatic/ApplicationCore/Windows/WindowsWindow.hpp"
-#include "Dramatic/Core.hpp"
-#include "Dramatic/Common/Logger/Logger.hpp"
+#include "Nenuphar/ApplicationCore/Window.hpp"
+#include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
+#include "Nenuphar/Core.hpp"
 
-using namespace Dramatic;
+namespace Np = Nenuphar;
 
 int main()
 {
 
-    auto Application = std::make_unique<WindowsApplication>();
+    auto Application = std::make_unique<Np::WindowsApplication>();
 
     auto Window = Application->CreateApplicationWindow
     ({

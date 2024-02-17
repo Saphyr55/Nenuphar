@@ -1,9 +1,8 @@
-#include "Dramatic/ApplicationCore/Windows/WindowsApplication.hpp"
+#include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
+#include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
+#include "Nenuphar/Core.hpp"
 
-#include "Dramatic/ApplicationCore/Windows/WindowsWindow.hpp"
-#include "Dramatic/Common/Logger/Logger.hpp"
-
-namespace Dramatic
+namespace Nenuphar
 {
 
     SharedRef<WindowsApplication> WindowsApplication::WindowsApp;
@@ -98,7 +97,7 @@ namespace Dramatic
                 break;
             case WM_QUIT:
             {
-                DRL_INFO(WindowsWindow, "Windows window is close.");
+                NP_INFO(WindowsWindow, "Windows window is close.");
                 break;
             }
             default:

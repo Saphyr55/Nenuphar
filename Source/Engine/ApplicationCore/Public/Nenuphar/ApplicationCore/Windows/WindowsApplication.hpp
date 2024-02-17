@@ -3,11 +3,11 @@
 #include <forward_list>
 #include <functional>
 
-#include "Dramatic/ApplicationCore/Application.hpp"
-#include "Dramatic/Common/Type/Type.hpp"
-#include "Dramatic/Core/Windows.hpp"
+#include "Nenuphar/ApplicationCore/Application.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Core/Windows.hpp"
 
-namespace Dramatic
+namespace Nenuphar
 {
 
     class WindowsWindow;

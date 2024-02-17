@@ -1,7 +1,6 @@
-#include "Dramatic/Core.hpp"
-#include "Dramatic/Common/Logger/Logger.hpp"
+#include "Nenuphar/Core.hpp"
 
-namespace Dramatic
+namespace Nenuphar
 {
 
 }

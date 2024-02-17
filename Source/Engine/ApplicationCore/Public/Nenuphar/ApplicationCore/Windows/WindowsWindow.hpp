@@ -1,11 +1,11 @@
 #pragma once
 
 #include "WindowsApplication.hpp"
-#include "Dramatic/ApplicationCore/Window.hpp"
-#include "Dramatic/ApplicationCore/WindowDefinition.hpp"
-#include "Dramatic/Core/Windows.hpp"
+#include "Nenuphar/ApplicationCore/Window.hpp"
+#include "Nenuphar/ApplicationCore/WindowDefinition.hpp"
+#include "Nenuphar/Core/Windows.hpp"
 
-namespace Dramatic
+namespace Nenuphar
 {
 
     class WindowsWindow final : public Window

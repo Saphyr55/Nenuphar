@@ -1,6 +1,6 @@
-#include "Dramatic/Common/Logger/ConsoleColor.hpp"
+#include "Nenuphar/Core/Logger/ConsoleColor.hpp"
 
-#ifdef _WIN32
+#ifdef NP_PLATFORM_WINDOWS
     #include <Windows.h>
 #endif
 
@@ -33,7 +33,7 @@ namespace Nenuphar
 
     String ConsoleColor::BGBlueFGWhite()
     {
-#ifdef _WIN32
+#ifdef NP_PLATFORM_WINDOWS
         int bg = BACKGROUND_BLUE | BACKGROUND_INTENSITY;
         int fg = 0 | FOREGROUND_INTENSITY;
 #else
@@ -46,7 +46,7 @@ namespace Nenuphar
 
     String ConsoleColor::BGGreenFGWhite()
     {
-#ifdef _WIN32
+#ifdef NP_PLATFORM_WINDOWS
         int bg = BACKGROUND_GREEN | BACKGROUND_INTENSITY;
         int fg = 0 | FOREGROUND_INTENSITY;
 #else
@@ -59,7 +59,7 @@ namespace Nenuphar
 
     String ConsoleColor::BGRedFGBlack()
     {
-#ifdef _WIN32
+#ifdef NP_PLATFORM_WINDOWS
         int bg = BACKGROUND_RED | BACKGROUND_INTENSITY;
         int fg = 0 | FOREGROUND_INTENSITY;
 #else
@@ -72,7 +72,7 @@ namespace Nenuphar
 
     String ConsoleColor::BGYellowFGBlack()
     {
-#ifdef _WIN32
+#ifdef NP_PLATFORM_WINDOWS
         int bg =
             BACKGROUND_RED |
             BACKGROUND_GREEN |
@@ -88,7 +88,7 @@ namespace Nenuphar
 
     void ConsoleColor::SetConsoleColor(const Word16 code, const Word16 bg)
     {
-#ifdef _WIN32
+#ifdef NP_PLATFORM_WINDOWS
         const HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         SetConsoleTextAttribute(hConsole, code | bg);
 #endif

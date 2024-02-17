@@ -1,5 +1,6 @@
 #pragma once
-#include "Nenuphar/Common/Type/Type.hpp"
+
+#include "Nenuphar/Common.hpp"
 
 namespace Nenuphar
 {

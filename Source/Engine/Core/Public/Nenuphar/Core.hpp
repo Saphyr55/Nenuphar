@@ -1,7 +1,9 @@
 #pragma once
 
-#ifndef DR_PLATFORM_WINDOWS
+#ifndef NP_PLATFORM_WINDOWS
     #pragma error "Support only Windows."
 #endif
+
+#include "Nenuphar/Core/Logger/Logger.hpp"
 
 

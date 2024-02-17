@@ -4,8 +4,9 @@
 #include <format>
 #include <iostream>
 
-#include "Nenuphar/Logger/ConsoleColor.hpp"
-#include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Core.hpp"
+#include "Nenuphar/Core/Logger/ConsoleColor.hpp"
+#include "Nenuphar/Common.hpp"
 
 
 namespace Nenuphar
@@ -243,9 +244,9 @@ namespace Nenuphar
 }
 
 
-#define DRL_INFO(NAME, ...)     ::Dramatic::Logger::GetLogger().Info(__VA_ARGS__)
-#define DRL_WARN(NAME, ...)     ::Dramatic::Logger::GetLogger().Warn(__VA_ARGS__)
-#define DRL_TRACE(NAME, ...)    ::Dramatic::Logger::GetLogger().Trace(__VA_ARGS__)
-#define DRL_DEBUG(NAME, ...)    ::Dramatic::Logger::GetLogger().Debug(__VA_ARGS__)
-#define DRL_ERROR(NAME, ...)    ::Dramatic::Logger::GetLogger().Error(__VA_ARGS__)
-#define DRL_CRITICAL(NAME, ...) ::Dramatic::Logger::GetLogger().Critical(__VA_ARGS__)
+#define NP_INFO(NAME, ...)      ::Nenuphar::Logger::GetLogger().Info(__VA_ARGS__)
+#define NP_WARN(NAME, ...)      ::Nenuphar::Logger::GetLogger().Warn(__VA_ARGS__)
+#define NP_TRACE(NAME, ...)     ::Nenuphar::Logger::GetLogger().Trace(__VA_ARGS__)
+#define NP_DEBUG(NAME, ...)     ::Nenuphar::Logger::GetLogger().Debug(__VA_ARGS__)
+#define NP_ERROR(NAME, ...)     ::Nenuphar::Logger::GetLogger().Error(__VA_ARGS__)
+#define NP_CRITICAL(NAME, ...)  ::Nenuphar::Logger::GetLogger().Critical(__VA_ARGS__)

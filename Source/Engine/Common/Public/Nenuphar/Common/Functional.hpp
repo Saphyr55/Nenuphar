@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef DR_FUNCTIONAL_HPP
-#define DR_FUNCTIONAL_HPP
+#ifndef NENUPHAR_FUNCTIONAL_HPP
+#define NENUPHAR_FUNCTIONAL_HPP
 
 #include <functional>
 

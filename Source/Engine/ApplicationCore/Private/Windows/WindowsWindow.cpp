@@ -1,5 +1,5 @@
 #include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
-#include "Nenuphar/Common/Logger/Logger.hpp"
+#include "Nenuphar/Core.hpp"
 
 namespace Nenuphar
 {
@@ -35,12 +35,12 @@ namespace Nenuphar
 
         if (!RegisterClassEx(&wcex))
         {
-            DRL_ERROR(WindowsWindow, "Call to RegisterClassEx failed!");
+            NP_ERROR(WindowsWindow, "Call to RegisterClassEx failed!");
             return;
         }
 
-        DRL_INFO(WindowsWindow, "Windows Application Instance has been registed.");
-        DRL_INFO(WindowsWindow, "Dramatic Application was started with a windows instance.");
+        NP_INFO(WindowsWindow, "Windows Application Instance has been registed.");
+        NP_INFO(WindowsWindow, "Dramatic Application was started with a windows instance.");
 
         const TCHAR* Title = Definition.Title.c_str();
 
@@ -62,17 +62,17 @@ namespace Nenuphar
 
         if (!Hwnd)
         {
-            DRL_ERROR(WindowsWindow, "Call to CreateWindow failed, enable to create windows window.");
+            NP_ERROR(WindowsWindow, "Call to CreateWindow failed, enable to create windows window.");
             return;
         }
 
-        DRL_INFO (WindowsWindow, "Windows window was created sucessfully.");
-        DRL_DEBUG(WindowsWindow, "Windows window configuration : "        );
-        DRL_DEBUG(WindowsWindow, "      Width = {}",  Definition.Width    );
-        DRL_DEBUG(WindowsWindow, "      Height = {}", Definition.Height   );
-        DRL_DEBUG(WindowsWindow, "      Title = {}",  Definition.Title    );
-        DRL_DEBUG(WindowsWindow, "      PosX = {}",   Definition.PosX     );
-        DRL_DEBUG(WindowsWindow, "      PosY = {}",   Definition.PosY     );
+        NP_INFO (WindowsWindow, "Windows window was created sucessfully.");
+        NP_DEBUG(WindowsWindow, "Windows window configuration : "        );
+        NP_DEBUG(WindowsWindow, "      Width = {}",  Definition.Width    );
+        NP_DEBUG(WindowsWindow, "      Height = {}", Definition.Height   );
+        NP_DEBUG(WindowsWindow, "      Title = {}",  Definition.Title    );
+        NP_DEBUG(WindowsWindow, "      PosX = {}",   Definition.PosX     );
+        NP_DEBUG(WindowsWindow, "      PosY = {}",   Definition.PosY     );
     }
 
     bool WindowsWindow::IsMaximized() const

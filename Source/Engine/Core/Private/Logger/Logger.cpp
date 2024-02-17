@@ -1,4 +1,5 @@
-#include "Dramatic/Common/Logger/Logger.hpp"
+#include "Nenuphar/Core/Logger/Logger.hpp"
+#include "Nenuphar/Core/Logger/ConsoleColor.hpp"
 
 #include <chrono>
 #include <thread>
@@ -6,7 +7,7 @@
 namespace Nenuphar
 {
 
-    Ptr<Logger> Logger::Instance = std::make_unique<Logger>("Dramatic.Engine");
+    Ptr<Logger> Logger::Instance = std::make_unique<Logger>("Nenuphar.Engine");
 
     Logger& Logger::GetLogger()
     {
@@ -83,9 +84,14 @@ namespace Nenuphar
 
     String Logger::Details(const TimePoint<SysClock> now)
     {
-        std::ostringstream ss;
-        ss << std::this_thread::get_id();
-        return std::format("{:%F %T} {} {} ", std::localtime(now), ss.str(), name);
+        std::ostringstream oss;
+        oss << std::this_thread::get_id();
+
+        std::stringstream ss;
+        auto in_time_t = std::chrono::system_clock::to_time_t(now);
+        ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
+
+        return std::format("{} {} {} ", ss.str(), oss.str(), name);
     }
 
 
