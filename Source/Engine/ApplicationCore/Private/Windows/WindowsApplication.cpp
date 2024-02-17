@@ -7,21 +7,27 @@ namespace Nenuphar
 
     SharedRef<WindowsApplication> WindowsApplication::WindowsApp;
 
-    WindowsMessagingDefinition::WindowsMessagingDefinition(const SharedRef<WindowsWindow> &InNativeWindow,
-            const HWND InHWnd, const UInt32 InMessage, const WPARAM InWParam, const LPARAM InLParam): NativeWindow( InNativeWindow )
-        , HWnd( InHWnd )
-        , Message( InMessage )
-        , WParam( InWParam )
-        , LParam( InLParam )
-    { }
-
     WindowsApplication::WindowsApplication(HINSTANCE hinstance)
         : hinstance(hinstance)
         , handlers({ })
+        , isRunning(true)
     {
-
         WindowsApp = SharedRef<WindowsApplication>(this);
+    }
 
+    WindowEventHandler& WindowsApplication::GetWindowEventHandler()
+    {
+        return windowEventHandler;
+    }
+
+    EventBus& WindowsApplication::GetEventBus()
+    {
+        return eventBus;
+    }
+
+    void WindowsApplication::Stop()
+    {
+        isRunning = false;
     }
 
     HINSTANCE WindowsApplication::GetHInstance()
@@ -68,6 +74,7 @@ namespace Nenuphar
         {
             case WM_CLOSE:
             {
+                NP_INFO(WindowsWindow, "Main Windows window is close.");
                 DestroyWindow(hwnd);
                 break;
             }
@@ -91,13 +98,30 @@ namespace Nenuphar
             case WM_LBUTTONUP:
             case WM_MBUTTONUP:
             case WM_RBUTTONUP:
+            {
+                break;
+            }
             case WM_NCMOUSEMOVE:
             case WM_MOUSEMOVE:
-            case WM_MOUSEWHEEL:
+            {
+                Int x = GET_X_LPARAM(lParam);
+                Int y = GET_Y_LPARAM(lParam);
+                MouseMoveEvent e(x, y, x, y);
+                windowEventHandler.EmitOnMouseMove(eventBus, e);
                 break;
+            }
+            case WM_MOUSEWHEEL:
+            {
+                Int delta = GET_WHEEL_DELTA_WPARAM(wParam);
+                Int x = GET_X_LPARAM(lParam);
+                Int y = GET_Y_LPARAM(lParam);
+                MouseWheelEvent e(delta, y, x);
+                windowEventHandler.EmitOnMouseWheel(eventBus, e);
+                break;
+            }
             case WM_QUIT:
             {
-                NP_INFO(WindowsWindow, "Windows window is close.");
+                isRunning = false;
                 break;
             }
             default:
@@ -116,5 +140,17 @@ namespace Nenuphar
         return WndProcImpl(hwnd, msg, wParam, lParam);
     }
 
+    WindowsMessagingDefinition::WindowsMessagingDefinition(
+        const SharedRef<WindowsWindow> &InNativeWindow, 
+        HWND InHWnd, 
+        UInt InMessage, 
+        WPARAM InWParam, 
+        LPARAM InLParam
+    ) 
+        : NativeWindow(InNativeWindow)
+        , HWnd(InHWnd)
+        , WParam(InWParam) 
+        , LParam(InLParam)
+    { }
 
-} // namespace Dramatic
+}

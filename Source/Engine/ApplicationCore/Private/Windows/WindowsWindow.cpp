@@ -4,7 +4,7 @@
 namespace Nenuphar
 {
 
-    const TCHAR WindowsWindow::ApplicationWindowClassName[] = TEXT("DramaticWindow");
+    const char WindowsWindow::ApplicationWindowClassName[] = TEXT("NenupharWindow");
 
     void WindowsWindow::PoolEvent() const
     {
@@ -42,7 +42,7 @@ namespace Nenuphar
         NP_INFO(WindowsWindow, "Windows Application Instance has been registed.");
         NP_INFO(WindowsWindow, "Dramatic Application was started with a windows instance.");
 
-        const TCHAR* Title = Definition.Title.c_str();
+        const char* Title = Definition.Title.c_str();
 
         Hwnd = CreateWindowEx
         (
@@ -75,12 +75,12 @@ namespace Nenuphar
         NP_DEBUG(WindowsWindow, "      PosY = {}",   Definition.PosY     );
     }
 
-    bool WindowsWindow::IsMaximized() const
+    bool WindowsWindow::IsWindowMaximized() const
     {
         return false;
     }
 
-    bool WindowsWindow::IsMinimized() const
+    bool WindowsWindow::IsWindowMinimized() const
     {
         return false;
     }
@@ -146,4 +146,4 @@ namespace Nenuphar
         Destroy();
     }
 
-} // namespace Dramatic::Windows
+}

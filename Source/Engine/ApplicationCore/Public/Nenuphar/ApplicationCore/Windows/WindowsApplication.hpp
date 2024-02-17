@@ -6,6 +6,7 @@
 #include "Nenuphar/ApplicationCore/Application.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Windows.hpp"
+#include "Nenuphar/EventSystem.hpp"
 
 namespace Nenuphar
 {
@@ -38,9 +39,16 @@ namespace Nenuphar
     class WindowsApplication final : public Application
     {
     public:
-        HINSTANCE GetHInstance();
+        
+        SharedRef<Window> CreateApplicationWindow(WindowDefinition definition) override;
 
         bool IsRunning() override;
+
+        WindowEventHandler& GetWindowEventHandler() override;
+
+        EventBus& GetEventBus() override;
+
+        void Stop() override;
 
         void SetRunning(bool is) override;
 
@@ -48,9 +56,9 @@ namespace Nenuphar
 
         void RemoveMessageHandler(WindowsMessageHandler& handler);
 
-        SharedRef<Window> CreateApplicationWindow(WindowDefinition definition) override;
-
         Int ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam);
+            
+        HINSTANCE GetHInstance();
 
         friend LRESULT WndProcImpl(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam);
 
@@ -64,6 +72,9 @@ namespace Nenuphar
         HINSTANCE hinstance;
 
         Bool isRunning;
+
+        WindowEventHandler windowEventHandler;
+        EventBus eventBus;
 
         std::forward_list<SharedRef<WindowsWindow>> windows;
         std::forward_list<SharedRef<WindowsMessageHandler>> handlers;

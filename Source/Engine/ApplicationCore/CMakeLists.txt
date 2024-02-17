@@ -6,7 +6,10 @@ project(Engine.ApplicationCore)
 set(LOCATION    .)
 set(TARGET      Engine.ApplicationCore)
 set(GROUP       Engine)
-set(DEPS        Engine.Core Engine.Common)
+set(DEPS        Engine.Core 
+                Engine.Common
+                Engine.InputSystem
+                Engine.EventSystem)
 
 add_library_module(${TARGET} STATIC ${LOCATION})
 

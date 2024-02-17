@@ -1,14 +1,28 @@
 #include "Noname/Noname.hpp"
-#include "Nenuphar/ApplicationCore/Window.hpp"
-#include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
+#include "Nenuphar/ApplicationCore.hpp"
 #include "Nenuphar/Core.hpp"
+#include "Nenuphar/EventSystem.hpp"
 
 namespace Np = Nenuphar;
 
-int main()
-{
+NPDefineAddress(PrintSomethingAddr, "My.Address.Print-Something")
 
-    auto Application = std::make_unique<Np::WindowsApplication>();
+struct MEvent
+{
+    Np::String Name;
+};
+
+Np::Int main()
+{
+    auto Application = Np::Application::CreateApplication();
+
+    auto& WindowEventHandler = Application->GetWindowEventHandler();
+    auto& EventBus = Application->GetEventBus();
+
+    WindowEventHandler.OnMouseMove(EventBus, [](auto& Event)
+    {
+        NP_DEBUG(NonameApplication, "{}", Event.PosX);
+    });
 
     auto Window = Application->CreateApplicationWindow
     ({
@@ -18,13 +32,14 @@ int main()
         .Width = 1080,
         .Height = 720,
 
-        .Title = "Dramatic Window",
+        .Title = "Nenuphar.Window",
     });
 
     Window->Show();
 
     while (Application->IsRunning())
     {
+
         Window->PoolEvent();
     }
 

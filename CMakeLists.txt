@@ -22,6 +22,7 @@ if(WIN32)
     add_compile_definitions(NP_PLATFORM_WINDOWS)
 endif()
 
+
 # ========================================================
 # Engine Modules.
 # ========================================================
@@ -29,6 +30,8 @@ add_subdirectory(Source/Engine/Common)
 add_subdirectory(Source/Engine/Core)
 add_subdirectory(Source/Engine/Math)
 add_subdirectory(Source/Engine/ApplicationCore)
+add_subdirectory(Source/Engine/EventSystem)
+add_subdirectory(Source/Engine/InputSystem)
 
 
 # ========================================================

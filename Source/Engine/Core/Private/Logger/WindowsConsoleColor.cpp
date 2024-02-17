@@ -1,8 +1,7 @@
 #include "Nenuphar/Core/Logger/ConsoleColor.hpp"
+#include "Nenuphar/Core/Windows.hpp"
 
 #ifdef NP_PLATFORM_WINDOWS
-    #include <Windows.h>
-#endif
 
 namespace Nenuphar
 {
@@ -33,65 +32,46 @@ namespace Nenuphar
 
     String ConsoleColor::BGBlueFGWhite()
     {
-#ifdef NP_PLATFORM_WINDOWS
         int bg = BACKGROUND_BLUE | BACKGROUND_INTENSITY;
         int fg = 0 | FOREGROUND_INTENSITY;
-#else
-        int bg = 0;
-        int fg = 0;
-#endif
         SetConsoleColor(fg, bg);
         return "";
     }
 
     String ConsoleColor::BGGreenFGWhite()
     {
-#ifdef NP_PLATFORM_WINDOWS
         int bg = BACKGROUND_GREEN | BACKGROUND_INTENSITY;
         int fg = 0 | FOREGROUND_INTENSITY;
-#else
-        int bg = 0;
-        int fg = 0;
-#endif
         SetConsoleColor(fg, bg);
         return "";
     }
 
     String ConsoleColor::BGRedFGBlack()
     {
-#ifdef NP_PLATFORM_WINDOWS
         int bg = BACKGROUND_RED | BACKGROUND_INTENSITY;
         int fg = 0 | FOREGROUND_INTENSITY;
-#else
-        int bg = 0;
-        int fg = 0;
-#endif
         SetConsoleColor(fg, bg);
         return "";
     }
 
     String ConsoleColor::BGYellowFGBlack()
     {
-#ifdef NP_PLATFORM_WINDOWS
         int bg =
             BACKGROUND_RED |
             BACKGROUND_GREEN |
             BACKGROUND_INTENSITY;
         int fg = 0 | FOREGROUND_INTENSITY;
-#else
-        int bg = 0;
-        int fg = 0;
-#endif
+
         SetConsoleColor(fg, bg);
         return "";
     }
 
     void ConsoleColor::SetConsoleColor(const Word16 code, const Word16 bg)
     {
-#ifdef NP_PLATFORM_WINDOWS
         const HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         SetConsoleTextAttribute(hConsole, code | bg);
-#endif
     }
 
-} // namespace Dramatic
+}
+
+#endif

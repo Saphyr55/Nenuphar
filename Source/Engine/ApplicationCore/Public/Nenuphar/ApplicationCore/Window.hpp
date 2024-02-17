@@ -20,9 +20,9 @@ namespace Nenuphar
 
         virtual void PoolEvent() const;
 
-        virtual bool IsMaximized() const;
+        virtual bool IsWindowMaximized() const;
 
-        virtual bool IsMinimized() const;
+        virtual bool IsWindowMinimized() const;
 
         virtual bool IsVisible() const;
 
@@ -45,5 +45,7 @@ namespace Nenuphar
         virtual ~Window() = default;
 
     };
+        
+    using WindowRef = SharedRef<Window>;
 
 }

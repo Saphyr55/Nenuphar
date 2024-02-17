@@ -8,6 +8,8 @@ set(DEPS
                 Engine.Common
                 Engine.Math
                 Engine.ApplicationCore
+                Engine.EventSystem
+                Engine.InputSystem
                 glad
     )
 

@@ -7,12 +7,12 @@ namespace Nenuphar
     {
     }
 
-    bool Window::IsMaximized() const
+    bool Window::IsWindowMaximized() const
     {
         return false;
     }
 
-    bool Window::IsMinimized() const
+    bool Window::IsWindowMinimized() const
     {
         return false;
     }

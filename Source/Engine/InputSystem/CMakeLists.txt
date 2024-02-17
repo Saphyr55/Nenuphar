@@ -1,15 +1,15 @@
 # ========================================================
 # Setup Core Lib for the engine.
 # ========================================================
-project(Engine.EventSystem)
+project(Engine.InputSystem)
 
 set(LOCATION        .)
-set(TARGET          Engine.EventSystem)
+set(TARGET          Engine.InputSystem)
 set(GROUP           Engine)
 set(DEPS            Engine.Common
                     Engine.Core
                     Engine.ApplicationCore
-                    Engine.InputSystem
+                    Engine.EventSystem
     )
 
 add_library_module(${TARGET} STATIC ${LOCATION})

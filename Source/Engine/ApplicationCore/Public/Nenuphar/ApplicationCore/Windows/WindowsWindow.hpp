@@ -13,15 +13,15 @@ namespace Nenuphar
 
     public:
 
-        static const TCHAR ApplicationWindowClassName[];
+        static const char ApplicationWindowClassName[];
 
         void PoolEvent() const override;
 
         void Initialize();
 
-        bool IsMaximized() const override;
+        bool IsWindowMaximized() const override;
 
-        bool IsMinimized() const override;
+        bool IsWindowMinimized() const override;
 
         bool IsVisible() const override;
 
@@ -44,8 +44,6 @@ namespace Nenuphar
         explicit WindowsWindow(WindowsApplication&, WindowDefinition);
 
         ~WindowsWindow() override;
-
-        static LRESULT WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
     private:
 
