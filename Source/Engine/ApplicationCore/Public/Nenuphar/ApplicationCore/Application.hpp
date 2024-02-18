@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Window.hpp"
+#include "WindowInteface.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 
 namespace Nenuphar
@@ -8,12 +8,12 @@ namespace Nenuphar
 
     class EventBus;
 
-    class Application
+    class ApplicationInterface
     {
     public:
-        static SharedRef<Application> Create();
+        static SharedRef<ApplicationInterface> Create();
 
-        virtual ~Application() = default;
+        virtual ~ApplicationInterface() = default;
 
         virtual void Destroy() const = 0;
 
