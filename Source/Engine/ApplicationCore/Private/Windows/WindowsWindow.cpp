@@ -1,12 +1,26 @@
+#include <utility>
+
+#include <fmt/format.h>
+
 #include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
+#include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
 #include "Nenuphar/Core.hpp"
+#include "Nenuphar/Common/Instanciate.hpp"
 
 namespace Nenuphar
 {
 
-    const char WindowsWindow::ApplicationWindowClassName[] = TEXT("NenupharWindow");
+    const TCHAR WindowsWindow::ApplicationWindowClassName[] = TEXT("NenupharWindow");
+    WindowID WindowsWindow::LastID = 0;
 
-    void WindowsWindow::PoolEvent() const
+    const WindowDefinition WindowDefinition::Default
+    {
+        .Width = 1080,
+        .Height = 720,
+        .Title = "Nenuphar.Window",
+    };
+
+    Void WindowsWindow::PoolEvent() const
     {
         MSG msg;
         while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -16,63 +30,43 @@ namespace Nenuphar
         }
     }
 
-    void WindowsWindow::Initialize()
+    WindowID WindowsWindow::GetID() const
     {
+        return ID;
+    }
 
-        WNDCLASSEX wcex;
-        wcex.cbSize         = sizeof(WNDCLASSEX);
-        wcex.style          = CS_HREDRAW | CS_VREDRAW;
-        wcex.lpfnWndProc    = WindowsApplication::WndProc;
-        wcex.cbClsExtra     = 0;
-        wcex.cbWndExtra     = 0;
-        wcex.hInstance      = WindowsApplication.GetHInstance();
-        wcex.hIcon          = LoadIcon(wcex.hInstance, IDI_APPLICATION);
-        wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-        wcex.hbrBackground  = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
-        wcex.lpszMenuName   = nullptr;
-        wcex.lpszClassName  = ApplicationWindowClassName;
-        wcex.hIconSm        = LoadIcon(wcex.hInstance, IDI_APPLICATION);
+    const WindowEventHandler& WindowsWindow::GetWindowEventHandler() const
+    {
+        return windowEventHandler;
+    }
 
-        if (!RegisterClassEx(&wcex))
-        {
-            NP_ERROR(WindowsWindow, "Call to RegisterClassEx failed!");
-            return;
-        }
+    HWND WindowsWindow::Initialize()
+    {
+        const char* Title = definition.Title.c_str();
 
-        NP_INFO(WindowsWindow, "Windows Application Instance has been registed.");
-        NP_INFO(WindowsWindow, "Dramatic Application was started with a windows instance.");
-
-        const char* Title = Definition.Title.c_str();
-
-        Hwnd = CreateWindowEx
+        hwnd = CreateWindowEx
         (
             WS_EX_OVERLAPPEDWINDOW,
             ApplicationWindowClassName,
             Title,
             WS_OVERLAPPEDWINDOW,
-            static_cast<Int>(Definition.PosX),
-            static_cast<Int>(Definition.PosY),
-            static_cast<Int>(Definition.Width),
-            static_cast<Int>(Definition.Height),
+            CW_USEDEFAULT,
+            CW_USEDEFAULT,
+            static_cast<Int>(definition.Width),
+            static_cast<Int>(definition.Height),
             nullptr,
             nullptr,
-            WindowsApplication.GetHInstance(),
+            windowsApplication.GetHInstance(),
             nullptr
         );
 
-        if (!Hwnd)
+        if (!hwnd)
         {
             NP_ERROR(WindowsWindow, "Call to CreateWindow failed, enable to create windows window.");
-            return;
+            return hwnd;
         }
 
-        NP_INFO (WindowsWindow, "Windows window was created sucessfully.");
-        NP_DEBUG(WindowsWindow, "Windows window configuration : "        );
-        NP_DEBUG(WindowsWindow, "      Width = {}",  Definition.Width    );
-        NP_DEBUG(WindowsWindow, "      Height = {}", Definition.Height   );
-        NP_DEBUG(WindowsWindow, "      Title = {}",  Definition.Title    );
-        NP_DEBUG(WindowsWindow, "      PosX = {}",   Definition.PosX     );
-        NP_DEBUG(WindowsWindow, "      PosY = {}",   Definition.PosY     );
+        return hwnd;
     }
 
     bool WindowsWindow::IsWindowMaximized() const
@@ -92,36 +86,32 @@ namespace Nenuphar
 
     void* WindowsWindow::GetOSWindowHandle() const
     {
-        return Hwnd;
+        return hwnd;
     }
 
     void WindowsWindow::Hide()
     {
-        ShowWindow(Hwnd, SW_HIDE);
+        ShowWindow(hwnd, SW_HIDE);
     }
 
     void WindowsWindow::Show()
     {
-        ShowWindow(Hwnd, SW_NORMAL);
+        ShowWindow(hwnd, SW_NORMAL);
     }
 
     void WindowsWindow::Restore()
     {
-        ShowWindow(Hwnd, SW_RESTORE);
+        ShowWindow(hwnd, SW_RESTORE);
     }
 
     void WindowsWindow::Maximaze()
     {
-        ShowWindow(Hwnd, SW_SHOWMAXIMIZED);
+        ShowWindow(hwnd, SW_SHOWMAXIMIZED);
     }
 
     void WindowsWindow::Destroy()
     {
-        UnregisterClass
-        (
-            ApplicationWindowClassName,
-            WindowsApplication.GetHInstance()
-        );
+        DestroyWindow(hwnd);
     }
 
     void WindowsWindow::ReshapeWindow(Int width, Int height)
@@ -132,13 +122,28 @@ namespace Nenuphar
     {
     }
 
-    WindowsWindow::WindowsWindow(class WindowsApplication& application,
-                                 WindowDefinition definition)
-        : Definition(definition)
-        , WindowsApplication(application)
-        , Hwnd(nullptr)
+    WindowsWindow::WindowsWindow(WindowsApplication& application_,
+                                 WindowDefinition  definition_)
+        : definition(std::move(definition_))
+        , windowsApplication(application_)
+        , hwnd(Initialize())
+        , ID(++LastID)
+        , windowEventHandler(ID)
     {
-        Initialize();
+
+        if (hwnd)
+        {
+            NP_INFO(WindowsWindow, "Windows window was created sucessfully.");
+            NP_DEBUG(WindowsWindow, "Windows window configuration : ");
+            NP_DEBUG(WindowsWindow, "      ID = {}", ID);
+            NP_DEBUG(WindowsWindow, "      HWND = {}", fmt::ptr(hwnd));
+            NP_DEBUG(WindowsWindow, "      Width = {}", definition.Width);
+            NP_DEBUG(WindowsWindow, "      Height = {}", definition.Height);
+            NP_DEBUG(WindowsWindow, "      Title = {}", definition.Title);
+
+            windowsApplication.GetRegistry().insert({ ID, SharedRef<Window>(this) });
+        }
+
     }
 
     WindowsWindow::~WindowsWindow()

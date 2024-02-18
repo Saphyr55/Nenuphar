@@ -1,7 +1,7 @@
-project(Noname)
+project(Genesis)
 
 set(LOCATION    .)
-set(TARGET      Noname)
+set(TARGET      Genesis)
 set(GROUP       Sample)
 set(DEPS        
                 Engine.Core 

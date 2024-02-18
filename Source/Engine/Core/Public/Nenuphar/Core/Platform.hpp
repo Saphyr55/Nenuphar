@@ -1,0 +1,10 @@
+
+
+namespace Nenuphar
+{
+    class Platform
+    {
+        
+    };
+
+}

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "WindowsApplication.hpp"
+#include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
 #include "Nenuphar/ApplicationCore/Window.hpp"
 #include "Nenuphar/ApplicationCore/WindowDefinition.hpp"
 #include "Nenuphar/Core/Windows.hpp"
@@ -13,45 +13,49 @@ namespace Nenuphar
 
     public:
 
-        static const char ApplicationWindowClassName[];
+        static const TCHAR ApplicationWindowClassName[];
 
-        void PoolEvent() const override;
+        Void PoolEvent() const override;
 
-        void Initialize();
+        WindowID GetID() const override;
 
-        bool IsWindowMaximized() const override;
+        const WindowEventHandler& GetWindowEventHandler() const override;
 
-        bool IsWindowMinimized() const override;
+        Bool IsWindowMaximized() const override;
 
-        bool IsVisible() const override;
+        Bool IsWindowMinimized() const override;
 
-        void *GetOSWindowHandle() const override;
+        Bool IsVisible() const override;
 
-        void Hide() override;
+        Void* GetOSWindowHandle() const override;
 
-        void Show() override;
+        Void Hide() override;
 
-        void Restore() override;
+        Void Show() override;
 
-        void Maximaze() override;
+        Void Restore() override;
 
-        void Destroy() override;
+        Void Maximaze() override;
 
-        void ReshapeWindow(Int width, Int height) override;
+        Void Destroy() override;
 
-        void SetTitle(StringView title) override;
+        Void ReshapeWindow(Int width, Int height) override;
 
-        explicit WindowsWindow(WindowsApplication&, WindowDefinition);
+        Void SetTitle(StringView title) override;
+
+        HWND Initialize();
+
+        explicit WindowsWindow(WindowsApplication&, WindowDefinition );
 
         ~WindowsWindow() override;
 
     private:
-
-        const WindowDefinition Definition;
-        WindowsApplication& WindowsApplication;
-
-        HWND Hwnd;
-
+        const WindowDefinition definition;
+        WindowsApplication& windowsApplication;
+        HWND hwnd;
+        WindowID ID;
+        WindowEventHandler windowEventHandler;
+        static WindowID LastID;
     };
 
 }

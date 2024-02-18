@@ -18,7 +18,7 @@ auto Vector4<R>::Dot(const Vector4& vec) const
 template<Real R>
 Float Vector4<R>::Norm(Vector4 vec)
 {
-	return std::sqrtf(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z + vec.w * vec.w);
+	return std::sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z + vec.w * vec.w);
 }
 
 template<Real R>

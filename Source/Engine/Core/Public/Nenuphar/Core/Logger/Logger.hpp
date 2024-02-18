@@ -1,13 +1,12 @@
 #pragma once
 
 #include <chrono>
-#include <format>
 #include <iostream>
 
-#include "Nenuphar/Core.hpp"
+#include <fmt/core.h>
+
 #include "Nenuphar/Core/Logger/ConsoleColor.hpp"
 #include "Nenuphar/Common.hpp"
-
 
 namespace Nenuphar
 {
@@ -179,10 +178,10 @@ namespace Nenuphar
     void Logger::Log(const Level level, StringView fmt, Args&&... args)
     {
         const String details = Details();
-        const String levelStr = std::format(" {} ", LevelString(level));
+        const String levelStr = fmt::format(" {} ", LevelString(level));
         const String space = " ";
-        auto vargs = std::make_format_args(args...);
-        const auto content = std::vformat(fmt, vargs);
+        auto vargs = fmt::make_format_args(args...);
+        const auto content = fmt::vformat(fmt, vargs);
 
         std::cout
             << details

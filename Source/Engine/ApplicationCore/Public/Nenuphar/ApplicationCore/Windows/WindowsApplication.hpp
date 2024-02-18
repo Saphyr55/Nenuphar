@@ -2,6 +2,7 @@
 
 #include <forward_list>
 #include <functional>
+#include <set>
 
 #include "Nenuphar/ApplicationCore/Application.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
@@ -12,39 +13,15 @@ namespace Nenuphar
 {
 
     class WindowsWindow;
-
-
-    using WindowsMessageHandler = std::function<Bool(HWND, UInt, WPARAM, LPARAM)>;
-
-
-    struct WindowsMessagingDefinition
-    {
-
-        WindowsMessagingDefinition(const SharedRef<WindowsWindow>& InNativeWindow,
-                                   HWND InHWnd,
-                                   UInt InMessage,
-                                   WPARAM InWParam,
-                                   LPARAM InLParam);
-
-
-        WeakPtr<WindowsWindow> NativeWindow;
-
-        HWND HWnd;
-        UInt Message;
-        WPARAM WParam;
-        LPARAM LParam;
-    };
-
+    
+    using WindowRegistry = std::unordered_map<WindowID, SharedRef<Window>>;
 
     class WindowsApplication final : public Application
     {
     public:
-        
-        SharedRef<Window> CreateApplicationWindow(WindowDefinition definition) override;
+        friend WindowsWindow;
 
-        bool IsRunning() override;
-
-        WindowEventHandler& GetWindowEventHandler() override;
+        bool IsRunning() const override;
 
         EventBus& GetEventBus() override;
 
@@ -52,32 +29,32 @@ namespace Nenuphar
 
         void SetRunning(bool is) override;
 
-        void AddMessageHandler(WindowsMessageHandler& handler);
-
-        void RemoveMessageHandler(WindowsMessageHandler& handler);
-
         Int ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam);
-            
-        HINSTANCE GetHInstance();
+
+        HINSTANCE GetHInstance() const;
 
         friend LRESULT WndProcImpl(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam);
 
         static LRESULT CALLBACK WndProc(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam);
 
+        void Initialize() const;
+
+        void Destroy() const override;
+
         explicit WindowsApplication(HINSTANCE hinstance = GetModuleHandle(nullptr));
 
+        ~WindowsApplication() override;
+
+        WindowRegistry& GetRegistry() { return windowRegistry; }
+
+        void Emit(HWND handle, std::function<void(SharedRef<Window>)> func);
+
     private:
-        static SharedRef<WindowsApplication> WindowsApp;
-
-        HINSTANCE hinstance;
-
-        Bool isRunning;
-
-        WindowEventHandler windowEventHandler;
+        static WindowsApplication* WindowsApp;
+        HINSTANCE hinstance{};
+        Bool isRunning{};
         EventBus eventBus;
-
-        std::forward_list<SharedRef<WindowsWindow>> windows;
-        std::forward_list<SharedRef<WindowsMessageHandler>> handlers;
+        WindowRegistry windowRegistry;
     };
 
-} // namespace Dramatic
+}

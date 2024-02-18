@@ -2,6 +2,7 @@
 #include "Nenuphar/Core/Logger/ConsoleColor.hpp"
 
 #include <chrono>
+#include <iomanip>
 #include <thread>
 
 namespace Nenuphar
@@ -88,10 +89,10 @@ namespace Nenuphar
         oss << std::this_thread::get_id();
 
         std::stringstream ss;
-        auto in_time_t = std::chrono::system_clock::to_time_t(now);
-        ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
+        const auto InTime = std::chrono::system_clock::to_time_t(now);
+        ss << std::put_time(std::localtime(&InTime), "%Y-%m-%d %X");
 
-        return std::format("{} {} {} ", ss.str(), oss.str(), name);
+        return fmt::format("{} {} {} ", ss.str(), oss.str(), name);
     }
 
 

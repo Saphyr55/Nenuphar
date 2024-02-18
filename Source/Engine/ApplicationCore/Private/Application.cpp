@@ -1,21 +1,29 @@
 #include "Nenuphar/ApplicationCore/Application.hpp"
 
-namespace Np = Nenuphar;
-
 #ifdef NP_PLATFORM_WINDOWS
 
 #include <Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp>
 
-Np::Ptr<Np::Application> Np::Application::CreateApplication()
+namespace Nenuphar
 {
-    return std::make_unique<Np::WindowsApplication>();
+
+    SharedRef<Application> Application::Create()
+    {
+        return std::make_unique<WindowsApplication>();
+    }
+
 }
 
 #else
 
-Np::Ptr<Np::Application> Np::Application::CreateApplication()
+namespace Nenuphar
 {
-    return nullptr;
+
+    SharedRef<Application> Application::Create()
+    {
+        return nullptr;
+    }
+
 }
 
 #endif

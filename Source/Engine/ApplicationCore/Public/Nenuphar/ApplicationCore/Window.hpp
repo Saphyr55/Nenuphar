@@ -5,6 +5,10 @@
 namespace Nenuphar
 {
 
+    class Application;
+    class WindowDefinition;
+    class WindowEventHandler;
+
     enum class WindowMode : Int
     {
         Fullscreen,
@@ -14,38 +18,46 @@ namespace Nenuphar
         Windowed,
     };
 
+    using WindowID = UInt16;
+
     class Window
     {
     public:
 
-        virtual void PoolEvent() const;
+        virtual const WindowEventHandler& GetWindowEventHandler() const = 0;
 
-        virtual bool IsWindowMaximized() const;
+        virtual WindowID GetID() const = 0;
 
-        virtual bool IsWindowMinimized() const;
+        virtual Void PoolEvent() const = 0;
 
-        virtual bool IsVisible() const;
+        virtual Bool IsWindowMaximized() const = 0;
 
-        virtual void* GetOSWindowHandle() const;
+        virtual Bool IsWindowMinimized() const = 0;
 
-        virtual void Hide();
+        virtual Bool IsVisible() const = 0;
 
-        virtual void Show();
+        virtual Void* GetOSWindowHandle() const = 0;
 
-        virtual void Restore();
+        virtual Void Hide() = 0;
 
-        virtual void Maximaze();
+        virtual Void Show() = 0;
 
-        virtual void Destroy();
+        virtual Void Restore() = 0;
 
-        virtual void ReshapeWindow(Int width, Int height);
+        virtual Void Maximaze() = 0;
 
-        virtual void SetTitle(StringView title);
+        virtual Void Destroy() = 0;
+
+        virtual Void ReshapeWindow(Int width, Int height) = 0;
+
+        virtual Void SetTitle(StringView title) = 0;
 
         virtual ~Window() = default;
 
     };
         
     using WindowRef = SharedRef<Window>;
+    using WindowPtr = Ptr<Window>;
+
 
 }

@@ -5,11 +5,16 @@
 
 namespace Nenuphar
 {
-
-    struct OnResizeEvent
+    
+    struct ResizeEvent
     {
         Float Width;
         Float Height;
+    };
+
+    struct CloseEvent
+    {
+
     };
 
 }
