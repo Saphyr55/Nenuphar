@@ -1,4 +1,4 @@
-#include "Nenuphar/ApplicationCore/WindowInteface.hpp"
+#include "Nenuphar/ApplicationCore/WindowInterface.hpp"
 
 namespace Nenuphar
 {

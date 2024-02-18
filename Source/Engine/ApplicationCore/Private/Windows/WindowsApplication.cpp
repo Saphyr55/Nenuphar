@@ -14,37 +14,24 @@ namespace Nenuphar
 
     WindowsApplication::WindowsApplication(HINSTANCE hinstance)
         : hinstance(hinstance)
-        , isRunning(true)
     {
         Initialize();
         WindowsApp = this;
     }
 
-    WindowsApplication::~WindowsApplication() = default;
+    WindowsApplication::~WindowsApplication()
+    {
+        Destroy();
+    }
 
     EventBus& WindowsApplication::GetEventBus()
     {
         return eventBus;
     }
 
-    void WindowsApplication::Stop()
-    {
-        isRunning = false;
-    }
-
     HINSTANCE WindowsApplication::GetHInstance() const
     {
         return hinstance;
-    }
-
-    bool WindowsApplication::IsRunning() const
-    {
-        return isRunning;
-    }
-
-    void WindowsApplication::SetRunning(const bool is)
-    {
-        isRunning = is;
     }
 
     Int CALLBACK WindowsApplication::ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
@@ -59,13 +46,13 @@ namespace Nenuphar
 
                 if ((HIWORD(lParam) & KF_REPEAT) != KF_REPEAT)
                 {
-                    Emit(hwnd, [this, &e](const SharedRef<Window>& window)
+                    Emit(hwnd, [this, &e](const SharedRef<WindowInterface>& window)
                         {
                         window->GetWindowEventHandler().EmitOnKeyPressed(eventBus, e);
                     });
                 }
 
-                Emit(hwnd, [this, &e](const SharedRef<Window>& window)
+                Emit(hwnd, [this, &e](const SharedRef<WindowInterface>& window)
                 {
                     window->GetWindowEventHandler().EmitOnKeyDown(eventBus, e);
                 });
@@ -73,9 +60,9 @@ namespace Nenuphar
             }
             case WM_LBUTTONUP:
             {
-                constexpr auto button = Input::Button::Left;
-                constexpr MouseButtonEvent e(button);
-                Emit(hwnd, [this, &e](const SharedRef<Window>& window)
+                const auto button = Input::Button::Left;
+                const MouseButtonEvent e(button);
+                Emit(hwnd, [this, &e](const SharedRef<WindowInterface>& window)
                 {
                     window->GetWindowEventHandler().EmitOnButtonRelease(eventBus, e);
                 });
@@ -83,9 +70,9 @@ namespace Nenuphar
             }
             case WM_MBUTTONUP:
             {
-                constexpr auto button = Input::Button::Middle;
-                constexpr MouseButtonEvent e(button);
-                Emit(hwnd, [this, &e](const SharedRef<Window>& window)
+                const auto button = Input::Button::Middle;
+                const MouseButtonEvent e(button);
+                Emit(hwnd, [this, &e](const SharedRef<WindowInterface>& window)
                 {
                     window->GetWindowEventHandler().EmitOnButtonRelease(eventBus, e);
                 });
@@ -93,9 +80,9 @@ namespace Nenuphar
             }
             case WM_RBUTTONUP:
             {
-                constexpr auto button = Input::Button::Right;
-                constexpr MouseButtonEvent e(button);
-                Emit(hwnd, [this, &e](const SharedRef<Window>& window)
+                const auto button = Input::Button::Right;
+                const MouseButtonEvent e(button);
+                Emit(hwnd, [this, &e](const SharedRef<WindowInterface>& window)
                 {
                     window->GetWindowEventHandler().EmitOnButtonRelease(eventBus, e);
                 });
@@ -103,9 +90,9 @@ namespace Nenuphar
             }
             case WM_LBUTTONDOWN:
             {
-                constexpr auto button = Input::Button::Left;
-                constexpr MouseButtonEvent e(button);
-                Emit(hwnd, [this, &e](const SharedRef<Window>& window)
+                const auto button = Input::Button::Left;
+                const MouseButtonEvent e(button);
+                Emit(hwnd, [this, &e](const SharedRef<WindowInterface>& window)
                 {
                     window->GetWindowEventHandler().EmitOnButtonPressed(eventBus, e);
                 });
@@ -113,9 +100,9 @@ namespace Nenuphar
             }
             case WM_MBUTTONDOWN:
             {
-                constexpr auto button = Input::Button::Middle;
-                constexpr MouseButtonEvent e(button);
-                Emit(hwnd, [this, &e](const SharedRef<Window>& window)
+                const auto button = Input::Button::Middle;
+                const MouseButtonEvent e(button);
+                Emit(hwnd, [this, &e](const SharedRef<WindowInterface>& window)
                 {
                     window->GetWindowEventHandler().EmitOnButtonPressed(eventBus, e);
                 });
@@ -123,9 +110,9 @@ namespace Nenuphar
             }
             case WM_RBUTTONDOWN:
             {
-                constexpr auto button = Input::Button::Right;
-                constexpr MouseButtonEvent e(button);
-                Emit(hwnd, [this, &e](const SharedRef<Window>& window)
+                const auto button = Input::Button::Right;
+                const MouseButtonEvent e(button);
+                Emit(hwnd, [this, &e](const SharedRef<WindowInterface>& window)
                 {
                     window->GetWindowEventHandler().EmitOnButtonPressed(eventBus, e);
                 });
@@ -167,7 +154,7 @@ namespace Nenuphar
             case WM_KEYUP:
             {
                 const KeyEvent e(static_cast<Input::Key>(wParam));
-                Emit(hwnd, [this, &e](const SharedRef<Window>& window)
+                Emit(hwnd, [this, &e](const SharedRef<WindowInterface>& window)
                 {
                     window->GetWindowEventHandler().EmitOnKeyRelease(eventBus, e);
                 });
@@ -179,7 +166,7 @@ namespace Nenuphar
                 const Float x = GET_X_LPARAM(lParam);
                 const Float y = GET_Y_LPARAM(lParam);
                 const MouseMoveEvent e(x, y, x, y);
-                Emit(hwnd, [this, &e](const SharedRef<Window>& window)
+                Emit(hwnd, [this, &e](const SharedRef<WindowInterface>& window)
                 {
                     window->GetWindowEventHandler().EmitOnMouseMove(eventBus, e);
                 });
@@ -191,7 +178,7 @@ namespace Nenuphar
                 const Float x = GET_X_LPARAM(lParam);
                 const Float y = GET_Y_LPARAM(lParam);
                 const MouseWheelEvent e(delta, y, x);
-                Emit(hwnd, [this, &e](const SharedRef<Window>& window)
+                Emit(hwnd, [this, &e](const SharedRef<WindowInterface>& window)
                 {
                     window->GetWindowEventHandler().EmitOnMouseWheel(eventBus, e);
                 });
@@ -199,23 +186,23 @@ namespace Nenuphar
             }
             case WM_CLOSE:
             {
-                CloseEvent windowCloseEvent;
                 UInt16 ID = 0;
                 for (const auto& [_, window] : windowRegistry)
                 {
                     if (window->GetOSWindowHandle() == hwnd)
                     {
-                        window->Destroy();
+                        const CloseEvent windowCloseEvent;
                         ID = window->GetID();
                         window->GetWindowEventHandler().EmitOnClose(eventBus, windowCloseEvent);
+                        window->Destroy();
                         NP_INFO(WindowsWindow, "The window ID={}, HWND={} is closed.", ID, fmt::ptr(hwnd));
                         break;
                     }
                 }
                 if (ID > 0)
                 {
-                    const auto it = windowRegistry.find(ID);
-                    windowRegistry.erase(it);
+                    if (const auto& it = windowRegistry.find(ID); !it->second)
+                        windowRegistry.erase(it);
                 }
                 break;
             }
@@ -230,7 +217,7 @@ namespace Nenuphar
         return DefWindowProc(hwnd, msg, wParam, lParam);
     }
 
-    void WindowsApplication::Emit(HWND handle, std::function<void(SharedRef<Window>)> func)
+    void WindowsApplication::Emit(HWND handle, std::function<void(SharedRef<WindowInterface>)> func)
     {
         for (const auto& [_, window] : windowRegistry)
         {

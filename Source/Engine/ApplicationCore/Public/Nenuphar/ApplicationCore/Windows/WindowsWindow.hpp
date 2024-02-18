@@ -1,14 +1,14 @@
 #pragma once
 
+#include "Nenuphar/ApplicationCore/WindowBase.hpp"
 #include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
-#include "Nenuphar/ApplicationCore/Window.hpp"
 #include "Nenuphar/ApplicationCore/WindowDefinition.hpp"
 #include "Nenuphar/Core/Windows.hpp"
 
 namespace Nenuphar
 {
 
-    class WindowsWindow final : public Window
+    class WindowsWindow final : public WindowBase
     {
 
     public:
@@ -45,12 +45,13 @@ namespace Nenuphar
 
         HWND Initialize();
 
-        explicit WindowsWindow(WindowsApplication&, WindowDefinition );
+        WindowsWindow(WindowsApplication& application, 
+                      WindowDefinition definition);
 
         ~WindowsWindow() override;
 
     private:
-        const WindowDefinition definition;
+        WindowDefinition definition;
         WindowsApplication& windowsApplication;
         HWND hwnd;
         WindowID ID;

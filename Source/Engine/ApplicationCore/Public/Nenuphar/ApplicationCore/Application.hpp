@@ -1,7 +1,6 @@
 #pragma once
 
-#include "WindowInteface.hpp"
-#include "Nenuphar/Common/Type/Type.hpp"
+#include "WindowInterface.hpp"
 
 namespace Nenuphar
 {
@@ -11,22 +10,20 @@ namespace Nenuphar
     class ApplicationInterface
     {
     public:
-        static SharedRef<ApplicationInterface> Create();
-
         virtual ~ApplicationInterface() = default;
 
         virtual void Destroy() const = 0;
-
-        virtual bool IsRunning() const = 0;
-
-        virtual void Stop() = 0;
-
-        virtual void SetRunning(bool enable) = 0;
 
         virtual EventBus& GetEventBus() = 0;
 
     };
 
+    class Application : public ApplicationInterface
+    {
+
+    };
+
+    using ApplicationRef = SharedRef<Application>;
 
 }
 

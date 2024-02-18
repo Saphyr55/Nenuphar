@@ -6,18 +6,14 @@
 namespace Nenuphar
 {
 
+    class RunnableEngineInterface;
+
     class Engine final
     {
     public:
-        void Initialize();
+        void Initialize(int argc, char** argv);
 
-        void Store(const std::type_info& typeInfo);
-
-        int Start();
-
-        void Update(float dt);
-
-        void Stop();
+        int Start(RunnableEngineInterface& runnableEngine);
     };
 
     const inline Ptr<Engine> GEngine = MakeUnique<Engine>();

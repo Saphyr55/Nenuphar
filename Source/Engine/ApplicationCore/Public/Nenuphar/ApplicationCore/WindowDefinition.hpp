@@ -10,9 +10,13 @@ namespace Nenuphar
         Float Width;
         Float Height;
         String Title;
+    };
 
-        static const WindowDefinition Default;
-
+    const WindowDefinition GDefaultWindowDefinition
+    {
+        .Width = 1080,
+        .Height = 720,
+        .Title = "Nenuphar.Window",
     };
 
 

@@ -1,34 +1,38 @@
 #pragma once
 #include "Application.hpp"
+#include "PlatformApplication.hpp"
+#include "Nenuphar/Core/RunnableEngineInterface.hpp"
 
 namespace Nenuphar
 {
 
-    class EntryApplication : public Application
+    class EntryApplication : public ApplicationInterface 
     {
+
     public:
-
-        EntryApplication(SharedRef<Application> application);
-
-        ~EntryApplication() override;
-
-        virtual void Initialize();
-
         virtual void Update(Float deltaTime);
 
-        void Destroy() const override;
+        virtual void Setup();
 
-        void Stop() override;
+        virtual void Stop();
+
+        virtual bool IsRunning();
+
+    public:
+        void Destroy() const override;
 
         EventBus& GetEventBus() override;
 
-        bool IsRunning() const override;
 
-        void SetRunning(bool enable) override;
+    public:
+        EntryApplication(
+            const ApplicationRef& application = PlatformApplication::GetPlatformApplication());
+
+        virtual ~EntryApplication() override;
 
     private:
         SharedRef<Application> inner;
-
+        Bool isRunning;
     };
 
 

@@ -59,10 +59,4 @@ namespace Nenuphar
 
     };
 
-
-    class Window : public WindowInterface
-    {
-
-    };
-
 }

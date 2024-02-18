@@ -1,18 +1,32 @@
 #pragma once
 
+#include <Nenuphar/Core.hpp>
 #include <Nenuphar/ApplicationCore/EntryApplication.hpp>
 #include <Nenuphar/ApplicationCore/Window.hpp>
-#include <Nenuphar/Core.hpp>
 
 using namespace Nenuphar;
 
-struct GenesisApplication final : EntryApplication
+class GenesisApplication final : EntryApplication
 {
 
-    void Initialize() override;
+public:
+    void Setup() override;
 
     void Update(Float deltaTime) override;
 
+    GenesisApplication();
 
+    ~GenesisApplication() override = default;
+
+    void Stop() override;
+
+    bool IsRunning() override;
+
+    void Destroy() const override;
+
+    EventBus& GetEventBus() override;
+
+private:
+    SharedRef<Window> window;
 };
 

@@ -1,22 +1,29 @@
 #include "Genesis/GenesisApplication.hpp"
 
-#include <Nenuphar/ApplicationCore.hpp>
 #include <Nenuphar/Core.hpp>
 #include <Nenuphar/EventSystem.hpp>
-#include <Nenuphar/Common.hpp>
 
 using namespace Nenuphar;
 
-void GenesisApplication::Initialize()
+GenesisApplication::GenesisApplication()
+    : window(MakeSharedRef<Window>(GDefaultWindowDefinition))
 {
-    EntryApplication::Initialize();
+}
 
-    NP_INFO(GenesisApplication, "Initialize Genesis Entry Application.");
-    /*
-    mainWindow->GetWindowEventHandler()
-        .OnClose(GetEventBus(), [&](auto&) { Stop(); });
 
-    mainWindow->GetWindowEventHandler()
+void GenesisApplication::Setup()
+{
+    EntryApplication::Setup();
+
+    NP_INFO(GenesisApplication, "Setup Genesis Entry Application.");
+
+    window->GetWindowEventHandler()
+        .OnClose(GetEventBus(), [&](auto&)
+        {
+            EntryApplication::Stop();
+        });
+
+    window->GetWindowEventHandler()
         .OnButtonPressed(GetEventBus(), [](MouseButtonEvent e)
         {
             if (e.Button == Input::Button::Right)
@@ -25,12 +32,33 @@ void GenesisApplication::Initialize()
             }
         });
 
-    mainWindow->Show();
-    */
+    window->Show();
 }
 
 void GenesisApplication::Update(const Float deltaTime)
 {
     EntryApplication::Update(deltaTime);
-    //mainWindow->PoolEvent();
+
+    window->PoolEvent();
+}
+
+
+void GenesisApplication::Stop()
+{
+    EntryApplication::Stop();
+}
+
+bool GenesisApplication::IsRunning()
+{
+    return EntryApplication::IsRunning();
+}
+
+void GenesisApplication::Destroy() const
+{
+    EntryApplication::Destroy();
+}
+
+EventBus& GenesisApplication::GetEventBus()
+{
+    return EntryApplication::GetEventBus();
 }

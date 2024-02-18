@@ -1,12 +1,41 @@
 #include "Genesis/GenesisApplication.hpp"
 
-#include <Nenuphar/Common.hpp>
 
-int main()
+int main(int argc, char* argv[])
 {
-    Np::Application application;
+    try
+    {
 
-    Np::Widget widget;
+        auto genesisApplication =
+            MakeSharedRef<GenesisApplication>();
 
-    return application.Start();
+        genesisApplication->Setup();
+
+        Float start = 0.0f;
+        Float end = start;
+
+        while (genesisApplication->IsRunning())
+        {
+            start = start + 0.1f;
+            const Float deltaTime = start / 60.0f;
+
+            genesisApplication->Update(deltaTime);
+
+            end = start - end;
+        }
+
+        NP_DEBUG(W, "");
+
+        genesisApplication->Destroy();
+
+    }
+    catch (const std::exception& exception)
+    {
+        NP_CRITICAL(Engine, "Exception occured.");
+        NP_CRITICAL(Engine, "{}", exception.what());
+
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
 }

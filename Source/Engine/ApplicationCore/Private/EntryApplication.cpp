@@ -5,19 +5,32 @@
 namespace Nenuphar
 {
 
-    EntryApplication::EntryApplication(SharedRef<Application> application)
+    EntryApplication::EntryApplication(const ApplicationRef& application)
         : inner(application)
+        , isRunning(false)
     {
     }
 
     EntryApplication::~EntryApplication() = default;
 
-    void EntryApplication::Initialize()
+
+    void EntryApplication::Update(Float deltaTime)
     {
     }
 
-    void EntryApplication::Update(float deltaTime)
+    void EntryApplication::Setup()
     {
+        isRunning = true;
+    }
+
+    void EntryApplication::Stop()
+    {
+        isRunning = false;
+    }
+
+    bool EntryApplication::IsRunning()
+    {
+        return isRunning;
     }
 
     void EntryApplication::Destroy() const
@@ -25,24 +38,9 @@ namespace Nenuphar
         inner->Destroy();
     }
 
-    void EntryApplication::Stop()
-    {
-        inner->Stop();
-    }
-
     EventBus& EntryApplication::GetEventBus()
     {
         return inner->GetEventBus();
-    }
-
-    bool EntryApplication::IsRunning() const
-    {
-        return inner->IsRunning();
-    }
-
-    void EntryApplication::SetRunning(bool enable)
-    {
-        inner->SetRunning(enable);
     }
 
 

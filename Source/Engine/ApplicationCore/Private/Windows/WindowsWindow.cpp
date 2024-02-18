@@ -13,13 +13,6 @@ namespace Nenuphar
     const TCHAR WindowsWindow::ApplicationWindowClassName[] = TEXT("NenupharWindow");
     WindowID WindowsWindow::LastID = 0;
 
-    const WindowDefinition WindowDefinition::Default
-    {
-        .Width = 1080,
-        .Height = 720,
-        .Title = "Nenuphar.Window",
-    };
-
     Void WindowsWindow::PoolEvent() const
     {
         MSG msg;
@@ -123,7 +116,7 @@ namespace Nenuphar
     }
 
     WindowsWindow::WindowsWindow(WindowsApplication& application_,
-                                 WindowDefinition  definition_)
+                                 WindowDefinition definition_)
         : definition(std::move(definition_))
         , windowsApplication(application_)
         , hwnd(Initialize())
@@ -133,6 +126,7 @@ namespace Nenuphar
 
         if (hwnd)
         {
+
             NP_INFO(WindowsWindow, "Windows window was created sucessfully.");
             NP_DEBUG(WindowsWindow, "Windows window configuration : ");
             NP_DEBUG(WindowsWindow, "      ID = {}", ID);
@@ -141,14 +135,11 @@ namespace Nenuphar
             NP_DEBUG(WindowsWindow, "      Height = {}", definition.Height);
             NP_DEBUG(WindowsWindow, "      Title = {}", definition.Title);
 
-            windowsApplication.GetRegistry().insert({ ID, SharedRef<Window>(this) });
+            windowsApplication.GetRegistry().insert({ ID, SharedRef<WindowInterface>(this) });
         }
 
     }
 
-    WindowsWindow::~WindowsWindow()
-    {
-        Destroy();
-    }
+    WindowsWindow::~WindowsWindow() = default;
 
 }

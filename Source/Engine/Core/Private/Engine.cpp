@@ -1,29 +1,20 @@
 #include "Nenuphar/Core/Engine.hpp"
 
 #include "Nenuphar/ApplicationCore/Application.hpp"
+#include "Nenuphar/ApplicationCore/EntryApplication.hpp"
+#include "Nenuphar/Core/RunnableEngineInterface.hpp"
+#include "Nenuphar/Core/Logger/Logger.hpp"
 
 namespace Nenuphar
 {
 
-    void Engine::Initialize()
+    void Engine::Initialize(int argc, char** argv)
     {
     }
 
-    void Engine::Store(const std::type_info& typeInfo)
+    int Engine::Start(RunnableEngineInterface& runnableEngine)
     {
-    }
-
-    int Engine::Start()
-    {
-        return EXIT_SUCCESS;
-    }
-
-    void Engine::Update(float dt)
-    {
-    }
-
-    void Engine::Stop()
-    {
+        return 0;
     }
 
 }
