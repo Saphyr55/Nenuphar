@@ -14,7 +14,7 @@ namespace Nenuphar
         return base->GetID();
     }
 
-    Window::Window(WindowDefinition definition)
+    Window::Window(const WindowDefinition& definition)
         : base(WindowBase::Create(definition))
     {
     }

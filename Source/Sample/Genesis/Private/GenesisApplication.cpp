@@ -2,14 +2,14 @@
 
 #include <Nenuphar/Core.hpp>
 #include <Nenuphar/EventSystem.hpp>
+#include <memory>
 
 using namespace Nenuphar;
 
 GenesisApplication::GenesisApplication()
-    : window(MakeSharedRef<Window>(GDefaultWindowDefinition))
+    : window(MakeSharedRef<Window>(WindowDefinition{ 1080, 720, "Nenuphar.Window" }))
 {
 }
-
 
 void GenesisApplication::Setup()
 {

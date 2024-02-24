@@ -10,7 +10,7 @@ namespace Nenuphar
     {
     public:
 
-        static SharedRef<WindowBase> Create(WindowDefinition definition);
+        static SharedRef<WindowBase> Create(const WindowDefinition& definition);
 
         virtual const WindowEventHandler& GetWindowEventHandler() const = 0;
 

@@ -40,7 +40,7 @@ namespace Nenuphar
         Void SetTitle(StringView title) override;
 
     public:
-        Window(WindowDefinition definition = GDefaultWindowDefinition);
+        Window(const WindowDefinition& definition);
 
         ~Window() override = default;
 

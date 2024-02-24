@@ -18,6 +18,9 @@ VisualSolutions/
 .idea/
 cmake-*/
 
+# Fleet
+.cache/
+
 # Visual Studio Code
 .vscode/
 *.code-workspace

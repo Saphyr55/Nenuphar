@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
         NP_DEBUG(W, "");
 
         genesisApplication->Destroy();
-
+        
     }
     catch (const std::exception& exception)
     {

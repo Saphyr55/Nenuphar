@@ -14,7 +14,7 @@ namespace Nenuphar
          * \brief
          * \return
          */
-        static SharedRef<PlatformApplication> GetPlatformApplication();
+        static PlatformApplication& GetPlatformApplication();
 
     };
 

@@ -23,15 +23,13 @@ namespace Nenuphar
 
         EventBus& GetEventBus() override;
 
-
     public:
-        EntryApplication(
-            const ApplicationRef& application = PlatformApplication::GetPlatformApplication());
+        explicit EntryApplication(Application& application = PlatformApplication::GetPlatformApplication());
 
         virtual ~EntryApplication() override;
 
     private:
-        SharedRef<Application> inner;
+        Application& inner;
         Bool isRunning;
     };
 

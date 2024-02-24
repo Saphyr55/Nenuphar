@@ -6,16 +6,16 @@
 
 namespace Nenuphar
 {
-    SharedRef<WindowBase> WindowBase::Create(WindowDefinition definition)
-    {
-        auto windowsApplication =
-            std::dynamic_pointer_cast<WindowsApplication>(PlatformApplication::GetPlatformApplication());
 
-        auto window =
-            MakeSharedRef<WindowsWindow>(*windowsApplication, definition);
+    SharedRef<WindowBase> WindowBase::Create(const WindowDefinition& definition)
+    {
+        auto& windowsApplication =reinterpret_cast<WindowsApplication&>(PlatformApplication::GetPlatformApplication());
+
+        auto window = MakeSharedRef<WindowsWindow>(windowsApplication, definition);
 
         return window;
     }
+
 }
 
 #else

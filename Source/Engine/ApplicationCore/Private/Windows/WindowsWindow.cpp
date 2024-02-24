@@ -35,13 +35,12 @@ namespace Nenuphar
 
     HWND WindowsWindow::Initialize()
     {
-        const char* Title = definition.Title.c_str();
 
         hwnd = CreateWindowEx
         (
             WS_EX_OVERLAPPEDWINDOW,
             ApplicationWindowClassName,
-            Title,
+            definition.Title.c_str(),
             WS_OVERLAPPEDWINDOW,
             CW_USEDEFAULT,
             CW_USEDEFAULT,
@@ -117,7 +116,7 @@ namespace Nenuphar
 
     WindowsWindow::WindowsWindow(WindowsApplication& application_,
                                  WindowDefinition definition_)
-        : definition(std::move(definition_))
+        : definition(WindowDefinition(definition_))
         , windowsApplication(application_)
         , hwnd(Initialize())
         , ID(++LastID)
@@ -140,6 +139,9 @@ namespace Nenuphar
 
     }
 
-    WindowsWindow::~WindowsWindow() = default;
+    WindowsWindow::~WindowsWindow()
+    {
+        // Destroy();
+    }
 
 }

@@ -264,11 +264,15 @@ namespace Nenuphar
 
     void WindowsApplication::Destroy() const
     {
+        WindowsApplication::WindowsApp = nullptr;
+
         UnregisterClass
         (
             WindowsWindow::ApplicationWindowClassName,
             hinstance
         );
+    
     }
+    
 
 }

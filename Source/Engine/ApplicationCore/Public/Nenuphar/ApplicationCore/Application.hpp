@@ -20,7 +20,12 @@ namespace Nenuphar
 
     class Application : public ApplicationInterface
     {
+    public:
+        virtual void Destroy() const = 0;
 
+        virtual ~Application() = default;
+
+        virtual EventBus& GetEventBus() = 0;
     };
 
     using ApplicationRef = SharedRef<Application>;

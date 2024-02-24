@@ -5,7 +5,7 @@
 namespace Nenuphar
 {
 
-    EntryApplication::EntryApplication(const ApplicationRef& application)
+    EntryApplication::EntryApplication(Application& application)
         : inner(application)
         , isRunning(false)
     {
@@ -35,12 +35,12 @@ namespace Nenuphar
 
     void EntryApplication::Destroy() const
     {
-        inner->Destroy();
+        inner.Destroy();
     }
 
     EventBus& EntryApplication::GetEventBus()
     {
-        return inner->GetEventBus();
+        return inner.GetEventBus();
     }
 
 

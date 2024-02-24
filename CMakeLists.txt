@@ -15,6 +15,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Enable Nénuphar test.
 set(NENUPHAR_TEST_ENABLE OFF)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Configure properties.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 

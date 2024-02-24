@@ -6,11 +6,12 @@
 namespace Nenuphar
 {
 
-    SharedRef<PlatformApplication> PlatformApplication::GetPlatformApplication()
+    PlatformApplication& PlatformApplication::GetPlatformApplication()
     {
-        static SharedRef<PlatformApplication> platformApplication = MakeSharedRef<WindowsApplication>();
+        static SharedRef<PlatformApplication> platformApplication =
+            MakeSharedRef<WindowsApplication>();
 
-        return platformApplication;
+        return *platformApplication;
     }
 
 }
