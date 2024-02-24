@@ -1,65 +1,81 @@
 #include "Nenuphar/ApplicationCore/Window.hpp"
+#include "Nenuphar/ApplicationCore/WindowBase.hpp"
 
 namespace Nenuphar
 {
 
-    void Window::PoolEvent() const
+    const WindowEventHandler& Window::GetWindowEventHandler() const
+    {
+        return base->GetWindowEventHandler();
+    }
+
+    WindowID Window::GetID() const
+    {
+        return base->GetID();
+    }
+
+    Window::Window(const WindowDefinition& definition)
+        : base(WindowBase::Create(definition))
     {
     }
 
-    bool Window::IsWindowMaximized() const
+    Void Window::PoolEvent() const
     {
-        return false;
+        base->PoolEvent();
     }
 
-    bool Window::IsWindowMinimized() const
+    Bool Window::IsWindowMaximized() const
     {
-        return false;
+        return base->IsWindowMaximized();
     }
 
-    bool Window::IsVisible() const
+    Bool Window::IsWindowMinimized() const
     {
-        return false;
+        return base->IsWindowMinimized();
     }
 
-    void* Window::GetOSWindowHandle() const
+    Bool Window::IsVisible() const
     {
-        return nullptr;
+        return base->IsVisible();
     }
 
-    void Window::Hide()
+    Void* Window::GetOSWindowHandle() const
     {
-
+        return base->GetOSWindowHandle();
     }
 
-    void Window::Show()
+    Void Window::Hide()
     {
-
+        base->Hide();
     }
 
-    void Window::Restore()
+    Void Window::Show()
     {
-
+        base->Show();
     }
 
-    void Window::Maximaze()
+    Void Window::Restore()
     {
-
+        base->Restore();
     }
 
-    void Window::Destroy()
+    Void Window::Maximaze()
     {
-
+        base->Maximaze();
     }
 
-    void Window::ReshapeWindow(Int width, Int height)
+    Void Window::Destroy()
     {
-
+        base->Destroy();
     }
 
-    void Window::SetTitle(StringView title)
+    Void Window::ReshapeWindow(Int width, Int height)
     {
-
+        base->ReshapeWindow(width, height);
     }
 
+    Void Window::SetTitle(StringView title)
+    {
+        base->SetTitle(title);
+    }
 }

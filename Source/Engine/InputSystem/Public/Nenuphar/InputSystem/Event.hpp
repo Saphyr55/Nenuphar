@@ -5,7 +5,7 @@
 
 namespace Nenuphar
 {
-    
+
     struct MouseButtonEvent
 	{
         Input::Button Button;
@@ -30,7 +30,6 @@ namespace Nenuphar
 	struct KeyEvent
 	{
         Input::Key Key;
-        Input::Scancode Scancode;
 	};
 
 } 

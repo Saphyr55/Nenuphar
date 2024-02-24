@@ -63,8 +63,8 @@ Matrix4<R> Matrix4<R>::RotateX(const Float theta)
 	return Mat
 	(
 		Vector4<R>(1, 0, 0, 0),
-		Vector4<R>(0, std::cosf(theta), std::sinf(theta), 0),
-		Vector4<R>(0, -std::sinf(theta), std::cosf(theta), 0),
+		Vector4<R>(0, std::cos(theta), std::sin(theta), 0),
+		Vector4<R>(0, -std::sin(theta), std::cos(theta), 0),
 		Vector4<R>(0, 0, 0, 1)
 	);
 }

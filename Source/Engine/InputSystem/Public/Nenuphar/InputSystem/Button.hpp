@@ -3,7 +3,7 @@
 namespace Nenuphar::Input
 {
 
-    enum class Button
+    enum class Button : Int
 	{
 		Left = 1,
 		Middle = 2,

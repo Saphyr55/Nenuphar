@@ -6,7 +6,7 @@ project(Engine.Common)
 set(LOCATION        .)
 set(TARGET          Engine.Common)
 set(GROUP           Engine)
-set(DEPS            Engine.ApplicationCore)
+set(DEPS            fmt::fmt)
 
 add_library_module(${TARGET} STATIC ${LOCATION})
 target_link_libraries(${TARGET} PRIVATE ${DEPS} INTERFACE ${DEPS})

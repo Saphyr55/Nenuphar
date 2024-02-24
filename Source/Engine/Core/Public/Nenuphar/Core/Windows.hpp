@@ -2,5 +2,5 @@
 
 #ifdef NP_PLATFORM_WINDOWS
     #include <Windows.h>
-    #include <Windowsx.h>
+    #include <WindowsX.h>
 #endif

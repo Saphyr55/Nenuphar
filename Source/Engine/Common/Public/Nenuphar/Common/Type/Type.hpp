@@ -62,5 +62,10 @@ namespace Nenuphar
     template<typename T>
     using SharedRef = std::shared_ptr<T>;
 
+    template<class... Ts>
+    struct OverLoaded : Ts... { using Ts::operator()...; };
+
+    template<class... Ts>
+    OverLoaded(Ts...) -> OverLoaded<Ts...>;
 
 }

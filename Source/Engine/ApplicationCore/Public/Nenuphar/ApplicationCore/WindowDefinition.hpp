@@ -7,14 +7,9 @@ namespace Nenuphar
 
     struct WindowDefinition
     {
-        Float PosX;
-        Float PosY;
-
         Float Width;
         Float Height;
-
         String Title;
     };
-
 
 }

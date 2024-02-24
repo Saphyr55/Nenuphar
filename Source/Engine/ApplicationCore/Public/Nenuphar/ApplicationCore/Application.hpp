@@ -1,39 +1,34 @@
 #pragma once
 
-#include "Nenuphar/Common/Type/Type.hpp"
+#include "WindowInterface.hpp"
 
 namespace Nenuphar
 {
 
-    struct WindowDefinition;
-    class Window;
     class EventBus;
-    class WindowEventHandler;
 
-    class Application
+    class ApplicationInterface
     {
-
     public:
+        virtual ~ApplicationInterface() = default;
 
-        static Ptr<Application> CreateApplication();
+        virtual void Destroy() const = 0;
+
+        virtual EventBus& GetEventBus() = 0;
+
+    };
+
+    class Application : public ApplicationInterface
+    {
+    public:
+        virtual void Destroy() const = 0;
 
         virtual ~Application() = default;
 
-        virtual void Stop() = 0;
-
-        virtual bool IsRunning() = 0;
-
-        virtual void SetRunning(bool isRunning) = 0;
-
-        virtual SharedRef<Window> CreateApplicationWindow(WindowDefinition definition) = 0;
-            
         virtual EventBus& GetEventBus() = 0;
+    };
 
-        virtual WindowEventHandler& GetWindowEventHandler() = 0;
-
-    };  
-
-    using ApplicationPtr = Ptr<Application>;
+    using ApplicationRef = SharedRef<Application>;
 
 }
 

@@ -9,11 +9,13 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
 include(Scripts)
 
 # Configure C++ standard.
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Enable nenuphar test.
+# Enable Nénuphar test.
 set(NENUPHAR_TEST_ENABLE OFF)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Configure properties.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -37,12 +39,13 @@ add_subdirectory(Source/Engine/InputSystem)
 # ========================================================
 # Samples.
 # ========================================================
-add_subdirectory(Source/Sample/Noname)
+add_subdirectory(Source/Sample/Genesis)
 
 
 # ========================================================
 # Third Party.
 # ========================================================
+add_subdirectory(Source/ThirdParty/fmt)
 add_subdirectory(Source/ThirdParty/glad)
 
 if(NENUPHAR_TEST_ENABLE)

@@ -1,51 +1,50 @@
 #pragma once
 
-#include "Nenuphar/Common.hpp"
+#include "WindowDefinition.hpp"
+#include "WindowInterface.hpp"
 
 namespace Nenuphar
 {
 
-    enum class WindowMode : Int
-    {
-        Fullscreen,
+    class WindowBase;
 
-        WindowedFullscreen,
-
-        Windowed,
-    };
-
-    class Window
+    class Window final : public WindowInterface
     {
     public:
+        Void PoolEvent() const override;
 
-        virtual void PoolEvent() const;
+        const WindowEventHandler& GetWindowEventHandler() const override;
 
-        virtual bool IsWindowMaximized() const;
+        WindowID GetID() const override;
 
-        virtual bool IsWindowMinimized() const;
+        Bool IsWindowMaximized() const override;
 
-        virtual bool IsVisible() const;
+        Bool IsWindowMinimized() const override;
 
-        virtual void* GetOSWindowHandle() const;
+        Bool IsVisible() const override;
 
-        virtual void Hide();
+        Void* GetOSWindowHandle() const override;
 
-        virtual void Show();
+        Void Hide() override;
 
-        virtual void Restore();
+        Void Show() override;
 
-        virtual void Maximaze();
+        Void Restore() override;
 
-        virtual void Destroy();
+        Void Maximaze() override;
 
-        virtual void ReshapeWindow(Int width, Int height);
+        Void Destroy() override;
 
-        virtual void SetTitle(StringView title);
+        Void ReshapeWindow(Int width, Int height) override;
 
-        virtual ~Window() = default;
+        Void SetTitle(StringView title) override;
 
+    public:
+        Window(const WindowDefinition& definition);
+
+        ~Window() override = default;
+
+    private:
+        SharedRef<WindowBase> base;
     };
-        
-    using WindowRef = SharedRef<Window>;
-
 }
