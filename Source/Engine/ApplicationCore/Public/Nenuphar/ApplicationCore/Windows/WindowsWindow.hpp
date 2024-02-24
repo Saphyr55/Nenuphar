@@ -10,10 +10,8 @@ namespace Nenuphar
 
     class WindowsWindow final : public WindowBase
     {
-
+        friend WindowsApplication;
     public:
-
-        static const TCHAR ApplicationWindowClassName[];
 
         Void PoolEvent() const override;
 
@@ -43,14 +41,17 @@ namespace Nenuphar
 
         Void SetTitle(StringView title) override;
 
-        HWND Initialize();
+        WindowsWindow(WindowsApplication& inApplication,
+                      WindowDefinition inDefinition);
 
-        WindowsWindow(WindowsApplication& application, 
-                      WindowDefinition definition);
-
-        ~WindowsWindow() override;
+        ~WindowsWindow() override = default;
 
     private:
+        HWND Initialize();
+        Int ProcessEvent(MSG msg);
+
+    private:
+        EventBus eventBus;
         WindowDefinition definition;
         WindowsApplication& windowsApplication;
         HWND hwnd;

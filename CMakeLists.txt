@@ -15,6 +15,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Enable Nénuphar test.
 set(NENUPHAR_TEST_ENABLE OFF)
 
+# Enable export compile command.
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Configure properties.

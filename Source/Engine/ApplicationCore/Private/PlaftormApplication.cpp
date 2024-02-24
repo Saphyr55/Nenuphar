@@ -6,12 +6,22 @@
 namespace Nenuphar
 {
 
+    SharedRef<PlatformApplication> PlatformApplication::Application = nullptr;
+
     PlatformApplication& PlatformApplication::GetPlatformApplication()
     {
-        static SharedRef<PlatformApplication> platformApplication =
-            MakeSharedRef<WindowsApplication>();
+        if (!Application)
+            Application = MakeSharedRef<WindowsApplication>();
 
-        return *platformApplication;
+        return *Application;
+    }
+
+    Application& PlatformApplication::GetApplication()
+    {
+        if (!Application)
+            Application = MakeSharedRef<WindowsApplication>();
+
+        return *std::reinterpret_pointer_cast<class Application>(Application);
     }
 
 }

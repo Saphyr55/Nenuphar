@@ -8,9 +8,10 @@ namespace Nenuphar
 
     class WindowBase;
 
-    class Window final : public WindowInterface
+    class Window : public WindowInterface
     {
     public:
+
         Void PoolEvent() const override;
 
         const WindowEventHandler& GetWindowEventHandler() const override;
@@ -40,7 +41,9 @@ namespace Nenuphar
         Void SetTitle(StringView title) override;
 
     public:
-        Window(const WindowDefinition& definition);
+        explicit Window(const WindowDefinition& definition);
+
+        Window(StringView title, Int width, Int height);
 
         ~Window() override = default;
 

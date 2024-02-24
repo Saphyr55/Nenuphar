@@ -1,41 +1,29 @@
-#include "Genesis/GenesisApplication.hpp"
+#include "Nenuphar/ApplicationCore/Window.hpp"
+#include "Nenuphar/Core/Engine.hpp"
+#include "Nenuphar/EventSystem/WindowEventHandler.hpp"
 
+using namespace Nenuphar;
 
-int main(int argc, char* argv[])
+void Update(Window& window)
 {
-    try
+    window.PoolEvent();
+}
+
+int main(const int ArgumentCount, char* ArgumentValues[])
+{
+
+    GEngine->Initialize(ArgumentCount, ArgumentValues);
+
+    auto mainWindow = Window("Genisis Application", 1080, 720);
+    auto& windowEventHandler = mainWindow.GetWindowEventHandler();
+
+    windowEventHandler.OnClose([&](auto&)
     {
+        mainWindow.Destroy();
+        GIsFinish = true;
+    });
 
-        auto genesisApplication =
-            MakeSharedRef<GenesisApplication>();
+    mainWindow.Show();
 
-        genesisApplication->Setup();
-
-        Float start = 0.0f;
-        Float end = start;
-
-        while (genesisApplication->IsRunning())
-        {
-            start = start + 0.1f;
-            const Float deltaTime = start / 60.0f;
-
-            genesisApplication->Update(deltaTime);
-
-            end = start - end;
-        }
-
-        NP_DEBUG(W, "");
-
-        genesisApplication->Destroy();
-        
-    }
-    catch (const std::exception& exception)
-    {
-        NP_CRITICAL(Engine, "Exception occured.");
-        NP_CRITICAL(Engine, "{}", exception.what());
-
-        return EXIT_FAILURE;
-    }
-
-    return EXIT_SUCCESS;
+    return GEngine->Start(Partial(Update, mainWindow));
 }

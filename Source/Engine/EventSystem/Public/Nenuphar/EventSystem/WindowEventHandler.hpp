@@ -11,10 +11,10 @@ namespace Nenuphar
     class WindowEventHandler
     {
     public:
-        explicit WindowEventHandler(const WindowID ID_) : ID(ID_) { }
+        explicit WindowEventHandler(const WindowID ID_, EventBus& eventBus) : ID(ID_), eventBus(eventBus) { }
 
-        NPSignal(OnClose,           CloseEvent,   "Nenuphar.WindowEvent.Window.On-Close.ID-" + ID)
-        NPSignal(OnResize,          ResizeEvent,      "Nenuphar.WindowEvent.Mouse.On-Resize.ID-" + ID)
+        NPSignal(OnClose,           CloseEvent,         "Nenuphar.WindowEvent.Window.On-Close.ID-" + ID)
+        NPSignal(OnResize,          ResizeEvent,        "Nenuphar.WindowEvent.Mouse.On-Resize.ID-" + ID)
         NPSignal(OnMouseWheel,      MouseWheelEvent,    "Nenuphar.WindowEvent.Mouse.Mouse-Wheel.ID-" + ID)
         NPSignal(OnButtonPressed,   MouseButtonEvent,   "Nenuphar.WindowEvent.Mouse.Button-Pressed.ID-" + ID)
         NPSignal(OnButtonRelease,   MouseButtonEvent,   "Nenuphar.WindowEvent.Mouse.Button-Release.ID-" + ID)
@@ -25,6 +25,7 @@ namespace Nenuphar
 
     private:
         WindowID ID;
+        EventBus& eventBus;
     };
 
 }

@@ -7,13 +7,10 @@
 namespace Nenuphar
 {
 
-    SharedRef<WindowBase> WindowBase::Create(const WindowDefinition& definition)
+    SharedRef<WindowBase> WindowBase::Create(WindowDefinition definition)
     {
-        auto& windowsApplication =reinterpret_cast<WindowsApplication&>(PlatformApplication::GetPlatformApplication());
-
-        auto window = MakeSharedRef<WindowsWindow>(windowsApplication, definition);
-
-        return window;
+        auto& windowsApplication = reinterpret_cast<WindowsApplication&>(PlatformApplication::GetApplication());
+        return MakeSharedRef<WindowsWindow>(windowsApplication, definition);
     }
 
 }

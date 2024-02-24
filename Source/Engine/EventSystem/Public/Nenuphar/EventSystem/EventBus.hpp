@@ -58,13 +58,13 @@ namespace Nenuphar
 }
 
 #define NP_EMIT_EVENT(Name, Type, addr) \
-		void Emit##Name(::Nenuphar::EventBus& eventBus, const Type& event) const \
+		void Emit##Name(const Type& event) const \
         { \
 			eventBus.Emit<const Type>(addr, event); \
 		}
 
 #define NP_CONNECT_EVENT(Name, Type, addr) \
-		void Name(::Nenuphar::EventBus& eventBus, std::function<void(const Type&)>&& h) const \
+		void Name(std::function<void(const Type&)>&& h) const \
         { \
 			eventBus.Connect<const Type>(addr, h); \
 		}

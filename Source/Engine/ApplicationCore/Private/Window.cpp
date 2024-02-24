@@ -19,6 +19,18 @@ namespace Nenuphar
     {
     }
 
+    Window::Window(
+        const StringView title,
+        const Int width,
+        const Int height
+        )
+        : Window(WindowDefinition{
+                String(title),
+                static_cast<Float>(width),
+                static_cast<Float>(height)})
+    {
+    }
+
     Void Window::PoolEvent() const
     {
         base->PoolEvent();

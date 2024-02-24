@@ -1,8 +1,6 @@
 #include "Nenuphar/Core/Engine.hpp"
 
 #include "Nenuphar/ApplicationCore/Application.hpp"
-#include "Nenuphar/ApplicationCore/EntryApplication.hpp"
-#include "Nenuphar/Core/RunnableEngineInterface.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
 
 namespace Nenuphar
@@ -12,9 +10,21 @@ namespace Nenuphar
     {
     }
 
-    int Engine::Start(RunnableEngineInterface& runnableEngine)
+    int Engine::Start(const std::function<void()>& runnable)
     {
-        return 0;
+        try
+        {
+            while (!GIsFinish)
+            {
+                runnable();
+            }
+        }
+        catch (const std::exception& e)
+        {
+            NP_CRITICAL(Engine::Start, "{}", e.what());
+            return EXIT_FAILURE;
+        }
+        return EXIT_SUCCESS;
     }
 
 }

@@ -12,9 +12,20 @@ namespace Nenuphar
          * Platform application singleton.
          *
          * \brief
-         * \return
+         * \return Platform pplication single instance.
          */
         static PlatformApplication& GetPlatformApplication();
+
+        /**
+         * Application singletion.
+         *
+         * \brief
+         * \return Application single instance.
+         */
+        static Application& GetApplication();
+
+    private:
+        static SharedRef<PlatformApplication> Application;
 
     };
 
