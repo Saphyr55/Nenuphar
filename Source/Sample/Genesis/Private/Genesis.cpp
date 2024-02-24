@@ -4,11 +4,6 @@
 
 using namespace Nenuphar;
 
-void Update(Window& window)
-{
-    window.PoolEvent();
-}
-
 int main(const int ArgumentCount, char* ArgumentValues[])
 {
 
@@ -25,5 +20,8 @@ int main(const int ArgumentCount, char* ArgumentValues[])
 
     mainWindow.Show();
 
-    return GEngine->Start(Partial(Update, mainWindow));
+    return GEngine->Start([&]
+    {
+        mainWindow.PoolEvent();
+    });
 }

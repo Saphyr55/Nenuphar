@@ -25,6 +25,11 @@ if(WIN32)
     add_compile_definitions(NP_PLATFORM_WINDOWS)
 endif()
 
+# ========================================================
+# Assets.
+# ========================================================
+add_subdirectory(Source/Assets)
+
 
 # ========================================================
 # Engine Modules.

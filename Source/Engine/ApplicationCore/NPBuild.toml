@@ -1,8 +1,0 @@
-
-[Module]
-Name = "NenupharEngine.ApplicationCore"
-OutputType = "Static"
-Dependencies = [
-  { Name = "NenupharEngine.Core" },
-]
-
