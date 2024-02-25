@@ -5,7 +5,7 @@
 #include <fmt/format.h>
 
 #include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
-#include "Nenuphar/Core.hpp"
+#include "Nenuphar/Core/Core.hpp"
 
 namespace Nenuphar
 {

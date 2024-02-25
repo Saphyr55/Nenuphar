@@ -6,7 +6,12 @@ project(Engine.Rendering)
 set(LOCATION        .)
 set(TARGET          Engine.Rendering)
 set(GROUP           Engine)
-set(DEPS            fmt::fmt glad Engine.Common Engine.Core Engine.ApplicationCore)
+set(DEPS            fmt::fmt 
+                    glad 
+                    Engine.Common 
+                    Engine.Core 
+                    Engine.ApplicationCore
+                    )
 
 add_library_module(${TARGET} STATIC ${LOCATION})
 target_link_libraries(${TARGET} PRIVATE ${DEPS} INTERFACE ${DEPS})

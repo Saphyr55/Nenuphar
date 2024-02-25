@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "Nenuphar/Common.hpp"
+#include "Nenuphar/Common/Common.hpp"
 
 namespace Nenuphar
 {

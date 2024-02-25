@@ -5,7 +5,7 @@
 #include "Nenuphar/ApplicationCore/PlatformApplication.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Windows.hpp"
-#include "Nenuphar/EventSystem.hpp"
+#include "Nenuphar/EventSystem/EventSystem.hpp"
 
 namespace Nenuphar
 {

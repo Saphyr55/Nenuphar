@@ -1,12 +1,10 @@
-
 # Binaries
-./Bin/Engine
-./Bin/Editor
+Bin/
+Binaries/
 
 
 # Build
-./Build/Engine
-./Build/Editor
+Build/
 
 
 # Visual Studio

@@ -10,11 +10,16 @@ set(DEPS
                 Engine.ApplicationCore
                 Engine.EventSystem
                 Engine.InputSystem
+                Engine.Rendering
                 glad
     )
 
+add_executable(${TARGET})
+add_module(${TARGET} ${LOCATION})
 
-add_executable_module(${TARGET} ${LOCATION})
+add_dependencies(${TARGET} NPBuildGen)
+
+target_include_directories(${TARGET} PUBLIC ${CMAKE_BINARY_DIR})
 target_link_libraries(${TARGET} PRIVATE ${DEPS})
 set_target_properties(${TARGET} PROPERTIES FOLDER ${GROUP})
 

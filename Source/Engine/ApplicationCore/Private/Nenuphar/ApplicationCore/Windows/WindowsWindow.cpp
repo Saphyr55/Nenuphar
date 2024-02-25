@@ -4,7 +4,7 @@
 
 #include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
 #include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
-#include "Nenuphar/Core.hpp"
+#include "Nenuphar/Core/Core.hpp"
 #include "Nenuphar/Common/Instanciate.hpp"
 
 namespace Nenuphar

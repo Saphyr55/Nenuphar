@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Nenuphar/Common.hpp"
+#include "Nenuphar/Common/Common.hpp"
 #include "Nenuphar/Math/CommonMath.hpp"
 #include "Nenuphar/Math/Vector2.hpp"
 

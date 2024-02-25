@@ -1,8 +1,0 @@
-
-[Module]
-Name = "NenupharEditor.Core"
-OutputType = "Static"
-Dependencies = [
-  { Name = "NenupharEngine.Core" },
-]
-

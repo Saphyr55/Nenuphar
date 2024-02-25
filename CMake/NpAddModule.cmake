@@ -1,8 +1,6 @@
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
 
 function(add_module module_name module_location)
-
+    
     cmake_path(APPEND PUBLIC_FOLDER ${module_location} Public)
     cmake_path(APPEND PRIVATE_FOLDER ${module_location} Private)
 
@@ -60,4 +58,3 @@ function(add_test_module module_name module_location)
 
 
 endfunction()
-

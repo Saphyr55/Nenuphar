@@ -9,8 +9,8 @@
 #include <forward_list>
 #include <stdexcept>
 
-#include "Nenuphar/Common.hpp"
-#include "Nenuphar/Core.hpp"
+#include "Nenuphar/Common/Common.hpp"
+#include "Nenuphar/Core/Core.hpp"
 
 namespace Nenuphar
 {

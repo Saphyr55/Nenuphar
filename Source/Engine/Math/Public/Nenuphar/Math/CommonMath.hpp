@@ -3,7 +3,7 @@
 #include <cmath>
 #include <cfloat>
 
-#include "Nenuphar/Common.hpp"
+#include "Nenuphar/Common/Common.hpp"
 
 #define D_PI 3.14159265358979323846264338327950288
 
