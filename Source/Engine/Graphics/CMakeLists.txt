@@ -7,8 +7,10 @@ set(LOCATION        .)
 set(TARGET          Engine.Graphics)
 set(GROUP           Engine)
 set(DEPS            fmt::fmt
+                    stb
                     glad 
                     Engine.Common 
+                    Engine.Math
                     Engine.Core 
                     Engine.ApplicationCore
                     Engine.EventSystem

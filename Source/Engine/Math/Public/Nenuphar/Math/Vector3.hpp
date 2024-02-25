@@ -43,4 +43,4 @@ using Vector3d = Vector3<Double>;
 using Vector3i = Vector3<Int>;
 using Vector3u = Vector3<UInt>;
 
-#include "Vector3.inl"
+#include "Nenuphar/Math/Vector3.inl"

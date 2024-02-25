@@ -1,4 +1,3 @@
-
 # ========================================================
 # Setup Math Lib for the engine.
 # ========================================================
@@ -13,7 +12,6 @@ add_library_module(${TARGET} STATIC ${LOCATION})
 
 target_link_libraries(${TARGET} PRIVATE ${DEPS})
 set_target_properties(${TARGET} PROPERTIES FOLDER ${GROUP})
-
 
 
 # ========================================================

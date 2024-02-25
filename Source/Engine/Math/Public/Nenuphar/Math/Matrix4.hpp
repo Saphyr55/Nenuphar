@@ -52,4 +52,4 @@ private:
 using Matrix4f = Matrix4<Float>;
 using Matrix4d = Matrix4<Double>;
 
-#include "Matrix4.inl"
+#include "Nenuphar/Math/Matrix4.inl"

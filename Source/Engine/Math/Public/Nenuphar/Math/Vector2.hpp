@@ -31,5 +31,5 @@ using Vector2d = Vector2<Double>;
 using Vector2i = Vector2<Int>;
 using Vector2u = Vector2<UInt>;
 
-#include "Vector2.inl"
+#include "Nenuphar/Math/Vector2.inl"
 

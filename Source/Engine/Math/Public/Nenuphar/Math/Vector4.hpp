@@ -48,5 +48,5 @@ using Vector4d = Vector4<Double>;
 using Vector4i = Vector4<Int>;
 using Vector4u = Vector4<UInt>;
 
-#include "Vector4.inl"
+#include "Nenuphar/Math/Vector4.inl"
 
