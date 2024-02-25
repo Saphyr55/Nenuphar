@@ -2,5 +2,5 @@
 
 #include <cassert>
 
-#define NP_ASSERT(msg, exp) assert(((void)msg, exp))
+#define NP_ASSERT(exp) assert(exp)
 

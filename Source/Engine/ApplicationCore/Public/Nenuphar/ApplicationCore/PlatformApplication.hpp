@@ -8,16 +8,17 @@ namespace Nenuphar
     class PlatformApplication : public Application
     {
     public:
+
         /**
          * Platform application singleton.
          *
          * \brief
-         * \return Platform pplication single instance.
+         * \return Platform application single instance.
          */
         static PlatformApplication& GetPlatformApplication();
 
         /**
-         * Application singletion.
+         * Application singleton.
          *
          * \brief
          * \return Application single instance.
@@ -25,6 +26,9 @@ namespace Nenuphar
         static Application& GetApplication();
 
     private:
+        /**
+         * Singleton
+         */
         static SharedRef<PlatformApplication> Application;
 
     };

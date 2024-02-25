@@ -1,5 +1,5 @@
 # ========================================================
-# Setup Core Lib for the engine.
+# Setup Event System Module.
 # ========================================================
 project(Engine.EventSystem)
 

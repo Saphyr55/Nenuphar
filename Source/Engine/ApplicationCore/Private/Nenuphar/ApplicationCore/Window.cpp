@@ -6,16 +6,16 @@ namespace Nenuphar
 
     const WindowEventHandler& Window::GetWindowEventHandler() const
     {
-        return base->GetWindowEventHandler();
+        return m_base->GetWindowEventHandler();
     }
 
     WindowID Window::GetID() const
     {
-        return base->GetID();
+        return m_base->GetID();
     }
 
-    Window::Window(const WindowDefinition& definition)
-        : base(WindowBase::Create(definition))
+    Window::Window(const WindowDefinition& definition, PlatformApplication& app)
+        : m_base(WindowBase::Create(definition, app))
     {
     }
 
@@ -33,61 +33,61 @@ namespace Nenuphar
 
     Void Window::PoolEvent() const
     {
-        base->PoolEvent();
+        m_base->PoolEvent();
     }
 
     Bool Window::IsWindowMaximized() const
     {
-        return base->IsWindowMaximized();
+        return m_base->IsWindowMaximized();
     }
 
     Bool Window::IsWindowMinimized() const
     {
-        return base->IsWindowMinimized();
+        return m_base->IsWindowMinimized();
     }
 
     Bool Window::IsVisible() const
     {
-        return base->IsVisible();
+        return m_base->IsVisible();
     }
 
     Void* Window::GetOSWindowHandle() const
     {
-        return base->GetOSWindowHandle();
+        return m_base->GetOSWindowHandle();
     }
 
     Void Window::Hide()
     {
-        base->Hide();
+        m_base->Hide();
     }
 
     Void Window::Show()
     {
-        base->Show();
+        m_base->Show();
     }
 
     Void Window::Restore()
     {
-        base->Restore();
+        m_base->Restore();
     }
 
     Void Window::Maximaze()
     {
-        base->Maximaze();
+        m_base->Maximaze();
     }
 
     Void Window::Destroy()
     {
-        base->Destroy();
+        m_base->Destroy();
     }
 
     Void Window::ReshapeWindow(Int width, Int height)
     {
-        base->ReshapeWindow(width, height);
+        m_base->ReshapeWindow(width, height);
     }
 
     Void Window::SetTitle(StringView title)
     {
-        base->SetTitle(title);
+        m_base->SetTitle(title);
     }
 }

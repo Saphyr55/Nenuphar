@@ -2,6 +2,7 @@
 
 #include "WindowDefinition.hpp"
 #include "WindowInterface.hpp"
+#include "PlatformApplication.hpp"
 
 namespace Nenuphar
 {
@@ -40,14 +41,18 @@ namespace Nenuphar
 
         Void SetTitle(StringView title) override;
 
+        inline WindowBase& Base() { return *m_base; }
+
     public:
-        explicit Window(const WindowDefinition& definition);
+        Window(
+            const WindowDefinition& definition, 
+            PlatformApplication& app = PlatformApplication::GetPlatformApplication());
 
         Window(StringView title, Int width, Int height);
 
         ~Window() override = default;
 
     private:
-        SharedRef<WindowBase> base;
+        SharedRef<WindowBase> m_base;
     };
 }

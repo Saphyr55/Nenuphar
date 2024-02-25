@@ -1,5 +1,5 @@
 # ========================================================
-# Setup ApplicationCore Lib for the engine.
+# Setup Engine Application Core Module for the engine.
 # ========================================================
 project(Engine.ApplicationCore)
 

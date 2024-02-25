@@ -16,6 +16,7 @@ namespace Nenuphar
 
     WindowsApplication::WindowsApplication(HINSTANCE hinstance)
         : hinstance(hinstance)
+        , classID(0)
     {
         Initialize();
     }
@@ -34,7 +35,9 @@ namespace Nenuphar
     {
 
         if (!WindowsWindowRegistry.contains(hwnd))
+        {
             return DefWindowProc(hwnd, msg, wParam, lParam);
+        }
 
         WindowsWindow* window = WindowsWindowRegistry[hwnd];
 
@@ -48,11 +51,11 @@ namespace Nenuphar
         return window->ProcessEvent(message);
     }
 
-    void WindowsApplication::Initialize() const
+    void WindowsApplication::Initialize()
     {
         WNDCLASSEX wcex;
         wcex.cbSize         = sizeof(WNDCLASSEX);
-        wcex.style          = CS_HREDRAW | CS_VREDRAW;
+        wcex.style          = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
         wcex.lpfnWndProc    = &ProcessMessage;
         wcex.cbClsExtra     = 0;
         wcex.cbWndExtra     = 0;
@@ -64,7 +67,8 @@ namespace Nenuphar
         wcex.lpszMenuName   = nullptr;
         wcex.lpszClassName  = ApplicationClassName;
 
-        if (!RegisterClassEx(&wcex))
+        classID = RegisterClassEx(&wcex);
+        if (!classID)
         {
             NP_ERROR(WindowsWindow, "Call to RegisterClassEx failed!");
             return;

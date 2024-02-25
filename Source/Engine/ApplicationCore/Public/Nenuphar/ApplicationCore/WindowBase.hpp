@@ -1,17 +1,20 @@
 #pragma once
 
-#include "WindowDefinition.hpp"
-#include "WindowInterface.hpp"
+#include "Nenuphar/ApplicationCore/WindowDefinition.hpp"
+#include "Nenuphar/ApplicationCore/WindowInterface.hpp"
 
 namespace Nenuphar
 {
 
     class EventBus;
+    class PlatformApplication;
 
     class WindowBase : public WindowInterface
     {
     public:
-        static SharedRef<WindowBase> Create(WindowDefinition definition);
+        static SharedRef<WindowBase> Create(
+            WindowDefinition definition, 
+            PlatformApplication& app);
 
         virtual const WindowEventHandler& GetWindowEventHandler() const override = 0;
 

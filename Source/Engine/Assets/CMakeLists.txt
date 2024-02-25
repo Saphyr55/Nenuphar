@@ -1,13 +1,12 @@
 # ========================================================
-# Setup Engine Common Lib.
+# Setup Engine Assets Module.
 # ========================================================
-project(Engine.Rendering)
+project(Engine.Assets)
 
 set(LOCATION        .)
-set(TARGET          Engine.Rendering)
+set(TARGET          Engine.Assets)
 set(GROUP           Engine)
 set(DEPS            fmt::fmt 
-                    glad 
                     Engine.Common 
                     Engine.Core 
                     Engine.ApplicationCore
@@ -24,11 +23,11 @@ set_target_properties(${TARGET} PROPERTIES FOLDER ${GROUP})
 # ========================================================
 if(NENUPHAR_TEST_ENABLE)
 
-    project(Engine.Rendering.Test)
+    project(Engine.${TARGET}.Test)
 
-    set(TARGET_TEST     Engine.Rendering.Test)
+    set(TARGET_TEST     Engine.${TARGET}.Test)
     set(SRCS 
-                        Test/Rendering.cpp)
+                        Test/Assets.cpp)
 
     add_executable(${TARGET_TEST} ${SRCS})
 

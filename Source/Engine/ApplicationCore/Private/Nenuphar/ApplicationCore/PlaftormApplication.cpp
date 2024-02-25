@@ -1,6 +1,7 @@
 #include "Nenuphar/ApplicationCore/PlatformApplication.hpp"
 
 #ifdef NP_PLATFORM_WINDOWS
+
 #include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
 
 namespace Nenuphar
@@ -11,7 +12,9 @@ namespace Nenuphar
     PlatformApplication& PlatformApplication::GetPlatformApplication()
     {
         if (!Application)
+        {
             Application = MakeSharedRef<WindowsApplication>();
+        }
 
         return *Application;
     }
@@ -19,13 +22,15 @@ namespace Nenuphar
     Application& PlatformApplication::GetApplication()
     {
         if (!Application)
+        {
             Application = MakeSharedRef<WindowsApplication>();
+        }
 
         return *std::reinterpret_pointer_cast<class Application>(Application);
     }
 
 }
-#else
 
+#else
 
 #endif

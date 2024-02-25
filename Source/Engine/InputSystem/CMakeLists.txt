@@ -1,5 +1,5 @@
 # ========================================================
-# Setup Core Lib for the engine.
+# Setup Input System Module.
 # ========================================================
 project(Engine.InputSystem)
 

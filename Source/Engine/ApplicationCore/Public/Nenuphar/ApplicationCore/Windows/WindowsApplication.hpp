@@ -2,10 +2,9 @@
 
 #include <functional>
 
-#include "Nenuphar/ApplicationCore/PlatformApplication.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Windows.hpp"
-#include "Nenuphar/EventSystem/EventSystem.hpp"
+#include "Nenuphar/ApplicationCore/PlatformApplication.hpp"
 
 namespace Nenuphar
 {
@@ -23,9 +22,11 @@ namespace Nenuphar
 
         HINSTANCE GetHInstance() const;
 
-        void Initialize() const;
+        void Initialize();
 
         void Destroy() const override;
+
+        inline ApplicationID Id() const override { return classID; }
 
         static LRESULT CALLBACK ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam);
 
@@ -34,6 +35,7 @@ namespace Nenuphar
         ~WindowsApplication() override;
 
     private:
+        ApplicationID classID;
         HINSTANCE hinstance{};
         static thread_local WindowsWindowRegistry WindowsWindowRegistry;
     };

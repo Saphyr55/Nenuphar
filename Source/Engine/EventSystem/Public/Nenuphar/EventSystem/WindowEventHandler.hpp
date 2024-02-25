@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Nenuphar/ApplicationCore/WindowInterface.hpp"
-#include "Nenuphar/InputSystem/Event.hpp"
 #include "Nenuphar/EventSystem/EventBus.hpp"
 #include "Nenuphar/EventSystem/Event.hpp"
+#include "Nenuphar/InputSystem/Event.hpp"
 
 namespace Nenuphar
 {

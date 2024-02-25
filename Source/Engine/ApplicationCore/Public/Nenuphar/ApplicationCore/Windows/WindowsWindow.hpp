@@ -4,6 +4,8 @@
 #include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
 #include "Nenuphar/ApplicationCore/WindowDefinition.hpp"
 #include "Nenuphar/Core/Windows.hpp"
+#include "Nenuphar/EventSystem/EventSystem.hpp"
+
 
 namespace Nenuphar
 {

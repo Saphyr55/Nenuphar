@@ -1,3 +1,6 @@
+# ========================================================
+# Setup Genesis Module.
+# ========================================================
 project(Genesis)
 
 set(LOCATION    .)
@@ -10,7 +13,8 @@ set(DEPS
                 Engine.ApplicationCore
                 Engine.EventSystem
                 Engine.InputSystem
-                Engine.Rendering
+                Engine.Graphics
+                Engine.Assets
                 glad
     )
 
