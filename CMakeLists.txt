@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.26)
 project(Nenuphar)
 
 # Enable Nénuphar test.
-option(NENUPHAR_TEST_ENABLE "Enable Nénuphar Test." OFF)
+set(NENUPHAR_TEST_ENABLE ON)
 
 # Use folders.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)

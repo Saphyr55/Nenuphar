@@ -24,7 +24,7 @@ set_target_properties(${TARGET} PROPERTIES FOLDER ${GROUP})
 
 
 # ========================================================
-# Setup Engine Common Test.
+# Setup Engine Graphics Test.
 # ========================================================
 if(NENUPHAR_TEST_ENABLE)
 
