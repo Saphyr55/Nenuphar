@@ -18,8 +18,8 @@ set_target_properties(${TARGET} PROPERTIES FOLDER ${GROUP})
 # Setup Engine Common Test.
 # ========================================================
 if(NENUPHAR_TEST_ENABLE)
-
-    project(Engine.Common.Test)
+    
+    project(${TARGET}.Test)
 
     set(TARGET_TEST     Engine.Common.Test)
     set(SRCS 

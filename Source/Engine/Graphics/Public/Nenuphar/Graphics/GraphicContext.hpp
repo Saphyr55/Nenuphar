@@ -11,8 +11,6 @@ namespace Nenuphar
     {
     public:
 
-        static Void Init();
-
         static Ptr<GraphicContext> Create(Window& window);
 
         virtual void Current() const = 0;

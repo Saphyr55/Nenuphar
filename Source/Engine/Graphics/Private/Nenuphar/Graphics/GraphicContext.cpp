@@ -8,13 +8,9 @@
 namespace Nenuphar
 {
 
-    Void GraphicContext::Init()
-    {
-        WGLContext::Init();
-    }
-
     Ptr<GraphicContext> GraphicContext::Create(Window& window)
     {
+        NP_CALL_ONCE( WGLContext::Init(); );
         auto& ww = reinterpret_cast<WindowsWindow&>(window.Base());
         return MakeUnique<WGLContext>(MakeUnique<WindowsDeviceContext>(ww));
     }

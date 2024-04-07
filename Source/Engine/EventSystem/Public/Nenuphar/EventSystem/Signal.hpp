@@ -9,15 +9,23 @@ namespace Nenuphar
 {
 
     template<typename ...Args>
+    class Connection;
+
+    template<typename ...Args>
     class Signal
     {
+
+        using ConnectionArgs = Connection<Args...>;
         using Storage = std::unordered_map<
                 DelegateTag,
                 Delegate<Args...>
                 >;
 
     public:
-        void Connect(Delegate<Args...>& delegate);
+
+        Connection<Args...> Connect(Handler<ConnectionArgs, Args...>& handler);
+
+        Connection<Args...> Connect(Delegate<Args...>& delegate);
 
         void Disconnect(DelegateTag tag);
 
@@ -30,6 +38,34 @@ namespace Nenuphar
     private:
         Storage storage{};
     };
+
+    template<typename ...Args>
+    class Connection
+    {
+        friend class Signal<Args...>;
+
+    public:
+        void Disconnect();
+
+    private:
+        Connection(Delegate<Args...>& delegate, Signal<Args...>& signal);
+
+    private:
+        Delegate<Args...>& m_delegate;
+        Signal<Args...>& m_signal;
+    };
+
+    template<typename... Args>
+    void Connection<Args...>::Disconnect()
+    {
+        m_signal.Disconnect(m_delegate);
+    }
+
+    template<typename... Args>
+    Connection<Args...>::Connection(Delegate<Args...>& delegate, Signal<Args...>& signal)
+        : m_delegate(delegate), m_signal(signal)
+    {
+    }
 
     template<typename... Args>
     void Signal<Args...>::Disconnect(Delegate<Args...> delegate)
@@ -53,9 +89,27 @@ namespace Nenuphar
     }
 
     template<typename... Args>
-    void Signal<Args...>::Connect(Delegate<Args...>& delegate)
+    Connection<Args...> Signal<Args...>::Connect(Handler<ConnectionArgs, Args...>& handler)
+    {
+
+        Delegate<Args...> delegate;
+        Connection<Args...> connection(delegate, *this);
+        delegate = [&connection, &handler](auto&& ...args)
+        {
+            handler(connection, std::forward<Args>(args)...);
+        };
+
+        storage[delegate.GetTag()] = delegate;
+
+        return connection;
+    }
+
+    template<typename... Args>
+    Connection<Args...> Signal<Args...>::Connect(Delegate<Args...>& delegate)
     {
         storage[delegate.GetTag()] = delegate;
+
+        return Connection<Args...>(delegate, *this);
     }
 
 }

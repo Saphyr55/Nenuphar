@@ -35,7 +35,7 @@ namespace Nenuphar
 
         Void Restore() override;
 
-        Void Maximaze() override;
+        Void Maximize() override;
 
         Void Destroy() override;
 
@@ -43,8 +43,7 @@ namespace Nenuphar
 
         Void SetTitle(StringView title) override;
 
-        WindowsWindow(WindowsApplication& inApplication,
-                      WindowDefinition inDefinition);
+        WindowsWindow(WindowsApplication& inApplication, WindowDefinition inDefinition);
 
         ~WindowsWindow() override = default;
 

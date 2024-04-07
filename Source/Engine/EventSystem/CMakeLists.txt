@@ -22,7 +22,7 @@ set_target_properties(${TARGET} PROPERTIES FOLDER ${GROUP})
 # ========================================================
 if(NENUPHAR_TEST_ENABLE)
 
-    project(Engine.${TARGET}.Test)
+    project(${TARGET}.Test)
 
     set(TARGET_TEST     Engine.${TARGET}.Test)
     set(SRCS

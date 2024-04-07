@@ -47,7 +47,7 @@ namespace Nenuphar
 
         virtual Void Restore() = 0;
 
-        virtual Void Maximaze() = 0;
+        virtual Void Maximize() = 0;
 
         virtual Void Destroy() = 0;
 

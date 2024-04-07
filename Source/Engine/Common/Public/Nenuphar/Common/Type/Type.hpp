@@ -3,6 +3,9 @@
 #include <cstdint>
 #include <string>
 #include <memory>
+#include <functional>
+
+#define NP_CALL_ONCE(STMT) static auto _ = [](){ STMT return 0; }()
 
 namespace Nenuphar
 {
@@ -49,6 +52,9 @@ namespace Nenuphar
     using StringView = std::string_view;
 
     using VoidPtr = void*;
+
+    template<typename ...Args>
+    using Handler = std::function<void(Args...)>;
 
     template<typename T>
     using Ptr = std::unique_ptr<T>;

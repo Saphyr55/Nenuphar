@@ -4,9 +4,6 @@
 
 namespace Nenuphar
 {
-    
-    template<typename ...Args>
-    using Handler = std::function<void(Args...)>;
 
     using DelegateTag = std::size_t;
 
@@ -23,10 +20,27 @@ namespace Nenuphar
         const Handler<Args...>& GetHandler() const;
         [[nodiscard]] DelegateTag GetTag() const;
 
+        Delegate& operator=(Handler<Args...>&&);
+        Delegate& operator=(const Handler<Args...>&);
+
     private:
         DelegateTag m_tag = 0;
         Handler<Args...> m_handler;
     };
+
+    template<typename... Args>
+    Delegate<Args...>& Delegate<Args...>::operator=(const Handler<Args...>& handler)
+    {
+        m_handler = handler;
+        return *this;
+    }
+
+    template<typename... Args>
+    Delegate<Args...>& Delegate<Args...>::operator=(Handler<Args...>&& handler)
+    {
+        m_handler = std::forward<decltype(handler)>(handler);
+        return *this;
+    }
 
     static std::atomic<DelegateTag> LastTag{1};
 
@@ -48,12 +62,21 @@ namespace Nenuphar
     {
         return m_tag;
     }
-    
+
     template<typename ...Args>
     Delegate<Args...>::Delegate(Handler<Args...>&& handler)
             : m_handler(std::forward<Handler<Args...>>(handler))
             , m_tag(LastTag.fetch_add(1))
     {
+    }
+
+    namespace Service
+    {
+        template<typename ...Args>
+        auto CreateDelegate(auto h)
+        {
+            return Delegate<Args...>(h);
+        }
     }
 
 }

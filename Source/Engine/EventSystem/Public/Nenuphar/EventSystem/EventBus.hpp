@@ -15,9 +15,8 @@
 namespace Nenuphar
 {
 
-    using EventAddress = String;
     using EventTree = std::map<std::type_index, std::forward_list<std::any>>;
-    using EventAddressTree = std::map<EventAddress, EventTree>;
+    using EventAddressTree = std::map<String, EventTree>;
 
     class EventBus final
     {
@@ -56,6 +55,7 @@ namespace Nenuphar
     }
     
 }
+
 
 #define NP_EMIT_EVENT(Name, Type, addr) \
 		void Emit##Name(const Type& event) const \

@@ -71,9 +71,9 @@ namespace Nenuphar
         m_base->Restore();
     }
 
-    Void Window::Maximaze()
+    Void Window::Maximize()
     {
-        m_base->Maximaze();
+        m_base->Maximize();
     }
 
     Void Window::Destroy()

@@ -8,7 +8,6 @@ namespace Nenuphar
 
     void Engine::Initialize(int argc, char** argv)
     {
-        
     }
 
     int Engine::Start(const std::function<void()>& runnable)

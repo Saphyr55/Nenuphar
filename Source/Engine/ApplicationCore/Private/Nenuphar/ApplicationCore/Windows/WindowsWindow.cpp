@@ -94,7 +94,7 @@ namespace Nenuphar
         ShowWindow(hwnd, SW_RESTORE);
     }
 
-    void WindowsWindow::Maximaze()
+    void WindowsWindow::Maximize()
     {
         ShowWindow(hwnd, SW_SHOWMAXIMIZED);
     }

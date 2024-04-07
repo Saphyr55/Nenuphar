@@ -10,6 +10,20 @@
 
 using namespace Nenuphar;
 
+class OnReceiveEvent
+{
+public:
+    void Receive(String data);
+
+private:
+    Signal<String> signal;
+};
+
+void OnReceiveEvent::Receive(String data)
+{
+    signal.Emit(std::move(data));
+}
+
 
 void Render(GraphicContext& graphicContext, Window& window)
 {
@@ -21,8 +35,9 @@ void Render(GraphicContext& graphicContext, Window& window)
 
 int main(const int ArgumentCount, char* ArgumentValues[])
 {
+
     GEngine->Initialize(ArgumentCount, ArgumentValues);
-    GraphicContext::Init();
+
     String filepath = AssetsFolder::Path("/Shaders/MainFragment.glsl");
     Window window("Genesis Application", 1080, 720);
 
@@ -35,7 +50,7 @@ int main(const int ArgumentCount, char* ArgumentValues[])
         window.Destroy();
         GIsFinish = true;
     });
-    
+
     windowEventHandler.OnResize([&](auto&)
     {
         Render(*graphicContext, window);

@@ -33,7 +33,7 @@ namespace Nenuphar
 
         Void Restore() override;
 
-        Void Maximaze() override;
+        Void Maximize() override;
 
         Void Destroy() override;
 
