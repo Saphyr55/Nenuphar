@@ -4,6 +4,7 @@
 
 namespace Nenuphar
 {
+
     struct ResizeEvent
     {
         Float Width;

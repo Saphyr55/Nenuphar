@@ -15,6 +15,8 @@ namespace Nenuphar
 
         Void PoolEvent() const override;
 
+        const WindowSignals& GetWindowSignals() const override;
+
         const WindowEventHandler& GetWindowEventHandler() const override;
 
         WindowID GetID() const override;

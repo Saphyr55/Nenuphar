@@ -43,15 +43,15 @@ int main(const int ArgumentCount, char* ArgumentValues[])
 
     auto graphicContext = GraphicContext::Create(window);
 
-    auto& windowEventHandler = window.GetWindowEventHandler();
+    auto& windowSignals = window.GetWindowSignals();
 
-    windowEventHandler.OnClose([&](auto&)
+    windowSignals.OnClose().ConnectConn([&](auto&, auto&)
     {
         window.Destroy();
         GIsFinish = true;
     });
 
-    windowEventHandler.OnResize([&](auto&)
+    windowSignals.OnResize().ConnectHandler([&](auto&)
     {
         Render(*graphicContext, window);
     });

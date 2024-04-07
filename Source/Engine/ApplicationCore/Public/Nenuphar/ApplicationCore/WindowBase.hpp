@@ -16,6 +16,8 @@ namespace Nenuphar
             WindowDefinition definition, 
             PlatformApplication& app);
 
+        virtual const WindowSignals& GetWindowSignals() const override = 0;
+
         virtual const WindowEventHandler& GetWindowEventHandler() const override = 0;
 
         virtual WindowID GetID() const override = 0;

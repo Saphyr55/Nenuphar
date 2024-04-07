@@ -23,7 +23,7 @@ namespace Nenuphar
 
     public:
 
-        Connection<Args...> ConnectConn(Handler<ConnectionArgs&, Args...>&& handler);
+        void ConnectConn(Handler<ConnectionArgs&, Args...>&& handler);
 
         Connection<Args...> ConnectHandler(Handler<Args...>&& handler);
 
@@ -39,10 +39,10 @@ namespace Nenuphar
 
         Signal() = default;
 
-
     private:
-        Storage storage{};
-
+        Storage m_storage{};
+        bool m_isEmit = false;
+        std::vector<DelegateTag> m_toRemove;
     };
 
     template<typename ...Args>
@@ -53,23 +53,22 @@ namespace Nenuphar
     public:
         void Disconnect();
 
-    private:
-        Connection(Delegate<Args...>& delegate, Signal<Args...>& signal);
+        Connection(DelegateTag delegateTag, Signal<Args...>& signal);
 
     private:
-        Delegate<Args...>& m_delegate;
+        DelegateTag m_delegateTag;
         Signal<Args...>& m_signal;
     };
 
     template<typename... Args>
     void Connection<Args...>::Disconnect()
     {
-        m_signal.Disconnect(m_delegate);
+        m_signal.Disconnect(m_delegateTag);
     }
 
     template<typename... Args>
-    Connection<Args...>::Connection(Delegate<Args...>& delegate, Signal<Args...>& signal)
-        : m_delegate(delegate), m_signal(signal)
+    Connection<Args...>::Connection(DelegateTag delegateTag, Signal<Args...>& signal)
+        : m_delegateTag(delegateTag), m_signal(signal)
     {
     }
 
@@ -82,15 +81,33 @@ namespace Nenuphar
     template<typename... Args>
     void Signal<Args...>::Disconnect(DelegateTag tag)
     {
-        storage.erase(tag);
+        if (!m_isEmit)
+        {
+            auto it = m_storage.find(tag);
+            if (it == m_storage.cend())
+            {
+                return;
+            }
+            m_storage.erase(it);
+        }
+        else
+        {
+            m_toRemove.push_back(tag);
+        }
     }
 
     template<typename... Args>
     void Signal<Args...>::Emit(Args... args)
     {
-        for (auto& el : storage)
+        m_isEmit = true;
+        for (auto [tag, delegate] : m_storage)
         {
-            el.second.GetHandler()(std::forward<Args>(args)...);
+            delegate.GetHandler()(std::forward<Args>(args)...);
+        }
+        m_isEmit = false;
+        for (auto& tagToRemove : m_toRemove)
+        {
+            Disconnect(tagToRemove);
         }
     }
 
@@ -101,34 +118,32 @@ namespace Nenuphar
     }
 
     template<typename... Args>
-    Connection<Args...> Signal<Args...>::ConnectConn(Handler<ConnectionArgs&, Args...>&& handler)
+    void Signal<Args...>::ConnectConn(Handler<ConnectionArgs&, Args...>&& handler)
     {
-        Delegate<Args...> delegate;
-        Connection<Args...> connection(delegate, *this);
-        delegate = [&connection, &handler](auto&& ...args)
+        auto delegate = MakeUnique<Delegate<Args...>>();
+        auto conn = MakeSharedRef<ConnectionArgs>(delegate->GetTag(), *this);
+        (*delegate) = [conn, handler](Args&&... args)
         {
-            handler(connection, std::forward<Args>(args)...);
+            handler(*conn, std::forward<Args>(args)...);
         };
 
-        storage[delegate.GetTag()] = delegate;
-
-        return connection;
+        m_storage[delegate->GetTag()] = *delegate;
     }
 
     template<typename... Args>
     Connection<Args...> Signal<Args...>::Connect(Delegate<Args...>&& delegate)
     {
-        storage[delegate.GetTag()] = std::forward<Delegate<Args...>>(delegate);
+        m_storage[delegate.GetTag()] = std::forward<Delegate<Args...>>(delegate);
 
-        return Connection<Args...>(delegate, *this);
+        return Connection<Args...>(delegate.GetTag(), *this);
     }
 
     template<typename... Args>
     Connection<Args...> Signal<Args...>::Connect(Delegate<Args...>& delegate)
     {
-        storage[delegate.GetTag()] = delegate;
+        m_storage[delegate.GetTag()] = delegate;
 
-        return Connection<Args...>(delegate, *this);
+        return Connection<Args...>(delegate.GetTag(), *this);
     }
 
 }

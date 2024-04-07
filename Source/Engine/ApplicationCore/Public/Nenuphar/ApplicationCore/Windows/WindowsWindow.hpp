@@ -10,7 +10,7 @@
 namespace Nenuphar
 {
 
-    class WindowsWindow final : public WindowBase
+    class WindowsWindow : public WindowBase
     {
         friend WindowsApplication;
     public:
@@ -18,6 +18,8 @@ namespace Nenuphar
         Void PoolEvent() const override;
 
         WindowID GetID() const override;
+
+        const WindowSignals& GetWindowSignals() const override;
 
         const WindowEventHandler& GetWindowEventHandler() const override;
 
@@ -52,6 +54,7 @@ namespace Nenuphar
         Int ProcessEvent(MSG msg);
 
     private:
+        WindowSignals m_windowSignals;
         EventBus eventBus;
         WindowDefinition definition;
         WindowsApplication& windowsApplication;

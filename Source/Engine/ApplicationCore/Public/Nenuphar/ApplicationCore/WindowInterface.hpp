@@ -8,7 +8,7 @@ namespace Nenuphar
     class Application;
     class WindowDefinition;
     class WindowEventHandler;
-
+    class WindowSignals;
 
     using WindowID = UInt16;
 
@@ -26,6 +26,8 @@ namespace Nenuphar
     class WindowInterface
     {
     public:
+
+        virtual const WindowSignals& GetWindowSignals() const = 0;
 
         virtual const WindowEventHandler& GetWindowEventHandler() const = 0;
 

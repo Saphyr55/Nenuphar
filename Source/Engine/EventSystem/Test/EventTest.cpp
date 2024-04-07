@@ -40,6 +40,23 @@ TEST_CASE("Check delegate.", "[Delegate::Delegate]")
 
 }
 
+TEST_CASE("Check ConnectConn.", "[Signal::ConnectConn]")
+{
+    Signal<Int> signal;
+
+    signal.ConnectConn([&](auto& conn, Int value)
+    {
+        REQUIRE(value == 6);
+        if (value == 6)
+        {
+            conn.Disconnect();
+        }
+    });
+
+    signal.Emit(6);
+
+    signal.Emit(5);
+}
 
 TEST_CASE("Check creating delegate with service.", "[Service::CreateDelegate]")
 {

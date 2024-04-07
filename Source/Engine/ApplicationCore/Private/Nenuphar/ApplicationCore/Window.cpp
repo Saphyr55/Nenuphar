@@ -90,4 +90,9 @@ namespace Nenuphar
     {
         m_base->SetTitle(title);
     }
+
+    const WindowSignals& Window::GetWindowSignals() const
+    {
+        return m_base->GetWindowSignals();
+    }
 }
