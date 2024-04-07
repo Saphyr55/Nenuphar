@@ -72,11 +72,22 @@ namespace Nenuphar
 
     namespace Service
     {
+
         template<typename ...Args>
-        auto CreateDelegate(auto h)
+        Delegate<Args...> CreateDelegate(auto h)
         {
-            return Delegate<Args...>(h);
+            return Delegate<Args...>(Handler<Args...>(h));
         }
+
+        template<typename ...Args>
+        Delegate<Args...> CreateDelegate(auto&& func, auto& obj)
+        {
+            auto handler = std::bind(std::forward<decltype(func)>(func),
+                    obj, std::placeholders::_1);
+            return Delegate<Args...>(Handler<Args...>(handler));
+        }
+
+
     }
 
 }

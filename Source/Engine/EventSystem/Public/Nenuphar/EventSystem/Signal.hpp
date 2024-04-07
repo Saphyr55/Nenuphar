@@ -23,7 +23,11 @@ namespace Nenuphar
 
     public:
 
-        Connection<Args...> Connect(Handler<ConnectionArgs, Args...>& handler);
+        Connection<Args...> ConnectConn(Handler<ConnectionArgs&, Args...>&& handler);
+
+        Connection<Args...> ConnectHandler(Handler<Args...>&& handler);
+
+        Connection<Args...> Connect(Delegate<Args...>&& delegate);
 
         Connection<Args...> Connect(Delegate<Args...>& delegate);
 
@@ -31,12 +35,14 @@ namespace Nenuphar
 
         void Disconnect(Delegate<Args...> delegate);
 
-        void Emit(Args&&... args);
+        void Emit(Args... args);
 
         Signal() = default;
 
+
     private:
         Storage storage{};
+
     };
 
     template<typename ...Args>
@@ -80,7 +86,7 @@ namespace Nenuphar
     }
 
     template<typename... Args>
-    void Signal<Args...>::Emit(Args&&... args)
+    void Signal<Args...>::Emit(Args... args)
     {
         for (auto& el : storage)
         {
@@ -89,9 +95,14 @@ namespace Nenuphar
     }
 
     template<typename... Args>
-    Connection<Args...> Signal<Args...>::Connect(Handler<ConnectionArgs, Args...>& handler)
+    Connection<Args...> Signal<Args...>::ConnectHandler(Handler<Args...>&& handler)
     {
+        return Connect(std::move(Delegate<Args...>(std::forward<Handler<Args...>>(handler))));
+    }
 
+    template<typename... Args>
+    Connection<Args...> Signal<Args...>::ConnectConn(Handler<ConnectionArgs&, Args...>&& handler)
+    {
         Delegate<Args...> delegate;
         Connection<Args...> connection(delegate, *this);
         delegate = [&connection, &handler](auto&& ...args)
@@ -102,6 +113,14 @@ namespace Nenuphar
         storage[delegate.GetTag()] = delegate;
 
         return connection;
+    }
+
+    template<typename... Args>
+    Connection<Args...> Signal<Args...>::Connect(Delegate<Args...>&& delegate)
+    {
+        storage[delegate.GetTag()] = std::forward<Delegate<Args...>>(delegate);
+
+        return Connection<Args...>(delegate, *this);
     }
 
     template<typename... Args>

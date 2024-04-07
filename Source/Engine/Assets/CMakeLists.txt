@@ -25,7 +25,7 @@ if(NENUPHAR_TEST_ENABLE)
 
     project(${TARGET}.Test)
 
-    set(TARGET_TEST     Engine.${TARGET}.Test)
+    set(TARGET_TEST     ${TARGET}.Test)
     set(SRCS 
                         Test/Assets.cpp)
 

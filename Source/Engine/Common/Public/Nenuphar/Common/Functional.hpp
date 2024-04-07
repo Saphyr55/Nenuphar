@@ -10,12 +10,12 @@ namespace Nenuphar
 
 	constexpr auto Partial(auto&& f, auto&& ...args)
 	{
-		return [&f, &args...]<typename... T0>(T0&&... lambdaArgs)
+		return [&f, &args...]<typename... Ts>(Ts&&... lambdaArgs)
 		{
-			return f
-			(
-				std::forward<T0>(lambdaArgs)...,
-				std::forward<decltype(args)>(args)...
+			return std::forward<decltype(f)>(f)
+            (
+                std::forward<decltype(args)>(args)...,
+				std::forward<Ts>(lambdaArgs)...
 			);
 		};
 	}

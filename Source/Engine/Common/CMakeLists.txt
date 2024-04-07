@@ -21,7 +21,7 @@ if(NENUPHAR_TEST_ENABLE)
     
     project(${TARGET}.Test)
 
-    set(TARGET_TEST     Engine.Common.Test)
+    set(TARGET_TEST     ${TARGET}.Test)
     set(SRCS 
                         Test/FunctionalTest.cpp)
 

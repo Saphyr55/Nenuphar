@@ -21,7 +21,7 @@ if (NENUPHAR_TEST_ENABLE)
 
     project(${TARGET}.Test)
 
-    set(TARGET_TEST     Engine.Math.Test)
+    set(TARGET_TEST     ${TARGET}.Test)
     set(SRCS
             Test/Matrix3Test.cpp
             Test/Matrix4Test.cpp
