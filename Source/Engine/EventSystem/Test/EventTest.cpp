@@ -44,7 +44,7 @@ TEST_CASE("Check ConnectConn.", "[Signal::ConnectConn]")
 {
     Signal<Int> signal;
 
-    signal.ConnectConn([&](auto& conn, Int value)
+    signal.Connect([&](auto& conn, Int value)
     {
         REQUIRE(value == 6);
         if (value == 6)

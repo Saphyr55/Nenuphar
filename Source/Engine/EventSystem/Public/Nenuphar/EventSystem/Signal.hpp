@@ -23,13 +23,13 @@ namespace Nenuphar
 
     public:
 
-        void ConnectConn(Handler<ConnectionArgs&, Args...>&& handler);
-
         Connection<Args...> ConnectHandler(Handler<Args...>&& handler);
 
         Connection<Args...> Connect(Delegate<Args...>&& delegate);
 
         Connection<Args...> Connect(Delegate<Args...>& delegate);
+
+        void Connect(Handler<ConnectionArgs&, Args...>&& handler);
 
         void Disconnect(DelegateTag tag);
 
@@ -118,7 +118,7 @@ namespace Nenuphar
     }
 
     template<typename... Args>
-    void Signal<Args...>::ConnectConn(Handler<ConnectionArgs&, Args...>&& handler)
+    void Signal<Args...>::Connect(Handler<ConnectionArgs&, Args...>&& handler)
     {
         auto delegate = MakeUnique<Delegate<Args...>>();
         auto conn = MakeSharedRef<ConnectionArgs>(delegate->GetTag(), *this);

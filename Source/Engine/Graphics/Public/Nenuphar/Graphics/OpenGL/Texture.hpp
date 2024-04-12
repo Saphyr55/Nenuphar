@@ -109,6 +109,6 @@ namespace Nenuphar
 		return texture;
 	}
 
-	using Texture2d = Texture<OpenGLTextureTarget::Texture2D>;
+	using OpenGLTexture2D = Texture<OpenGLTextureTarget::Texture2D>;
 
 }

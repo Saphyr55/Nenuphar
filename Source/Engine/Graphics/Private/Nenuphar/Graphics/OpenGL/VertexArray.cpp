@@ -1,26 +1,26 @@
 
-#include "Nenuphar/Graphics/OpenGL/VertexArray.hpp"
+#include "Nenuphar/Graphics/OpenGL/OpenGLVertexArray.hpp"
 
 namespace Nenuphar
 {
 
-	VertexArray::VertexArray()
+	OpenGLVertexArray::OpenGLVertexArray()
 	{
 		glGenVertexArrays(1, &m_vertexArrayID);
 		Bind();
 	}
 
-	VertexArray::~VertexArray()
+	OpenGLVertexArray::~OpenGLVertexArray()
 	{
 		glDeleteVertexArrays(1, &m_vertexArrayID);
 	}
 
-    void VertexArray::Bind() const
+    void OpenGLVertexArray::Bind() const
 	{
 		glBindVertexArray(m_vertexArrayID);
 	}
 
-	void VertexArray::Unbind() const
+	void OpenGLVertexArray::Unbind() const
 	{
 		glBindVertexArray(0);
 	}

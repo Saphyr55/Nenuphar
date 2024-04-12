@@ -15,35 +15,33 @@ namespace Nenuphar
         friend WindowsApplication;
     public:
 
-        Void PoolEvent() const override;
-
         WindowID GetID() const override;
 
         const WindowSignals& GetWindowSignals() const override;
 
-        const WindowEventHandler& GetWindowEventHandler() const override;
+        bool IsWindowMaximized() const override;
 
-        Bool IsWindowMaximized() const override;
+        bool IsWindowMinimized() const override;
 
-        Bool IsWindowMinimized() const override;
+        bool IsVisible() const override;
 
-        Bool IsVisible() const override;
+        void* GetOSWindowHandle() const override;
 
-        Void* GetOSWindowHandle() const override;
+        void PoolEvent() const override;
 
-        Void Hide() override;
+        void Hide() override;
 
-        Void Show() override;
+        void Show() override;
 
-        Void Restore() override;
+        void Restore() override;
 
-        Void Maximize() override;
+        void Maximize() override;
 
-        Void Destroy() override;
+        void Destroy() override;
 
-        Void ReshapeWindow(Int width, Int height) override;
+        void ReshapeWindow(Int width, Int height) override;
 
-        Void SetTitle(StringView title) override;
+        void SetTitle(StringView title) override;
 
         WindowsWindow(WindowsApplication& inApplication, WindowDefinition inDefinition);
 
@@ -60,7 +58,6 @@ namespace Nenuphar
         WindowsApplication& windowsApplication;
         HWND hwnd;
         WindowID ID;
-        WindowEventHandler windowEventHandler;
         static WindowID LastID;
     };
 

@@ -122,7 +122,6 @@ namespace Nenuphar
         , windowsApplication(inApplication)
         , hwnd(Initialize())
         , ID(++LastID)
-        , windowEventHandler(ID, eventBus)
     {
 
         if (hwnd)
@@ -158,7 +157,6 @@ namespace Nenuphar
         }
         case WM_PAINT:
         {
-
             break;
         }
         case WM_SYSKEYDOWN:

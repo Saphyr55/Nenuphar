@@ -29,8 +29,6 @@ namespace Nenuphar
 
         virtual const WindowSignals& GetWindowSignals() const = 0;
 
-        virtual const WindowEventHandler& GetWindowEventHandler() const = 0;
-
         virtual WindowID GetID() const = 0;
 
         virtual Void PoolEvent() const = 0;

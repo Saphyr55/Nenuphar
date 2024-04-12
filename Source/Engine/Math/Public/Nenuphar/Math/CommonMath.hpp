@@ -25,12 +25,12 @@ namespace Nenuphar
     constexpr Float FullCircle = 2 * D_PI;
     constexpr Float PolarCap = D_PI - FLT_EPSILON;
 
-    Double Radians(const Real auto& angle)
+    auto Radians(const Real auto& angle)
     {
         return angle * (D_PI / 180);
     }
 
-    Double Signum(const Real auto& r)
+    auto Signum(const Real auto& r)
     {
         return r == 0 ? 0 : std::abs(r) / r;
     }

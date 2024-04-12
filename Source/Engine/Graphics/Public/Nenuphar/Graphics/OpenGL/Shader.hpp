@@ -26,7 +26,7 @@ namespace Nenuphar
 	};
 
 
-	class OpenGLShaderPart final
+	class OpenGLShaderPart
 	{
 
 	friend class OpenGLShader;
@@ -48,7 +48,7 @@ namespace Nenuphar
 	};
 
 
-	class OpenGLShader final
+	class OpenGLShader
 	{
 
 	public:

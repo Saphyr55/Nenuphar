@@ -17,8 +17,6 @@ namespace Nenuphar
 
         const WindowSignals& GetWindowSignals() const override;
 
-        const WindowEventHandler& GetWindowEventHandler() const override;
-
         WindowID GetID() const override;
 
         Bool IsWindowMaximized() const override;

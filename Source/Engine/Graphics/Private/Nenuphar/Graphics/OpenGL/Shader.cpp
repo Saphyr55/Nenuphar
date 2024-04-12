@@ -97,7 +97,8 @@ namespace Nenuphar
 		}
 	}
 
-    OpenGLShader::OpenGLShader(StringView vs, StringView fs) : OpenGLShader()
+    OpenGLShader::OpenGLShader(StringView vs, StringView fs)
+        : OpenGLShader()
 	{
         SetupShaderProgram(*this, vs, fs);
     }

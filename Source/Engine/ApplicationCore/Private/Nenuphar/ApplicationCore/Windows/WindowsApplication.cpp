@@ -1,16 +1,12 @@
 #include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
+#include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
 
 #include <ranges>
-
-#include <fmt/format.h>
-
-#include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
-#include "Nenuphar/Core/Core.hpp"
 
 namespace Nenuphar
 {
 
-    thread_local WindowsWindowRegistry WindowsApplication::WindowsWindowRegistry = {};
+    thread_local WindowsWindowRegistry WindowsApplication::WindowsWindowRegistry = { };
 
     const TCHAR WindowsApplication::ApplicationClassName[] = TEXT("NenupharApplication");
 

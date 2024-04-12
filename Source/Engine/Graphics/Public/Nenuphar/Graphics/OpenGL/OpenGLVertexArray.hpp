@@ -8,22 +8,19 @@ namespace Nenuphar
 
     using VertexArrayID = UInt;
 
-    class VertexArray final
+    class OpenGLVertexArray final
     {
 
     public:
 
-        [[nodiscard]] inline VertexArrayID GetID() const 
-        { 
-            return m_vertexArrayID; 
-        }
+        [[nodiscard]] inline VertexArrayID GetID() const  { return m_vertexArrayID;  }
 
         void Bind() const;
 
         void Unbind() const;
 
-        VertexArray();
-        ~VertexArray();
+        OpenGLVertexArray();
+        ~OpenGLVertexArray();
 
     private:
         VertexArrayID m_vertexArrayID;
@@ -36,8 +33,9 @@ namespace Nenuphar
         const std::vector<LayoutBuffer>& layouts)
     {
         buffer.Bind();
-        for (const auto& lb : layouts) {
-            glVertexAttribPointer(lb.Index, lb.Size, lb.Type, lb.Stride, lb.Offset, lb.Normalized);
+        for (const auto& lb : layouts)
+        {
+            glVertexAttribPointer(lb.Index, lb.Size, lb.Type, lb.Normalized, lb.Stride, lb.Offset);
             glEnableVertexAttribArray(lb.Index);
         }
         buffer.Unbind();
