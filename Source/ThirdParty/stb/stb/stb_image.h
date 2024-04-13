@@ -1939,7 +1939,7 @@ typedef struct
    int img_mcu_x, img_mcu_y;
    int img_mcu_w, img_mcu_h;
 
-// definition of jpeg image component
+// m_definition of jpeg image component
    struct
    {
       int id;

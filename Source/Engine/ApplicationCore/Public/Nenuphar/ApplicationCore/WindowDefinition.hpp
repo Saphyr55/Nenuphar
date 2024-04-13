@@ -34,7 +34,7 @@ namespace Nenuphar
         NP_DEFINE_SIGNAL(const CloseEvent&      , OnClose)
         NP_DEFINE_SIGNAL(const ResizeEvent&     , OnResize)
         NP_DEFINE_SIGNAL(const MouseWheelEvent& , OnMouseWheel)
-        NP_DEFINE_SIGNAL(const MouseButtonEvent&, OnButtonPressed)
+        NP_DEFINE_SIGNAL(const MouseButtonEvent&, OnButtonDown)
         NP_DEFINE_SIGNAL(const MouseButtonEvent&, OnButtonRelease)
         NP_DEFINE_SIGNAL(const MouseMoveEvent&  , OnMouseMove)
         NP_DEFINE_SIGNAL(const KeyEvent&        , OnKeyDown)

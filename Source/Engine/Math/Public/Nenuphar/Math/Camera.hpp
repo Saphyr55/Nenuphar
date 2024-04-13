@@ -9,9 +9,9 @@ namespace Nenuphar
 
     struct Camera
     {
-        Vector3f Pos;
-        Vector3f Front;
-        Vector3f Up;
+        Vector3f Pos{};
+        Vector3f Front{};
+        Vector3f Up{};
 
         [[nodiscard]] Vector3f Target() const;
 
@@ -27,8 +27,8 @@ namespace Nenuphar
         Float Theta{};
         Float Phi{};
         Float Radius{};
-        Vector3f Target;
-        Vector3f Up;
+        Vector3f Target{};
+        Vector3f Up{};
 
         [[nodiscard]] Vector3f Position() const;
 
@@ -40,8 +40,10 @@ namespace Nenuphar
 
         static OrbitCamera RotatePhi(const OrbitCamera& camera, const Real auto& radians);
 
-        OrbitCamera(Float Theta, Float Phi, Float Radius, Vector3f Target, Vector3f Up);
+        OrbitCamera& operator=(const OrbitCamera&);
+        OrbitCamera& operator=(OrbitCamera&&);
 
+        OrbitCamera(Float Theta, Float Phi, Float Radius, Vector3f Target, Vector3f Up);
         OrbitCamera() = default;
         OrbitCamera(OrbitCamera&&) = default;
         OrbitCamera(const OrbitCamera&) = default;
@@ -68,13 +70,14 @@ namespace Nenuphar
         OrbitCamera newCamera(camera);
 
         newCamera.Phi += radians;
-        newCamera.Phi = std::clamp(camera.Phi, FLT_EPSILON, PolarCap);
+        newCamera.Phi = std::clamp(newCamera.Phi, FLT_EPSILON, PolarCap);
 
         return newCamera;
     }
 
     OrbitCamera OrbitCamera::PanOrbitCamera(const OrbitCamera& camera, const Real auto& dx, const Real auto& dy)
     {
+
         OrbitCamera newCamera(camera);
 
         Vector3f eye = Vector3f::Normalize(newCamera.Cartesian());
@@ -86,10 +89,5 @@ namespace Nenuphar
         return newCamera;
     }
 
-    OrbitCamera::OrbitCamera(Float inTheta, Float inPhi, Float inRadius, Vector3f inTarget, Vector3f inUp)
-        : Theta(inTheta), Phi(inPhi), Radius(inRadius), Target(inTarget), Up(inUp)
-    {
-
-    }
 
 }

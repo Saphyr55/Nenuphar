@@ -56,7 +56,6 @@ add_subdirectory(Source/Engine/ApplicationCore)
 add_subdirectory(Source/Engine/EventSystem)
 add_subdirectory(Source/Engine/InputSystem)
 add_subdirectory(Source/Engine/Graphics)
-add_subdirectory(Source/Engine/Assets)
 
 
 # ===================================================================================================

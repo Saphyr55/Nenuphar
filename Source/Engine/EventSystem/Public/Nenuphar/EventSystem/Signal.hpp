@@ -1,9 +1,12 @@
 #pragma once
 
 #include <unordered_map>
+#include <any>
+#include <tuple>
 
 #include "Nenuphar/Common/Common.hpp"
 #include "Nenuphar/EventSystem/Delegate.hpp"
+#include "Nenuphar/Core/Logger/Logger.hpp"
 
 namespace Nenuphar
 {
@@ -22,27 +25,26 @@ namespace Nenuphar
                 >;
 
     public:
+        virtual Connection<Args...> ConnectHandler(Handler<Args...>&& handler);
 
-        Connection<Args...> ConnectHandler(Handler<Args...>&& handler);
+        virtual Connection<Args...> Connect(Delegate<Args...>&& delegate);
 
-        Connection<Args...> Connect(Delegate<Args...>&& delegate);
+        virtual Connection<Args...> Connect(Delegate<Args...>& delegate);
 
-        Connection<Args...> Connect(Delegate<Args...>& delegate);
+        virtual void Connect(Handler<ConnectionArgs&, Args...>&& handler);
 
-        void Connect(Handler<ConnectionArgs&, Args...>&& handler);
+        virtual void Disconnect(DelegateTag tag);
 
-        void Disconnect(DelegateTag tag);
+        virtual void Disconnect(Delegate<Args...> delegate);
 
-        void Disconnect(Delegate<Args...> delegate);
-
-        void Emit(Args... args);
+        virtual void Emit(Args... args);
 
         Signal() = default;
 
-    private:
+    protected:
         Storage m_storage{};
-        bool m_isEmit = false;
         std::vector<DelegateTag> m_toRemove;
+        bool m_isEmit = false;
     };
 
     template<typename ...Args>

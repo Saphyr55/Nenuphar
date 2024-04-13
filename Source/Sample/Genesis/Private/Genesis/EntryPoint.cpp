@@ -1,6 +1,3 @@
-#include "Nenuphar/ApplicationCore/Window.hpp"
-#include "Nenuphar/Core/Engine.hpp"
-
 #include "Genesis/Genesis.hpp"
 
 using namespace Nenuphar;

@@ -13,33 +13,35 @@ namespace Nenuphar
     {
     public:
 
-        Void PoolEvent() const override;
+        void PoolEvent() const override;
+
+        const WindowDefinition& GetWindowDefinition() const override;
 
         const WindowSignals& GetWindowSignals() const override;
 
         WindowID GetID() const override;
 
-        Bool IsWindowMaximized() const override;
+        bool IsWindowMaximized() const override;
 
-        Bool IsWindowMinimized() const override;
+        bool IsWindowMinimized() const override;
 
-        Bool IsVisible() const override;
+        bool IsVisible() const override;
 
-        Void* GetOSWindowHandle() const override;
+        void* GetOSWindowHandle() const override;
 
-        Void Hide() override;
+        void Hide() override;
 
-        Void Show() override;
+        void Show() override;
 
-        Void Restore() override;
+        void Restore() override;
 
-        Void Maximize() override;
+        void Maximize() override;
 
-        Void Destroy() override;
+        void Destroy() override;
 
-        Void ReshapeWindow(Int width, Int height) override;
+        void ReshapeWindow(int width, int height) override;
 
-        Void SetTitle(StringView title) override;
+        void SetTitle(StringView title) override;
 
         inline WindowBase& Base() { return *m_base; }
 

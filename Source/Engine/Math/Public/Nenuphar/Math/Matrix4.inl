@@ -96,8 +96,8 @@ template<Real R>
 Matrix4<R> Matrix4<R>::Perspective(
 	const Real auto& view,
 	const Real auto& aspect,
-	const Real auto& near,
-	const Real auto& far)
+	const Real auto& near_,
+	const Real auto& far_)
 {
 	Mat result(0);
 
@@ -105,8 +105,8 @@ Matrix4<R> Matrix4<R>::Perspective(
 
 	result[0][0] = R(1) / (tanHalfFovy * aspect);
 	result[1][1] = R(1) / tanHalfFovy;
-	result[2][2] = R(-far - near) / (far - near);
-	result[3][2] = - R(2 * near * far) / (far - near);
+	result[2][2] = R(-far_ - near_) / (far_ - near_);
+	result[3][2] = - R(2 * near_ * far_) / (far_ - near_);
 	result[2][3] = - R(1);
 	return result;
 }
@@ -115,17 +115,17 @@ template<Real R>
 Matrix4<R> Matrix4<R>::Orthographic(
 	const Real auto& left,			const Real auto& right,
 	const Real auto& bottom,		const Real auto& top,
-	const Real auto& near,			const Real auto& far
+	const Real auto& near_,			const Real auto& far_
 )
 {
-	assert(far - near != 0);
+	assert(far_ - near_ != 0);
 	Mat result(1);
 	result[0][0] = R(2) / (right - left);
 	result[1][1] = R(2) / (top - bottom);
-	result[2][2] = - R(2) / (far - near);
+	result[2][2] = - R(2) / (far_ - near_);
 	result[3][0] = - R(right + left) / (right - left);
 	result[3][1] = - R(top + bottom) / (top - bottom);
-	result[3][2] = - R(far + near) / (far - near);
+	result[3][2] = - R(far_ + near_) / (far_ - near_);
 	return result;
 }
 

@@ -11,7 +11,7 @@ using namespace Nenuphar;
 template<Real R>
 struct Matrix4
 {
-	using Mat = Matrix4;
+	using Mat = Matrix4<R>;
 	using Vec = Vector4<R>;
 
 	Mat operator*(Mat m);

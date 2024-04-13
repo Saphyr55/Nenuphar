@@ -14,7 +14,6 @@ set(DEPS
                 Engine.EventSystem
                 Engine.InputSystem
                 Engine.Graphics
-                Engine.Assets
                 glad
     )
 

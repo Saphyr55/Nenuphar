@@ -17,6 +17,8 @@ namespace Nenuphar
 
         WindowID GetID() const override;
 
+        const WindowDefinition& GetWindowDefinition() const override;
+
         const WindowSignals& GetWindowSignals() const override;
 
         bool IsWindowMaximized() const override;
@@ -54,7 +56,7 @@ namespace Nenuphar
     private:
         WindowSignals m_windowSignals;
         EventBus eventBus;
-        WindowDefinition definition;
+        WindowDefinition m_definition;
         WindowsApplication& windowsApplication;
         HWND hwnd;
         WindowID ID;

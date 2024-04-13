@@ -8,6 +8,7 @@
 #include <glad/glad.h>
 
 #include "Nenuphar/Common/Common.hpp"
+#include "Nenuphar/Math/Math.hpp"
 
 namespace Nenuphar
 {
@@ -59,5 +60,39 @@ namespace Nenuphar
 		DepthBuffer = GL_DEPTH_BUFFER_BIT,
 		StencilBuffer = GL_STENCIL_BUFFER_BIT,
 	};
+
+#pragma region Shader
+
+    UInt32 CreateShader(UInt32 type);
+
+    UInt32 ShaderSource(UInt32 shader, UInt32 count, const Char** source, const Int* length);
+
+    void UseProgram(UInt32 program);
+
+    void DeleteShader(UInt32 shader);
+
+    UInt32 GetUniformLocation(UInt32 program, const char* uniform);
+
+    void CompileShader(UInt32 shader);
+
+    void LinkProgram(UInt32 program);
+
+    UInt32 CreateProgram();
+
+    void SetUniform(Int location, Matrix4f value);
+
+    void SetUniform(Int location, Vector4f value);
+
+    void SetUniform(Int location, Vector3f value);
+
+    void SetUniform(Int location, Vector2f value);
+
+    void SetUniform(Int location, Float value);
+
+    void SetUniform(Int location, UInt32 value);
+
+    void SetUniform(Int location, Int value);
+
+#pragma endregion
 
 }

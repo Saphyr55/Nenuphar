@@ -27,6 +27,8 @@ namespace Nenuphar
     {
     public:
 
+        virtual const WindowDefinition& GetWindowDefinition() const = 0;
+
         virtual const WindowSignals& GetWindowSignals() const = 0;
 
         virtual WindowID GetID() const = 0;

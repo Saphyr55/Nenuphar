@@ -2,6 +2,7 @@
 
 #include "Nenuphar/Common/Common.hpp"
 #include "Nenuphar/Graphics/OpenGL/OpenGL.hpp"
+#include "Nenuphar/Core/Resource/Resource.hpp"
 
 namespace Nenuphar
 {
@@ -34,7 +35,7 @@ namespace Nenuphar
 
 		explicit operator UInt() { return texture; }
 
-		static Texture<target> LoadFromImage(std::string_view path, const std::function<void(const DataImage&, Parameter)>&);
+		static Texture<target> LoadFromImage(const Path& path, const std::function<void(const DataImage&, Parameter)>&);
 
         Texture();
 
@@ -61,7 +62,7 @@ namespace Nenuphar
 		Bind();
 	}
 
-	void LoadDataImage(std::string_view path, const std::function<void(const DataImage&)>&);
+    void LoadDataImage(const Path& path, const std::function<void(const DataImage&)>& f);
 
 	void TexImage2D(UInt target, Int level, const DataImage& dataImage);
 
@@ -100,7 +101,7 @@ namespace Nenuphar
 	}
 
 	template<OpenGLTextureTarget target>
-	Texture<target> Texture<target>::LoadFromImage(std::string_view path, const std::function<void(const DataImage&, Texture::Parameter)>& f)
+	Texture<target> Texture<target>::LoadFromImage(const Path& path, const std::function<void(const DataImage&, Texture::Parameter)>& f)
 	{
 		Texture<target> texture;
 		texture.Bind();

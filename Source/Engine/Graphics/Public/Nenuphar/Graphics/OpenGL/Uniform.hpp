@@ -43,10 +43,10 @@ namespace Nenuphar
         Uniform(OpenGLShader& shader, std::string_view name, T value);
 
     private:
-        std::string name;
-        UniformLocation location;
-        OpenGLShader& owner;
-        mutable T value;
+        std::string m_name;
+        UniformLocation m_location;
+        OpenGLShader& m_owner;
+        mutable T m_value;
     };
 
     using UniformInt = Uniform<Int>;
@@ -92,27 +92,27 @@ namespace Nenuphar
     template<UniformValue T>
     void Uniform<T>::UpdateValue(const T& value_) const
     {
-        value = value_;
+        m_value = value_;
         Update();
     }
 
     template<UniformValue T>
     void Uniform<T>::Update() const
     {
-        owner.Use();
-        SetUniform(location, value);
+        m_owner.Use();
+        SetUniform(m_location, m_value);
     }
 
     template<UniformValue T>
     const T& Uniform<T>::GetValue() const 
     { 
-        return value; 
+        return m_value;
     }
 
     template<UniformValue T>
     UniformLocation Uniform<T>::GetLocation() const 
     { 
-        return location;  
+        return m_location;
     }
 
     template<UniformValue T>
@@ -120,20 +120,20 @@ namespace Nenuphar
         : m_value(value), m_owner(shader), m_name(name)
     {
 
-        location = glGetUniformLocation(owner.GetID(), name.data());
+        m_location = glGetUniformLocation(m_owner.GetID(), name.data());
         Update();
     }
 
     UniformRegistry& UniformRegistry::Register(StringView name, UniformValue auto value)
     {
-        registry.insert(std::make_pair(name.data(), Uniform<decltype(value)>(owner, name, value)));
+        m_registry.insert(std::make_pair(name.data(), Uniform<decltype(value)>(m_owner, name, value)));
         return *this;
     }
 
     template<UniformValue V>
     auto UniformRegistry::Get(StringView name) -> Uniform<V>&
     {
-        IUniform& uniform = registry.at(name.data());
+        IUniform& uniform = m_registry.at(name.data());
         return std::get<Uniform<V>>(uniform);
     }
 

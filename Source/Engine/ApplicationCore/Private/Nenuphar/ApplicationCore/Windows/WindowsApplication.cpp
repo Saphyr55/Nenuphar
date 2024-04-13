@@ -49,28 +49,28 @@ namespace Nenuphar
 
     void WindowsApplication::Initialize()
     {
-        WNDCLASSEX wcex;
-        wcex.cbSize         = sizeof(WNDCLASSEX);
-        wcex.style          = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-        wcex.lpfnWndProc    = &ProcessMessage;
-        wcex.cbClsExtra     = 0;
-        wcex.cbWndExtra     = 0;
-        wcex.hInstance      = hinstance;
-        wcex.hIcon          = LoadIcon(hinstance, IDI_APPLICATION);
-        wcex.hIconSm        = LoadIcon(hinstance, IDI_APPLICATION);
-        wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-        wcex.hbrBackground  = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
-        wcex.lpszMenuName   = nullptr;
-        wcex.lpszClassName  = ApplicationClassName;
+        WNDCLASSEX windowClassEX;
+        windowClassEX.cbSize         = sizeof(WNDCLASSEX);
+        windowClassEX.style          = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+        windowClassEX.lpfnWndProc    = &ProcessMessage;
+        windowClassEX.cbClsExtra     = 0;
+        windowClassEX.cbWndExtra     = 0;
+        windowClassEX.hInstance      = hinstance;
+        windowClassEX.hIcon          = LoadIcon(hinstance, IDI_APPLICATION);
+        windowClassEX.hIconSm        = LoadIcon(hinstance, IDI_APPLICATION);
+        windowClassEX.hCursor        = LoadCursor(nullptr, IDC_ARROW);
+        windowClassEX.hbrBackground  = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
+        windowClassEX.lpszMenuName   = nullptr;
+        windowClassEX.lpszClassName  = ApplicationClassName;
 
-        classID = RegisterClassEx(&wcex);
+        classID = RegisterClassEx(&windowClassEX);
         if (!classID)
         {
             NP_ERROR(WindowsWindow, "Call to RegisterClassEx failed!");
             return;
         }
 
-        NP_INFO(WindowsWindow, "Windows Application Instance has been registed.");
+        NP_INFO(WindowsWindow, "Windows Application Instance has been registered.");
         NP_INFO(WindowsWindow, "Nenuphar Application was started with a windows instance.");
     }
 
