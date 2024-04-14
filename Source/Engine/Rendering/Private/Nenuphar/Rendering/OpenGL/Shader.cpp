@@ -1,5 +1,5 @@
-#include "Nenuphar/Graphics/OpenGL/Shader.hpp"
-#include "Nenuphar/Graphics/OpenGL/OpenGL.hpp"
+#include "Nenuphar/Rendering/OpenGL/Shader.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
 
 #include <fmt/core.h>

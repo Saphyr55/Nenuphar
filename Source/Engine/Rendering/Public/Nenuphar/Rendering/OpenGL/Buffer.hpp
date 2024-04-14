@@ -6,8 +6,8 @@
 #include <fmt/core.h>
 #include <glad/glad.h>
 
-#include "Nenuphar/Graphics/OpenGL/Vertex.hpp"
-#include "Nenuphar/Graphics/OpenGL/OpenGL.hpp"
+#include "Nenuphar/Rendering/OpenGL/Vertex.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 
 
 namespace Nenuphar

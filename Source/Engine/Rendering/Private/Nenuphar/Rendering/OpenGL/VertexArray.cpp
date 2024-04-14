@@ -1,5 +1,5 @@
 
-#include "Nenuphar/Graphics/OpenGL/OpenGLVertexArray.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLVertexArray.hpp"
 
 namespace Nenuphar
 {

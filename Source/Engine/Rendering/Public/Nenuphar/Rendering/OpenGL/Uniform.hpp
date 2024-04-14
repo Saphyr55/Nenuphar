@@ -9,8 +9,8 @@
 #include "Nenuphar/Math/Vector2.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
 #include "Nenuphar/Math/Vector4.hpp"
-#include "Nenuphar/Graphics/OpenGL/Shader.hpp"
-#include "Nenuphar/Graphics/OpenGL/OpenGL.hpp"
+#include "Nenuphar/Rendering/OpenGL/Shader.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 
 namespace Nenuphar
 {

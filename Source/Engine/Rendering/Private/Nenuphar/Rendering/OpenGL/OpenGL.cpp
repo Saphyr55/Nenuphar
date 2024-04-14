@@ -1,4 +1,4 @@
-#include "Nenuphar/Graphics/OpenGL/OpenGL.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 
 namespace Nenuphar
 {

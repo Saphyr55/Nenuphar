@@ -1,4 +1,4 @@
-#include "Nenuphar/Graphics/Windows/WGLContext.hpp"
+#include "Nenuphar/Rendering/Windows/WGLContext.hpp"
 #include "Nenuphar/Core/Core.hpp"
 #include "Nenuphar/Common/Debug/Debug.hpp"
 

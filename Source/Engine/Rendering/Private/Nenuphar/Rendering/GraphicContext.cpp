@@ -1,9 +1,9 @@
-#include "Nenuphar/Graphics/GraphicContext.hpp"
+#include "Nenuphar/Rendering/GraphicContext.hpp"
 #include "Nenuphar/ApplicationCore/Window.hpp"
 
 #ifdef NP_PLATFORM_WINDOWS
 
-#include "Nenuphar/Graphics/Windows/WGLContext.hpp"
+#include "Nenuphar/Rendering/Windows/WGLContext.hpp"
 
 namespace Nenuphar
 {

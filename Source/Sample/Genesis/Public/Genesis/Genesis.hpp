@@ -1,14 +1,17 @@
 #pragma once
 
 #include "Nenuphar/Core/Engine.hpp"
-#include "Nenuphar/Graphics/GraphicContext.hpp"
+
 #include "Nenuphar/ApplicationCore/Window.hpp"
+
 #include "Nenuphar/Math/Math.hpp"
 #include "Nenuphar/Math/Camera.hpp"
-#include "Nenuphar/Graphics/OpenGL/OpenGLVertexArray.hpp"
-#include "Nenuphar/Graphics/OpenGL/Texture.hpp"
-#include "Nenuphar/Graphics/OpenGL/Shader.hpp"
-#include "Nenuphar/Graphics/OpenGL/Uniform.hpp"
+
+#include "Nenuphar/Rendering/GraphicContext.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLVertexArray.hpp"
+#include "Nenuphar/Rendering/OpenGL/Texture.hpp"
+#include "Nenuphar/Rendering/OpenGL/Shader.hpp"
+#include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
 
 #include "Generated/Generated.hpp"
 

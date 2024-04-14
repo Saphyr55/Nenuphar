@@ -1,9 +1,16 @@
 #include "Genesis/Genesis.hpp"
 #include "Nenuphar/InputSystem/InputSystem.hpp"
+#include "Nenuphar/Rendering/OpenGL/Buffer.hpp"
 
 #include <glad/glad.h>
 
 using namespace Nenuphar;
+
+static OrbitCamera DefaultCamera((Float) Radians(45.0f),
+                                 (Float) Radians(45.0f),
+                                 3.0f,
+                                 Vector3f(0.0, 0.0, 0.0),
+                                 Vector3f(0.0f, 1.0f, 0.0f));
 
 Env::Env(UInt16 id, Ptr<GraphicContext> graphicContext, Window& window)
         : Id(id)
@@ -40,13 +47,21 @@ void UpdatePVM(UniformRegistry& registry, const OrbitCamera& camera, const Windo
     registry.Get<Matrix4f>("view").UpdateValue(view);
 }
 
+void ResetCameraTarget(const KeyEvent& evt, Env& env)
+{
+    if (evt.Key == Input::Key::R)
+    {
+        env.MainCamera.Target = DefaultCamera.Target;
+    }
+}
+
 void OnMoveCameraXY(const MouseMoveEvent& evt, Env& env)
 {
     if (InputSystem::IsButtonDown(Input::Button::Middle))
     {
         auto& camera = env.MainCamera;
-        Float dx = evt.PosRelX * env.CameraVelocity * camera.Radius;
-        Float dy = evt.PosRelY * env.CameraVelocity * camera.Radius;
+        Float dx = -evt.PosRelX * (env.CameraVelocity * 0.1f) * camera.Radius;
+        Float dy = -evt.PosRelY * (env.CameraVelocity * 0.1f) * camera.Radius;
         camera = OrbitCamera::PanOrbitCamera(camera, dx, dy);
     }
 }
@@ -55,7 +70,6 @@ void OnRotateCamera(const MouseMoveEvent& evt, Env& env)
 {
     if (InputSystem::IsButtonDown(Input::Button::Left))
     {
-        NP_DEBUG(Print, "PosRelX={} PosRelY={}", evt.PosRelX, evt.PosRelY);
         auto& camera = env.MainCamera;
         camera = OrbitCamera::RotateTheta(camera, evt.PosRelX * env.CameraVelocity);
         camera = OrbitCamera::RotatePhi(camera, -evt.PosRelY * env.CameraVelocity);
@@ -77,6 +91,12 @@ void Env::Init(Env& env)
 
     auto& window = env.MainWindow;
     auto& windowSignals = window.GetWindowSignals();
+
+    windowSignals.OnKeyPressed().Connect(
+            [&](auto&, auto& evt)
+            {
+                ResetCameraTarget(evt, env);
+            });
 
     windowSignals.OnMouseMove().Connect(
             [&](auto&, auto& evt)

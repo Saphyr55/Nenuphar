@@ -1,4 +1,4 @@
-#include "Nenuphar/Graphics/OpenGL/Texture.hpp"
+#include "Nenuphar/Rendering/OpenGL/Texture.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -22,7 +22,7 @@ namespace Nenuphar
 		glActiveTexture(GL_TEXTURE0 + slot);
 	}
 
-    void DefaultParameterTexture(const DataImage& dataImage, Texture<Texture2D>::Parameter parameter)
+    void DefaultParameterTexture(const DataImage& dataImage, OpenGLTexture<Texture2D>::Parameter parameter)
 	{
         parameter
             .WithParameter(GL_TEXTURE_WRAP_T, GL_REPEAT)

@@ -1,4 +1,4 @@
-#include "Nenuphar/Graphics/Windows/WindowsDeviceContext.hpp"
+#include "Nenuphar/Rendering/Windows/WindowsDeviceContext.hpp"
 #include "Nenuphar/Core/Windows.hpp"
 
 namespace Nenuphar

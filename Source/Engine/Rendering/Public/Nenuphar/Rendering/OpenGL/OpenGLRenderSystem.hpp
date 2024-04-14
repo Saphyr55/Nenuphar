@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Nenuphar/Graphics/RenderSystem.hpp"
+#include "Nenuphar/Rendering/RenderSystem.hpp"
 
 namespace Nenuphar
 {

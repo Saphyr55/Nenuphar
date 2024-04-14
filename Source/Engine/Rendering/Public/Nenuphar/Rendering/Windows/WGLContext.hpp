@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Nenuphar/Graphics/GraphicContext.hpp"
-#include "Nenuphar/Graphics/Windows/WindowsDeviceContext.hpp"
-#include "Nenuphar/Graphics/OpenGL/OpenGL.hpp"
+#include "Nenuphar/Rendering/GraphicContext.hpp"
+#include "Nenuphar/Rendering/Windows/WindowsDeviceContext.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 
 namespace Nenuphar
 {

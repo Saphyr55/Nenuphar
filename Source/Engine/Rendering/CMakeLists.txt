@@ -1,10 +1,10 @@
 # ========================================================
-# Setup Engine Graphics Module.
+# Setup Engine Rendering Module.
 # ========================================================
-project(Engine.Graphics)
+project(Engine.Rendering)
 
 set(LOCATION        .)
-set(TARGET          Engine.Graphics)
+set(TARGET          Engine.Rendering)
 set(GROUP           Engine)
 set(DEPS            fmt::fmt
                     stb
@@ -24,7 +24,7 @@ set_target_properties(${TARGET} PROPERTIES FOLDER ${GROUP})
 
 
 # ========================================================
-# Setup Engine Graphics Test.
+# Setup Engine Rendering Test.
 # ========================================================
 if(NENUPHAR_TEST_ENABLE)
 
