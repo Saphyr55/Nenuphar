@@ -9,7 +9,7 @@
 #include "Nenuphar/Math/Vector2.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
 #include "Nenuphar/Math/Vector4.hpp"
-#include "Nenuphar/Rendering/OpenGL/Shader.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLShader.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 
 namespace Nenuphar
@@ -50,7 +50,7 @@ namespace Nenuphar
     };
 
     using UniformInt = Uniform<Int>;
-    using UniformSampler2d = Uniform<UInt>;
+    using UniformSampler2D = Uniform<UInt>;
     using UniformU32 = Uniform<UInt>;
     using UniformFloat = Uniform<Float>;
     using UniformVec4f = Uniform<Vector4f>;

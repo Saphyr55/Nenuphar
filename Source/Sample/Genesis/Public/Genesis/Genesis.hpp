@@ -9,28 +9,27 @@
 
 #include "Nenuphar/Rendering/GraphicContext.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLVertexArray.hpp"
-#include "Nenuphar/Rendering/OpenGL/Texture.hpp"
-#include "Nenuphar/Rendering/OpenGL/Shader.hpp"
+#include "Nenuphar/Rendering/Texture.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLShader.hpp"
 #include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
 
 #include "Generated/Generated.hpp"
 
 using namespace Nenuphar;
 
-struct Renderer
+struct RenderData
 {
-    static Ptr<Renderer> New();
+    static Ptr<RenderData> New();
 
     Ptr<OpenGLVertexArray> VAO;
     Ptr<OpenGLVertexBuffer> VBO;
-    OpenGLTexture2D WallTexture;
+    TextureID WallTexture;
     Ptr<OpenGLShader> Program;
     Ptr<UniformRegistry> Registry;
 };
 
 struct Env
 {
-
     static Env& New(Window& window);
     static void Init(Env& env);
     static void Render(Env& env);
@@ -40,7 +39,7 @@ struct Env
 
     UInt16 Id;
     Ptr<GraphicContext> MainGraphicContext;
-    Ptr<Renderer> MainRenderer;
+    Ptr<RenderData> MainRenderData;
     Window& MainWindow;
     OrbitCamera MainCamera;
     Float CameraVelocity = 0.005f;

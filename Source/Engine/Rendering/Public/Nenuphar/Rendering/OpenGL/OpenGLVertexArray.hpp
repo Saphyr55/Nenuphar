@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Nenuphar/Common/Common.hpp"
-#include "Nenuphar/Rendering/OpenGL/Buffer.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLBuffer.hpp"
 
 namespace Nenuphar
 {

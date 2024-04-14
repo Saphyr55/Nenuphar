@@ -28,7 +28,7 @@ namespace Nenuphar
 
 		void Unbind() const;
 
-		OpenGLBuffer(const std::vector<T>& data, OpenGLBufferUsage usage = OpenGLBufferUsage::StaticDraw);
+		explicit OpenGLBuffer(const std::vector<T>& data, OpenGLBufferUsage usage = OpenGLBufferUsage::StaticDraw);
         ~OpenGLBuffer();
 
 	private:

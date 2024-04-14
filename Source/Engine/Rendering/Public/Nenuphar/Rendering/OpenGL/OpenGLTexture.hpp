@@ -3,20 +3,10 @@
 #include "Nenuphar/Common/Common.hpp"
 #include "Nenuphar/Core/Resource/Resource.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
+#include "Nenuphar/Rendering/Texture.hpp"
 
 namespace Nenuphar
 {
-
-	template<OpenGLTextureTarget target>
-	class OpenGLTexture;
-
-	struct DataImage
-	{
-		Word8* Data;
-        Int Format;
-		Int Width;
-		Int Height;
-	};
 
     template<OpenGLTextureTarget target>
     class OpenGLTexture
@@ -33,16 +23,33 @@ namespace Nenuphar
         void Bind() const;
         void Unbind() const;
 
-		explicit operator UInt() { return texture; }
+		explicit operator TextureID() { return texture; }
 
 		static OpenGLTexture<target> LoadFromImage(const Path& path, const std::function<void(const DataImage&, Parameter)>&);
 
         OpenGLTexture();
 
     private:
-        UInt texture{};
+        TextureID texture{};
     };
 
+    /**
+     *
+     */
+    using OpenGLTexture2D = OpenGLTexture<OpenGLTextureTarget::Texture2D>;
+
+    /**
+     *
+     */
+    class OpenGLRegistry
+    {
+    private:
+        std::unordered_map<TextureID, OpenGLTexture2D> m_registry;
+    };
+
+    /**
+     *
+     */
     template<OpenGLTextureTarget target>
     OpenGLTexture<target>::OpenGLTexture()
     {
@@ -110,6 +117,5 @@ namespace Nenuphar
 		return texture;
 	}
 
-	using OpenGLTexture2D = OpenGLTexture<OpenGLTextureTarget::Texture2D>;
 
 }
