@@ -3,13 +3,14 @@
 namespace Nenuphar
 {
 
+    Entity EntityRegistry::LastEntity = 0;
+    Entity EntityRegistry::LastArchetype = 0;
+
     Entity EntityRegistry::Create()
     {
-        Entity entity = m_entities.size();
+        Entity entity = LastEntity++;
         m_entities.push_back(entity);
-
-        m_entityArchetypes[entity] = 0;
-
+        m_entityArchetypes[entity] = { 0, { } };
         return entity;
     }
 
@@ -21,6 +22,12 @@ namespace Nenuphar
             m_entities.erase(entityIterator);
             m_entityArchetypes.erase(entity);
         }
+    }
+
+    EntityRegistry::EntityRegistry()
+    {
+        auto a = Archetype({ });
+        m_archetypes.insert(a);
     }
 
 

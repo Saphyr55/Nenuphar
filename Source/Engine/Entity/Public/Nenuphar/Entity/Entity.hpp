@@ -10,7 +10,7 @@
 #include "Nenuphar/Core/Core.hpp"
 
 #include <typeindex>
-#include <algorithm>
+#include <any>
 #include <unordered_set>
 
 namespace Nenuphar
@@ -35,47 +35,33 @@ namespace Nenuphar
     /**
      *
      */
-    using ArchetypeIndices = std::vector<ComponentIndex>;
+    using ComponentIndices = std::unordered_set<ComponentIndex>;
 
-    /**
-     *
-     */
     using ArchetypeID = std::size_t;
 
     /**
      *
      */
-    struct ArchetypeRecord
+    struct Components
     {
-        std::size_t Column;
+        std::unordered_map<ComponentIndex, std::any> Elements;
     };
-
-    /**
-     *
-     */
-    using ArchetypeMap = std::unordered_map<ArchetypeID, ArchetypeRecord>;
-
-    /**
-     *
-     */
-    using Column = std::vector<void*>;
 
     /**
      *
      */
     struct Archetype
     {
-        ArchetypeIndices Indices;
-        ArchetypeID ID;
-        std::vector<Column> Components;
+        ComponentIndices Indices;
     };
 
+    /**
+     *
+     */
     struct Record
     {
-        Record();
-
         Archetype& Archetype;
-        std::size_t Row;
+        Components Components;
     };
 
     /**
@@ -84,6 +70,7 @@ namespace Nenuphar
     class EntityRegistry
     {
     public:
+
         /**
          *
          * @return
@@ -109,6 +96,15 @@ namespace Nenuphar
          *
          * @tparam C
          * @param entity
+         * @param component
+         */
+        template<typename C>
+        void RemoveComponent(Entity entity, C&& component);
+
+        /**
+         *
+         * @tparam C
+         * @param entity
          * @return
          */
         template<typename C>
@@ -124,50 +120,84 @@ namespace Nenuphar
         C& GetComponent(Entity entity);
 
     public:
-        EntityRegistry() = default;
+        EntityRegistry();
         ~EntityRegistry() = default;
 
     private:
-        std::unordered_map<ComponentIndex, ArchetypeMap> m_componentsIndex;
-        std::unordered_map<Entity, Record> m_entityArchetypes;
+        static Entity LastEntity;
+        static ArchetypeID LastArchetype;
+
         std::vector<Entity> m_entities;
+        std::unordered_set<Archetype> m_archetypes;
+        std::unordered_map<ComponentIndex, Archetype> m_componentsIndex;
+        std::unordered_map<Entity, Record> m_entityArchetypes;
     };
 
+    template<typename C>
+    void EntityRegistry::RemoveComponent(Entity entity, C&& component)
+    {
+        ComponentIndex componentIndex = GetComponentIndex<C>();
+        Record& record = m_entityArchetypes[entity];
+        Components& components = record.Components;
+
+        Archetype& oldArchetype = m_archetypes[record.ArchetypeID];
+
+        ComponentIndices componentsIndices = oldArchetype.Indices;
+        componentsIndices.erase(componentIndex);
+
+        Archetype newArchetype(m_archetypes.size(), componentsIndices);
+
+        ArchetypeID newArchetypeID = ++LastArchetype;
+
+        m_archetypes[newArchetypeID] = newArchetype;
+        m_componentsIndex[componentIndex] = newArchetypeID;
+        record.ArchetypeID = newArchetypeID;
+
+        components.Elements[componentIndex] = std::forward<C>(component);
+    }
 
     template<typename C>
     void EntityRegistry::AddComponent(Entity entity, C&& component)
     {
+        ComponentIndex componentIndex = GetComponentIndex<C>();
+        Record& record = m_entityArchetypes[entity];
+        Components& components = record.Components;
 
+        Archetype& oldArchetype = m_archetypes[record.ArchetypeID];
+
+        ComponentIndices componentsIndices = oldArchetype.Indices;
+        componentsIndices.insert(componentIndex);
+
+        Archetype newArchetype(m_archetypes.size(), componentsIndices);
+
+        ArchetypeID newArchetypeID = ++LastArchetype;
+
+        m_archetypes[newArchetypeID] = newArchetype;
+        m_componentsIndex[componentIndex] = newArchetypeID;
+        record.ArchetypeID = newArchetypeID;
+
+        components.Elements[componentIndex] = std::forward<C>(component);
     }
 
     template<typename C>
     bool EntityRegistry::HasComponent(Entity entity)
     {
         ComponentIndex componentIndex = GetComponentIndex<C>();
-        Archetype& archetype = m_entityArchetypes[entity].Archetype;
-        ArchetypeMap& archetype_set = m_componentsIndex[componentIndex];
-        return archetype_set.count(archetype.ID) != 0;
+        Record& record = m_entityArchetypes[entity];
+        Archetype& archetype = record.Archetype;
+        return archetype.Indices.contains(componentIndex);
     }
 
     template<typename C>
     C& EntityRegistry::GetComponent(Entity entity)
     {
-
         ComponentIndex componentIndex = GetComponentIndex<C>();
-        Record& record = m_entityArchetypes[entity];
-        Archetype& archetype = record.Archetype;
-
-        // First check if archetype has component
-        ArchetypeMap archetypes = m_componentsIndex[componentIndex];
-
-        if (archetypes.count(archetype.ID) == 0)
+        std::any& any = m_entityArchetypes[entity].Components.Elements[componentIndex];
+        if (!any.has_value())
         {
-            return nullptr;
+            throw std::exception();
         }
-
-        ArchetypeRecord& a_record = archetypes[archetype.ID];
-        VoidPtr component = archetype.Components[a_record.Column][record.Row];
-        return *dynamic_cast<C>(component);
+        return std::any_cast<C&>(any);
     }
 
 
