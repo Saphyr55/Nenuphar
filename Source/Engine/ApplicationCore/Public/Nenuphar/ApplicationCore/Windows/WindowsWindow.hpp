@@ -10,38 +10,40 @@
 namespace Nenuphar
 {
 
-    class WindowsWindow final : public WindowBase
+    class WindowsWindow : public WindowBase
     {
         friend WindowsApplication;
     public:
 
-        Void PoolEvent() const override;
-
         WindowID GetID() const override;
 
-        const WindowEventHandler& GetWindowEventHandler() const override;
+        const WindowDefinition& GetWindowDefinition() const override;
 
-        Bool IsWindowMaximized() const override;
+        const WindowSignals& GetWindowSignals() const override;
 
-        Bool IsWindowMinimized() const override;
+        bool IsWindowMaximized() const override;
 
-        Bool IsVisible() const override;
+        bool IsWindowMinimized() const override;
 
-        Void* GetOSWindowHandle() const override;
+        bool IsVisible() const override;
 
-        Void Hide() override;
+        void* GetOSWindowHandle() const override;
 
-        Void Show() override;
+        void PoolEvent() const override;
 
-        Void Restore() override;
+        void Hide() override;
 
-        Void Maximize() override;
+        void Show() override;
 
-        Void Destroy() override;
+        void Restore() override;
 
-        Void ReshapeWindow(Int width, Int height) override;
+        void Maximize() override;
 
-        Void SetTitle(StringView title) override;
+        void Destroy() override;
+
+        void ReshapeWindow(Int width, Int height) override;
+
+        void SetTitle(StringView title) override;
 
         WindowsWindow(WindowsApplication& inApplication, WindowDefinition inDefinition);
 
@@ -52,12 +54,12 @@ namespace Nenuphar
         Int ProcessEvent(MSG msg);
 
     private:
+        WindowSignals m_windowSignals;
         EventBus eventBus;
-        WindowDefinition definition;
+        WindowDefinition m_definition;
         WindowsApplication& windowsApplication;
         HWND hwnd;
         WindowID ID;
-        WindowEventHandler windowEventHandler;
         static WindowID LastID;
     };
 

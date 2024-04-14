@@ -16,11 +16,9 @@ namespace Nenuphar
             WindowDefinition definition, 
             PlatformApplication& app);
 
-        virtual const WindowEventHandler& GetWindowEventHandler() const override = 0;
+        virtual const WindowSignals& GetWindowSignals() const override = 0;
 
         virtual WindowID GetID() const override = 0;
-
-        virtual Void PoolEvent() const override = 0;
 
         virtual Bool IsWindowMaximized() const override = 0;
 
@@ -28,21 +26,23 @@ namespace Nenuphar
 
         virtual Bool IsVisible() const override = 0;
 
-        virtual Void* GetOSWindowHandle() const override = 0;
+        virtual VoidPtr GetOSWindowHandle() const override = 0;
 
-        virtual Void Hide() override = 0;
+        virtual void PoolEvent() const override = 0;
 
-        virtual Void Show() override = 0;
+        virtual void Hide() override = 0;
 
-        virtual Void Restore() override = 0;
+        virtual void Show() override = 0;
 
-        virtual Void Maximize() override = 0;
+        virtual void Restore() override = 0;
 
-        virtual Void Destroy() override = 0;
+        virtual void Maximize() override = 0;
 
-        virtual Void ReshapeWindow(Int width, Int height) override = 0;
+        virtual void Destroy() override = 0;
 
-        virtual Void SetTitle(StringView title) override = 0;
+        virtual void ReshapeWindow(Int width, Int height) override = 0;
+
+        virtual void SetTitle(StringView title) override = 0;
 
         ~WindowBase() override = default;
     };

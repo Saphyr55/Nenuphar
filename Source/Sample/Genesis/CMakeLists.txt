@@ -13,8 +13,7 @@ set(DEPS
                 Engine.ApplicationCore
                 Engine.EventSystem
                 Engine.InputSystem
-                Engine.Graphics
-                Engine.Assets
+                Engine.Rendering
                 glad
     )
 

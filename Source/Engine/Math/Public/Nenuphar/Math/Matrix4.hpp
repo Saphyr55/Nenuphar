@@ -11,7 +11,7 @@ using namespace Nenuphar;
 template<Real R>
 struct Matrix4
 {
-	using Mat = Matrix4;
+	using Mat = Matrix4<R>;
 	using Vec = Vector4<R>;
 
 	Mat operator*(Mat m);
@@ -19,6 +19,7 @@ struct Matrix4
 	Vec& operator[](std::size_t i);
 	Vec GetCol(UInt index) const;
 
+    Matrix4() = default;
 	Matrix4(R r);
 	Matrix4(
 		R m11, R m21, R m31, R m41,

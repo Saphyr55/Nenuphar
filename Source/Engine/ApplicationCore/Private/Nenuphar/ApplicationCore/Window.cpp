@@ -4,11 +4,6 @@
 namespace Nenuphar
 {
 
-    const WindowEventHandler& Window::GetWindowEventHandler() const
-    {
-        return m_base->GetWindowEventHandler();
-    }
-
     WindowID Window::GetID() const
     {
         return m_base->GetID();
@@ -89,5 +84,15 @@ namespace Nenuphar
     Void Window::SetTitle(StringView title)
     {
         m_base->SetTitle(title);
+    }
+
+    const WindowSignals& Window::GetWindowSignals() const
+    {
+        return m_base->GetWindowSignals();
+    }
+
+    const WindowDefinition& Window::GetWindowDefinition() const
+    {
+        return m_base->GetWindowDefinition();
     }
 }

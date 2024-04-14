@@ -6,7 +6,7 @@
 namespace Nenuphar
 {
 
-    void Engine::Initialize(int argc, char** argv)
+    void Engine::Initialize(int argc, const char** argv)
     {
     }
 

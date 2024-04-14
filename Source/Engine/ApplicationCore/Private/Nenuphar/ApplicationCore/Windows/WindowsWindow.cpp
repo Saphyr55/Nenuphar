@@ -2,10 +2,11 @@
 
 #include <fmt/format.h>
 
+#include "Nenuphar/Core/Core.hpp"
 #include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
 #include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
-#include "Nenuphar/Core/Core.hpp"
 #include "Nenuphar/Common/Instanciate.hpp"
+#include "Nenuphar/InputSystem/InputSystem.hpp"
 
 namespace Nenuphar
 {
@@ -27,27 +28,22 @@ namespace Nenuphar
         return ID;
     }
 
-    const WindowEventHandler& WindowsWindow::GetWindowEventHandler() const
-    {
-        return windowEventHandler;
-    }
-
     HWND WindowsWindow::Initialize()
     {
         hwnd = CreateWindowEx
         (
-            WS_EX_OVERLAPPEDWINDOW,
-            WindowsApplication::ApplicationClassName,
-            definition.Title.c_str(),
-            WS_OVERLAPPEDWINDOW,
-            CW_USEDEFAULT,
-            CW_USEDEFAULT,
-            static_cast<Int>(definition.Width),
-            static_cast<Int>(definition.Height),
-            nullptr,
-            nullptr,
-            windowsApplication.GetHInstance(),
-            nullptr
+                WS_EX_OVERLAPPEDWINDOW,
+                WindowsApplication::ApplicationClassName,
+                m_definition.Title.c_str(),
+                WS_OVERLAPPEDWINDOW,
+                CW_USEDEFAULT,
+                CW_USEDEFAULT,
+                static_cast<Int>(m_definition.Width),
+                static_cast<Int>(m_definition.Height),
+                nullptr,
+                nullptr,
+                windowsApplication.GetHInstance(),
+                nullptr
         );
 
         if (!hwnd)
@@ -118,34 +114,45 @@ namespace Nenuphar
 
     WindowsWindow::WindowsWindow(WindowsApplication& inApplication,
                                  WindowDefinition inDefinition)
-        : definition(inDefinition)
+        : m_definition(inDefinition)
         , windowsApplication(inApplication)
         , hwnd(Initialize())
         , ID(++LastID)
-        , windowEventHandler(ID, eventBus)
     {
 
         if (hwnd)
         {
             WindowsApplication::WindowsWindowRegistry.emplace(hwnd, this);
-            NP_INFO(WindowsWindow,  "Windows window was created sucessfully.");
+            NP_INFO(WindowsWindow,  "Windows window was created successfully.");
             NP_DEBUG(WindowsWindow, "Windows window configuration : ");
             NP_DEBUG(WindowsWindow, "      ID = {}", ID);
             NP_DEBUG(WindowsWindow, "      HWND = {}", fmt::ptr(hwnd));
-            NP_DEBUG(WindowsWindow, "      Width = {}", definition.Width);
-            NP_DEBUG(WindowsWindow, "      Height = {}", definition.Height);
-            NP_DEBUG(WindowsWindow, "      Title = {}", definition.Title);
+            NP_DEBUG(WindowsWindow, "      Width = {}", m_definition.Width);
+            NP_DEBUG(WindowsWindow, "      Height = {}", m_definition.Height);
+            NP_DEBUG(WindowsWindow, "      Title = {}", m_definition.Title);
         }
         else
         {
             throw std::runtime_error("Can't create windows window.");
         }
 
+        m_windowSignals.OnButtonDown().ConnectHandler(
+                [](auto& evt)
+                {
+                    InputSystem::DownButtons.insert(evt.Button);
+                });
+
+        m_windowSignals.OnButtonRelease().ConnectHandler(
+                [](auto& evt)
+                {
+                    InputSystem::DownButtons.erase(evt.Button);
+                });
     }
 
     Int WindowsWindow::ProcessEvent(MSG msg)
     {
-        const UINT message = msg.message;
+
+        auto& message = msg.message;
         auto& wParam = msg.wParam;
         auto& lParam = msg.lParam;
 
@@ -153,12 +160,15 @@ namespace Nenuphar
         {
         case WM_SIZE:
         {
-            windowEventHandler.EmitOnResize({ 0, 0 });
+            auto width =  Float(LOWORD(lParam));
+            auto height =  Float(HIWORD(lParam));
+            m_definition.Width = width;
+            m_definition.Height = height;
+            m_windowSignals.EmitOnResize(ResizeEvent(width, height));
             break;
         }
         case WM_PAINT:
         {
-
             break;
         }
         case WM_SYSKEYDOWN:
@@ -169,52 +179,52 @@ namespace Nenuphar
 
             if ((HIWORD(lParam) & KF_REPEAT) != KF_REPEAT)
             {
-                windowEventHandler.EmitOnKeyPressed(e);
+                m_windowSignals.EmitOnKeyPressed(e);
             }
 
-            windowEventHandler.EmitOnKeyDown(e);
+            m_windowSignals.EmitOnKeyDown(e);
             break;
         }
         case WM_LBUTTONUP:
         {
             constexpr auto button = Input::Button::Left;
             constexpr MouseButtonEvent e(button);
-            windowEventHandler.EmitOnButtonRelease(e);
+            m_windowSignals.EmitOnButtonRelease(e);
             break;
         }
         case WM_MBUTTONUP:
         {
             constexpr auto button = Input::Button::Middle;
             constexpr MouseButtonEvent e(button);
-            windowEventHandler.EmitOnButtonRelease(e);
+            m_windowSignals.EmitOnButtonRelease(e);
             break;
         }
         case WM_RBUTTONUP:
         {
             constexpr auto button = Input::Button::Right;
             constexpr MouseButtonEvent e(button);
-            windowEventHandler.EmitOnButtonRelease(e);
+            m_windowSignals.EmitOnButtonRelease(e);
             break;
         }
         case WM_LBUTTONDOWN:
         {
             constexpr auto button = Input::Button::Left;
             constexpr MouseButtonEvent e(button);
-            windowEventHandler.EmitOnButtonPressed(e);
+            m_windowSignals.EmitOnButtonDown(e);
             break;
         }
         case WM_MBUTTONDOWN:
         {
             constexpr auto button = Input::Button::Middle;
             constexpr MouseButtonEvent e(button);
-            windowEventHandler.EmitOnButtonPressed(e);
+            m_windowSignals.EmitOnButtonDown(e);
             break;
         }
         case WM_RBUTTONDOWN:
         {
             constexpr auto button = Input::Button::Right;
             constexpr MouseButtonEvent e(button);
-            windowEventHandler.EmitOnButtonPressed(e);
+            m_windowSignals.EmitOnButtonDown(e);
             break;
         }
         case WM_XBUTTONDOWN:
@@ -227,11 +237,11 @@ namespace Nenuphar
             const MouseButtonEvent e(button);
             if (message == WM_XBUTTONDOWN)
             {
-                windowEventHandler.EmitOnButtonPressed(e);
+                m_windowSignals.EmitOnButtonDown(e);
             }
             else
             {
-                windowEventHandler.EmitOnButtonRelease(e);
+                m_windowSignals.EmitOnButtonRelease(e);
             }
             break;
         }
@@ -239,16 +249,22 @@ namespace Nenuphar
         case WM_KEYUP:
         {
             const KeyEvent e(static_cast<Input::Key>(wParam));
-            windowEventHandler.EmitOnKeyRelease(e);
+            m_windowSignals.EmitOnKeyRelease(e);
             break;
         }
         case WM_NCMOUSEMOVE:
         case WM_MOUSEMOVE:
         {
+            static Float lastMouseX = 0;
+            static Float lastMouseY = 0;
             const Float x = GET_X_LPARAM(lParam);
             const Float y = GET_Y_LPARAM(lParam);
-            const MouseMoveEvent e(x, y, x, y);
-            windowEventHandler.EmitOnMouseMove(e);
+            const Float relX = x - lastMouseX;
+            const Float relY = y - lastMouseY;
+            const MouseMoveEvent e(relX, relY, x, y);
+            lastMouseX = x;
+            lastMouseY = y;
+            m_windowSignals.EmitOnMouseMove(e);
             break;
         }
         case WM_MOUSEWHEEL:
@@ -257,13 +273,14 @@ namespace Nenuphar
             const Float x = GET_X_LPARAM(lParam);
             const Float y = GET_Y_LPARAM(lParam);
             const MouseWheelEvent e(delta, y, x);
-            windowEventHandler.EmitOnMouseWheel(e);
+            m_windowSignals.EmitOnMouseWheel(e);
             break;
         }
         case WM_CLOSE:
         {
+            CloseEvent closeEvent;
             NP_INFO(WindowsWindow, "The window ID={}, HWND={} closed.", ID, fmt::ptr(hwnd));
-            windowEventHandler.EmitOnClose({});
+            m_windowSignals.EmitOnClose(closeEvent);
             break;
         }
         case WM_DESTROY:
@@ -277,4 +294,15 @@ namespace Nenuphar
 
         return DefWindowProc(hwnd, message, wParam, lParam);
     }
+
+    const WindowSignals& WindowsWindow::GetWindowSignals() const
+    {
+        return m_windowSignals;
+    }
+
+    const WindowDefinition& WindowsWindow::GetWindowDefinition() const
+    {
+        return m_definition;
+    }
+
 }

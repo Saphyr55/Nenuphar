@@ -16,6 +16,7 @@ struct Vector3 final
 	R y = 0;
 	R z = 0;
 
+    Vector3() = default;
 	Vector3(Vector2<R> vec, R z);
 	Vector3(R x, R y, R z);
 	explicit Vector3(R r);

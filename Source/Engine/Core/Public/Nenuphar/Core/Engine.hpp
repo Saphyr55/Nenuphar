@@ -11,7 +11,7 @@ namespace Nenuphar
     class Engine final
     {
     public:
-        void Initialize(int argc, char** argv);
+        void Initialize(int argc, const char** argv);
 
         static int Start(const std::function<void()>& runnable);
 
