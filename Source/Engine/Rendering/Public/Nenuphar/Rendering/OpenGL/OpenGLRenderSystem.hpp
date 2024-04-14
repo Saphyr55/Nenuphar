@@ -5,12 +5,13 @@
 namespace Nenuphar
 {
 
-    struct OpenGLRenderSystem : RenderSystem
+
+    class OpenGLRenderSystem : public RenderSystem
     {
+    public:
+        void Enable() const override;
 
-        void Enable() override;
-
-        void Clear() override;
+        void Clear(const Vector4f& color) const override;
 
     };
 

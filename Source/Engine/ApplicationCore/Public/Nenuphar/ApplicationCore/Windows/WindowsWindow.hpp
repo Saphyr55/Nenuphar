@@ -55,7 +55,6 @@ namespace Nenuphar
 
     private:
         WindowSignals m_windowSignals;
-        EventBus eventBus;
         WindowDefinition m_definition;
         WindowsApplication& windowsApplication;
         HWND hwnd;

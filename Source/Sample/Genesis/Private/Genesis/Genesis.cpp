@@ -1,6 +1,7 @@
 #include "Genesis/Genesis.hpp"
 #include "Nenuphar/InputSystem/InputSystem.hpp"
 #include "Nenuphar/Rendering/OpenGL/Buffer.hpp"
+#include "Nenuphar/Rendering/RenderSystem.hpp"
 
 #include <glad/glad.h>
 
@@ -144,16 +145,15 @@ void Env::Render(Env& env)
     Float width = env.MainWindow.GetWindowDefinition().Width;
     Float height = env.MainWindow.GetWindowDefinition().Height;
 
-    glClearColor(0.2, 0.2, 0.4, 1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    RenderSystem::Instance().Clear(Vector4f(0.2, 0.2, 0.4, 1));
 
     UpdatePVM(*env.MainRenderer->Registry, env.MainCamera, env.MainWindow);
     RenderCube(*env.MainRenderer->VAO, env.MainRenderer->WallTexture);
 
     glViewport(0, 0, (Int) width, (Int) height);
 
-    env.MainGraphicContext->SwapBuffers();
     env.MainWindow.PoolEvent();
+    env.MainGraphicContext->SwapBuffers();
 }
 
 Env& Env::New(Window& window)
@@ -171,7 +171,8 @@ Env& Env::New(Window& window)
 
 Ptr<Renderer> Renderer::New()
 {
-    glEnable(GL_DEPTH_TEST);
+    RenderSystem::Instance().Enable();
+
     auto vao = MakeUnique<OpenGLVertexArray>();
     auto vbo = MakeUnique<OpenGLVertexBuffer>(Cube);
 
@@ -204,6 +205,5 @@ Ptr<Renderer> Renderer::New()
         std::move(program),
         std::move(registry)
     );
-
 
 }
