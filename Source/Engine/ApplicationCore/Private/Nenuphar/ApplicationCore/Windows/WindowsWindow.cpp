@@ -1,11 +1,7 @@
-#include <utility>
-
 #include <fmt/format.h>
 
 #include "Nenuphar/Core/Core.hpp"
 #include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
-#include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
-#include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/InputSystem/InputSystem.hpp"
 
 namespace Nenuphar

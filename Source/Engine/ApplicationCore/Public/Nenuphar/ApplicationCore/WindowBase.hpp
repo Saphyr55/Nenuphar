@@ -6,15 +6,12 @@
 namespace Nenuphar
 {
 
-    class EventBus;
     class PlatformApplication;
 
     class WindowBase : public WindowInterface
     {
     public:
-        static SharedRef<WindowBase> Create(
-            WindowDefinition definition, 
-            PlatformApplication& app);
+        static SharedRef<WindowBase> Create(WindowDefinition definition,PlatformApplication& app);
 
         virtual const WindowSignals& GetWindowSignals() const override = 0;
 
