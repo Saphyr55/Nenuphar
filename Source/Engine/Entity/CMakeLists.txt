@@ -34,5 +34,7 @@ if(NENUPHAR_TEST_ENABLE)
     target_include_directories(${TARGET_TEST} PRIVATE Private)
     target_link_libraries(${TARGET_TEST} ${TARGET} Catch2::Catch2WithMain)
     set_target_properties(${TARGET_TEST} PROPERTIES FOLDER ${GROUP})
+
+    add_test(NAME ${TARGET}.Test COMMAND $<TARGET_FILE:${TARGET}.Test>)
 endif()
 

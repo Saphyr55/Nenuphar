@@ -36,5 +36,7 @@ if(NENUPHAR_TEST_ENABLE)
             Engine.Core 
             Catch2::Catch2WithMain)
     set_target_properties(${TARGET_TEST} PROPERTIES FOLDER ${GROUP})
+
+    add_test(NAME ${TARGET}.Test COMMAND $<TARGET_FILE:${TARGET}.Test>)
 endif()
 
