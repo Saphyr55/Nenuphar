@@ -36,7 +36,7 @@ struct Vector4
 	 * Compute the euclidean norm.
 	 *
 	 * \brief
-	 * \param vec four dimentional vector.
+	 * \param vec four dimensional vector.
 	 * \return
 	 */
 	static Float Norm(Vector4 vec);

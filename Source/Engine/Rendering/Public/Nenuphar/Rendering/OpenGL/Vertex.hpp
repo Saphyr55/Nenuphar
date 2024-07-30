@@ -40,7 +40,7 @@ namespace Nenuphar
         { 1, 2, GL_FLOAT, sizeof(ShapeVertex), (VoidPtr) (3 * sizeof(Float)) },
     };
 
-    const std::vector<Vertex> Cube =
+    const std::vector<Vertex> CubeVertices =
     {
             {{-0.5f, -0.5f, -0.5f},  {0.0f, 0.0f}},
             {{ 0.5f, -0.5f, -0.5f},  {1.0f, 0.0f}},

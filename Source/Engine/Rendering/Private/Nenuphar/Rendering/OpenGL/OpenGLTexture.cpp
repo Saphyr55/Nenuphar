@@ -1,4 +1,4 @@
-#include "Nenuphar/Rendering/OpenGL/Texture.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION

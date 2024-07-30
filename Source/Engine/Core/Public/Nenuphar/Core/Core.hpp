@@ -6,3 +6,4 @@
 
 #include "Nenuphar/Core/Logger/Logger.hpp"
 #include "Nenuphar/Core/Engine.hpp"
+#include "Nenuphar/Core/Resource/Resource.hpp"

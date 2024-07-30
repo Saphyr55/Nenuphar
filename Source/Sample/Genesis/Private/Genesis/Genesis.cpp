@@ -1,6 +1,6 @@
 #include "Genesis/Genesis.hpp"
 #include "Nenuphar/InputSystem/InputSystem.hpp"
-#include "Nenuphar/Rendering/OpenGL/Buffer.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLBuffer.hpp"
 #include "Nenuphar/Rendering/RenderSystem.hpp"
 
 #include <glad/glad.h>
@@ -17,7 +17,7 @@ Env::Env(UInt16 id, Ptr<GraphicContext> graphicContext, Window& window)
         : Id(id)
         , MainGraphicContext(std::move(graphicContext))
         , MainWindow(window)
-        , MainRenderer(Renderer::New())
+        , MainRenderData(RenderData::New())
         , MainCamera((Float) Radians(45.0f),
                      (Float) Radians(45.0f),
                      3.0f,
@@ -126,14 +126,13 @@ void Env::Init(Env& env)
             });
 
     window.Show();
-
 }
 
-void RenderCube(OpenGLVertexArray& vao, const OpenGLTexture2D& wall)
+void RenderCube(OpenGLVertexArray& vao, const TextureID& wall)
 {
     // We bind the texture for the Cube.
-    ActiveTexture(0);
-    wall.Bind();
+    // ActiveTexture(0);
+    // wall.Bind();
 
     // We draw the Cube.
     vao.Bind();
@@ -147,8 +146,8 @@ void Env::Render(Env& env)
 
     RenderSystem::Instance().Clear(Vector4f(0.2, 0.2, 0.4, 1));
 
-    UpdatePVM(*env.MainRenderer->Registry, env.MainCamera, env.MainWindow);
-    RenderCube(*env.MainRenderer->VAO, env.MainRenderer->WallTexture);
+    UpdatePVM(*env.MainRenderData->Registry, env.MainCamera, env.MainWindow);
+    RenderCube(*env.MainRenderData->VAO, env.MainRenderData->WallTexture);
 
     glViewport(0, 0, (Int) width, (Int) height);
 
@@ -169,21 +168,17 @@ Env& Env::New(Window& window)
     return *EnvRegistry[index];
 }
 
-Ptr<Renderer> Renderer::New()
+Ptr<RenderData> RenderData::New()
 {
+
     RenderSystem::Instance().Enable();
 
+    auto wall = RenderSystem::Instance().MakeTexture2D(ResourceManager::FromAssets("/Textures/Wall.jpg"));
+
     auto vao = MakeUnique<OpenGLVertexArray>();
-    auto vbo = MakeUnique<OpenGLVertexBuffer>(Cube);
+    auto vbo = MakeUnique<OpenGLVertexBuffer>(CubeVertices);
 
-    LinkBuffer(*vbo, {
-            { 0, 3, GL_FLOAT, sizeof(Vertex), nullptr },
-            { 1, 2, GL_FLOAT, sizeof(Vertex), (VoidPtr)(3 * sizeof(Float)) },
-    });
-
-    OpenGLTexture2D wall = OpenGLTexture2D::LoadFromImage(
-            ResourceManager::FromAssets("/Textures/Wall.jpg"),
-            &DefaultParameterTexture);
+    LinkBuffer(*vbo, LayoutVertex);
 
     Path vertexFilepath = ResourceManager::FromAssets("/Shaders/MainVertex.glsl");
     Path fragmentFilepath = ResourceManager::FromAssets("/Shaders/MainFragment.glsl");
@@ -192,12 +187,12 @@ Ptr<Renderer> Renderer::New()
             ResourceManager::ReadStringContent(fragmentFilepath));
 
     auto registry = MakeUnique<UniformRegistry>(*program);
-    registry->Register("tex1", UInt32(wall))
+    registry->Register("tex1", wall)
         .Register("proj", Matrix4f(1))
         .Register("view", Matrix4f(1))
         .Register("model", Matrix4f(1));
 
-    return MakeUnique<Renderer>
+    return MakeUnique<RenderData>
     (
         std::move(vao),
         std::move(vbo),
