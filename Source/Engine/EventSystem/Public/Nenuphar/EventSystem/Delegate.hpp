@@ -6,7 +6,8 @@ namespace Nenuphar
 {
 
     using DelegateTag = std::size_t;
-    static std::atomic<DelegateTag> LastTag{1};
+
+    thread_local static DelegateTag LastTag = 0;
 
     template<typename ...Args>
     class Delegate
@@ -45,7 +46,7 @@ namespace Nenuphar
     template<typename... Args>
     Delegate<Args...>::Delegate(const Handler<Args...>& handler)
             : m_handler(handler)
-            , m_tag(LastTag.fetch_add(1))
+            , m_tag(LastTag++)
     {
     }
 
@@ -64,13 +65,13 @@ namespace Nenuphar
     template<typename ...Args>
     Delegate<Args...>::Delegate(Handler<Args...>&& handler)
             : m_handler(std::forward<Handler<Args...>>(handler))
-            , m_tag(LastTag.fetch_add(1))
+            , m_tag(LastTag++)
     {
     }
 
     template<typename... Args>
     Delegate<Args...>::Delegate()
-            : m_tag(LastTag.fetch_add(1))
+            : m_tag(LastTag++)
     {
 
     }

@@ -8,13 +8,8 @@ set(TARGET          Engine.Entity)
 set(GROUP           Engine)
 set(DEPS            fmt::fmt
                     stb
-                    glad
-                    Engine.Common 
-                    Engine.Math
-                    Engine.Core 
-                    Engine.ApplicationCore
-                    Engine.EventSystem
-                    Engine.InputSystem
+                    Engine.Common
+                    Engine.Core
                     )
 
 add_library_module(${TARGET} STATIC ${LOCATION})

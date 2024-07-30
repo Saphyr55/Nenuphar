@@ -1,10 +1,19 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "Nenuphar/Entity/Entity.hpp"
+#include "Nenuphar/Entity/EntityRegistry.hpp"
 
 using namespace Nenuphar;
 
+struct AComponent 
+{
+    int x;
+};
+
+struct BComponent 
+{
+    int x;
+};
 
 TEST_CASE("Check creating entity.", "[Registry::Create]")
 {
@@ -15,29 +24,18 @@ TEST_CASE("Check creating entity.", "[Registry::Create]")
 
 TEST_CASE("Add a component to an entity", "[Registry::AddComponent]")
 {
-    struct AComponent { };
-
     EntityRegistry registry;
     Entity entity = registry.Create();
 
     REQUIRE_FALSE(registry.HasComponent<AComponent>(entity));
 
-    REQUIRE_NOTHROW(registry.AddComponent<AComponent>(entity, AComponent()));
+    REQUIRE_NOTHROW(registry.AddComponent<AComponent>(entity, AComponent(0)));
 
     REQUIRE(registry.HasComponent<AComponent>(entity));
 }
 
-TEST_CASE("Get and modify a component to an entity", "[Registry::GetComponent]")
+TEST_CASE("Get and modify multiple component to an entity", "[Registry::GetComponent]")
 {
-    struct AComponent
-    {
-        int x = 0;
-    };
-
-    struct BComponent
-    {
-        int x = 0;
-    };
 
     EntityRegistry registry;
     Entity entity = registry.Create();
@@ -48,12 +46,17 @@ TEST_CASE("Get and modify a component to an entity", "[Registry::GetComponent]")
     REQUIRE(component.x == 5);
 
     component.x = 8;
-    auto& component2 = registry.GetComponent<AComponent>(entity);
-    REQUIRE(component2.x == 8);
+    component = registry.GetComponent<AComponent>(entity);
+    REQUIRE(component.x == 8);
 
-    REQUIRE_NOTHROW(registry.AddComponent<BComponent>(entity, BComponent(5)));
+    REQUIRE_NOTHROW(registry.AddComponent<BComponent>(entity, BComponent(2)));
 
     auto& componentB1 = registry.GetComponent<BComponent>(entity);
-    REQUIRE(componentB1.x == 5);
+    REQUIRE(componentB1.x == 2);
 
+    REQUIRE(registry.HasComponent<AComponent>(entity));
+
+    component = registry.GetComponent<AComponent>(entity);
+    REQUIRE(component.x == 8);
 }
+

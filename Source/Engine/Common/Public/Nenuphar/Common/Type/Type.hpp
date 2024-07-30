@@ -47,6 +47,7 @@ namespace Nenuphar
     using Word16 = UInt16;
     using Word32 = UInt32;
     using Word64 = UInt64;
+    using Word = std::size_t;
 
     using String = std::string;
     using StringView = std::string_view;
@@ -73,5 +74,7 @@ namespace Nenuphar
 
     template<class... Ts>
     OverLoaded(Ts...) -> OverLoaded<Ts...>;
+
+    using Buffer = Word8[];
 
 }
