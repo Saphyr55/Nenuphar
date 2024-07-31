@@ -8,8 +8,6 @@ set(TARGET          Engine.EventSystem)
 set(GROUP           Engine)
 set(DEPS            Engine.Common
                     Engine.Core
-                    Engine.ApplicationCore
-                    Engine.InputSystem
     )
 
 add_library_module(${TARGET} STATIC ${LOCATION})

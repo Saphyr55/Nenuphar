@@ -6,7 +6,6 @@
 #include "Nenuphar/Core/Windows.hpp"
 #include "Nenuphar/EventSystem/EventSystem.hpp"
 
-
 namespace Nenuphar
 {
 

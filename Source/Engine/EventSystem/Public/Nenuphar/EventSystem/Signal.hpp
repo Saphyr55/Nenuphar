@@ -4,9 +4,9 @@
 #include <any>
 #include <tuple>
 
+#include "Nenuphar/Core/Logger/Logger.hpp"
 #include "Nenuphar/Common/Common.hpp"
 #include "Nenuphar/EventSystem/Delegate.hpp"
-#include "Nenuphar/Core/Logger/Logger.hpp"
 
 namespace Nenuphar
 {

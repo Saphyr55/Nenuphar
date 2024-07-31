@@ -30,7 +30,6 @@ namespace Nenuphar
          * Singleton
          */
         static SharedRef<PlatformApplication> Application;
-
     };
 
 }

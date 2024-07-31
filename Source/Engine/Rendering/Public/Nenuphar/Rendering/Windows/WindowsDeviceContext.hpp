@@ -4,7 +4,9 @@
 
 namespace Nenuphar
 {
-    
+
+#ifdef NP_PLATFORM_WINDOWS
+
     class WindowsDeviceContext
     {
     public:
@@ -19,5 +21,8 @@ namespace Nenuphar
         HDC m_hdc;
         HWND m_hwnd;
     };
+
+#endif
+
 
 }

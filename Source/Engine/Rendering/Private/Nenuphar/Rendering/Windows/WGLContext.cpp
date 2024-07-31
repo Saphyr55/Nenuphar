@@ -5,6 +5,8 @@
 namespace Nenuphar
 {
 
+#ifdef NP_PLATFORM_WINDOWS
+
     WGLContext::WGLContext(Ptr<WindowsDeviceContext> deviceContext)
         : m_deviceContext(std::move(deviceContext))
         , m_context(nullptr)
@@ -170,6 +172,8 @@ namespace Nenuphar
     {
         wglSwapLayerBuffers(m_deviceContext->GetHDC(), WGL_SWAP_MAIN_PLANE);
     }
+
+#endif
 
 }
 

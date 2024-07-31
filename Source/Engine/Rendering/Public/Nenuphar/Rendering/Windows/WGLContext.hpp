@@ -7,6 +7,8 @@
 namespace Nenuphar
 {
     
+#ifdef NP_PLATFORM_WINDOWS
+
     class WGLContext : public GraphicContext
     {
     public:
@@ -24,5 +26,7 @@ namespace Nenuphar
         Ptr<WindowsDeviceContext> m_deviceContext;
         HGLRC m_context;
     };
+
+#endif
 
 }

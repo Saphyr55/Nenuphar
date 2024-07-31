@@ -4,6 +4,8 @@
 namespace Nenuphar
 {
 
+#ifdef NP_PLATFORM_WINDOWS
+
     WindowsDeviceContext::WindowsDeviceContext(WindowsWindow& windowsWindow)
         : m_windowsWindow(windowsWindow)
         , m_hdc(nullptr)
@@ -23,6 +25,6 @@ namespace Nenuphar
         ReleaseDC(m_hwnd, m_hdc);
     }
 
-
+#endif
 
 }
