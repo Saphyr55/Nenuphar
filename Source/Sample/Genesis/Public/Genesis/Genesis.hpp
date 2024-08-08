@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Nenuphar/ApplicationCore/WindowInterface.hpp"
+#include "Nenuphar/ApplicationCore/Window.hpp"
 #include "Nenuphar/Core/Engine.hpp"
 #include "Nenuphar/ApplicationCore/WindowDefinition.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
@@ -52,7 +52,7 @@ namespace gn
         Np::EntityRegistry m_registry;
         Np::Entity MainCamera;
         UniquePtr<Np::GraphicContext> MainGraphicContext;
-        SharedRef<Np::WindowInterface> MainWindow;
+        SharedRef<Np::Window> MainWindow;
         SharedRef<RenderData> MainRenderData;
         float CameraVelocity = 0.005f;
     };

@@ -21,7 +21,7 @@ mutable Signal<Type> m_on##Attr;
 
 namespace Nenuphar
 {
-
+    
     struct WindowDefinition
     {
         String Title;

@@ -1,7 +1,6 @@
 #include "Genesis/Genesis.hpp"
 #include "Nenuphar/ApplicationCore/WindowBase.hpp"
 #include "Nenuphar/ApplicationCore/WindowDefinition.hpp"
-#include "Nenuphar/ApplicationCore/WindowInterface.hpp"
 #include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/InputSystem/InputSystem.hpp"
@@ -44,7 +43,7 @@ namespace gn
         m_registry.AddComponent<OrbitCamera>(MainCamera, orbitCameraComponent);
     }
 
-    void UpdatePVM(Np::UniformRegistry& registry, const Np::OrbitCamera& camera, const Np::WindowInterface& window)
+    void UpdatePVM(Np::UniformRegistry& registry, const Np::OrbitCamera& camera, const Np::Window& window)
     {
         Float width = window.GetWindowDefinition().Width;
         Float height = window.GetWindowDefinition().Height;
@@ -132,7 +131,7 @@ namespace gn
         {
             Render();
         });
-
+ 
         MainWindow->Show();
     }
 

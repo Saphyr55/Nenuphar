@@ -1,14 +1,14 @@
 #pragma once
 
 #include "Nenuphar/ApplicationCore/WindowDefinition.hpp"
-#include "Nenuphar/ApplicationCore/WindowInterface.hpp"
+#include "Nenuphar/ApplicationCore/Window.hpp"
 
 namespace Nenuphar
 {
 
     class PlatformApplication;
 
-    class WindowBase : public WindowInterface
+    class WindowBase : public Window
     {
     public:
         static SharedRef<WindowBase> Create(const WindowDefinition& definition);

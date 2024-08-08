@@ -1,6 +1,5 @@
 #include "Nenuphar/Rendering/GraphicContext.hpp"
 #include "Nenuphar/ApplicationCore/Window.hpp"
-#include "Nenuphar/ApplicationCore/WindowInterface.hpp"
 
 #ifdef NP_PLATFORM_WINDOWS
 
@@ -9,7 +8,7 @@
 namespace Nenuphar
 {
 
-    Ptr<GraphicContext> GraphicContext::Create(WindowInterface& window)
+    Ptr<GraphicContext> GraphicContext::Create(Window& window)
     {
         NP_CALL_ONCE( WGLContext::Init(); );
         auto& ww = reinterpret_cast<WindowsWindow&>(window);

@@ -24,7 +24,7 @@ namespace Nenuphar
 
         void Destroy() const override;
 
-        inline ApplicationID Id() const override { return classID; }
+        inline ApplicationId Id() const override { return classID; }
 
         static LRESULT CALLBACK ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam);
 
@@ -33,7 +33,7 @@ namespace Nenuphar
         ~WindowsApplication() override;
 
     private:
-        ApplicationID classID;
+        ApplicationId classID;
         HINSTANCE hinstance{};
         static thread_local WindowsWindowRegistry WindowsWindowRegistry;
     };

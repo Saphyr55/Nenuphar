@@ -1,18 +1,18 @@
 #pragma once
 
-#include "Nenuphar/ApplicationCore/WindowInterface.hpp"
+#include "Nenuphar/ApplicationCore/Window.hpp"
 
 namespace Nenuphar
 {
 
-    using ApplicationID = Word16;
+    using ApplicationId = Word16;
 
     class Application
     {
     public:
         virtual void Destroy() const = 0;
 
-        virtual ApplicationID Id() const = 0;
+        virtual ApplicationId Id() const = 0;
 
         virtual ~Application() = default;
     };

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Nenuphar/ApplicationCore/WindowInterface.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 
 namespace Nenuphar
@@ -12,7 +11,7 @@ namespace Nenuphar
     {
     public:
 
-        static Ptr<GraphicContext> Create(WindowInterface& window);
+        static Ptr<GraphicContext> Create(Window& window);
 
         virtual void Current() const = 0;
 

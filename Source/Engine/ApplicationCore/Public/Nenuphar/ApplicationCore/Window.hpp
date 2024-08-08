@@ -1,58 +1,64 @@
 #pragma once
 
-#include "WindowDefinition.hpp"
-#include "WindowInterface.hpp"
-#include "PlatformApplication.hpp"
+#include "Nenuphar/Common/Common.hpp"
 
 namespace Nenuphar
 {
 
-    class WindowBase;
+    class Application;
+    class WindowDefinition;
+    class WindowEventHandler;
+    class WindowSignals;
 
-    class Window : public WindowInterface
+    using WindowID = UInt16;
+
+
+    enum class WindowMode : Int
+    {
+        Fullscreen,
+
+        WindowedFullscreen,
+
+        Windowed,
+    };
+
+
+    class Window
     {
     public:
 
-        void PoolEvent() const override;
+        virtual const WindowDefinition& GetWindowDefinition() const = 0;
 
-        const WindowDefinition& GetWindowDefinition() const override;
+        virtual const WindowSignals& GetWindowSignals() const = 0;
 
-        const WindowSignals& GetWindowSignals() const override;
+        virtual WindowID GetID() const = 0;
 
-        WindowID GetID() const override;
+        virtual Void PoolEvent() const = 0;
 
-        bool IsWindowMaximized() const override;
+        virtual Bool IsWindowMaximized() const = 0;
 
-        bool IsWindowMinimized() const override;
+        virtual Bool IsWindowMinimized() const = 0;
 
-        bool IsVisible() const override;
+        virtual Bool IsVisible() const = 0;
 
-        void* GetOSWindowHandle() const override;
+        virtual Void* GetOSWindowHandle() const = 0;
 
-        void Hide() override;
+        virtual Void Hide() = 0;
 
-        void Show() override;
+        virtual Void Show() = 0;
 
-        void Restore() override;
+        virtual Void Restore() = 0;
 
-        void Maximize() override;
+        virtual Void Maximize() = 0;
 
-        void Destroy() override;
+        virtual Void Destroy() = 0;
 
-        void ReshapeWindow(int width, int height) override;
+        virtual Void ReshapeWindow(Int width, Int height) = 0;
 
-        void SetTitle(StringView title) override;
+        virtual Void SetTitle(StringView title) = 0;
 
-        inline WindowBase& Base() { return *m_base; }
+        virtual ~Window() = default;
 
-    public:
-        Window(const WindowDefinition& definition);
-
-        Window(StringView title, Int width, Int height);
-
-        ~Window() override = default;
-
-    private:
-        SharedRef<WindowBase> m_base;
     };
+
 }
