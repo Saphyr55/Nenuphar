@@ -2,6 +2,7 @@
 
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
+#include "glad/glad.h"
 
 namespace Nenuphar 
 {
@@ -13,11 +14,6 @@ namespace Nenuphar
         return *renderSystem;
     }
 
-    TextureID OpenGLRenderSystem::MakeTexture2D(Path path) const
-    {
-        return TextureID(OpenGLTexture2D::LoadFromImage(path, &DefaultParameterTexture));
-    }
-
     void OpenGLRenderSystem::Enable() const
     {
         glEnable(GL_DEPTH_TEST);
@@ -27,11 +23,6 @@ namespace Nenuphar
     {
         glClearColor(color.x, color.y, color.z, color.w);
         glClear(OpenGLBufferMask::ColorBuffer | OpenGLBufferMask::DepthBuffer);
-    }
-
-    void OpenGLRenderSystem::BindTexture(TextureID textureId) const
-    {
-        
     }
 
 }

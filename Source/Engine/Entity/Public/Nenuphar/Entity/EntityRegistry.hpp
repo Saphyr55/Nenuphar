@@ -42,7 +42,7 @@ namespace Nenuphar
          * @param component
          */
         template<typename C>
-        void AddComponent(Entity entity, C&& component);
+        void AddComponent(Entity entity, const C& component);
 
         /**
          *
@@ -51,7 +51,7 @@ namespace Nenuphar
          * @param component
          */
         template<typename C>
-        void RemoveComponent(Entity entity, C&& component);
+        void RemoveComponent(Entity entity, const C& component);
 
         /**
          *
@@ -117,13 +117,13 @@ namespace Nenuphar
     }
 
     template<typename C>
-    void EntityRegistry::RemoveComponent(Entity entity, C&& component)
+    void EntityRegistry::RemoveComponent(Entity entity, const C& component)
     {
 
     }
 
     template<typename C>
-    void EntityRegistry::AddComponent(Entity entity, C&& component)
+    void EntityRegistry::AddComponent(Entity entity, const C& component)
     {
         ComponentTI componentTI = GetComponentTI<C>();
         auto& entityBinding = m_entityBinding.SectorOfEntity(entity);

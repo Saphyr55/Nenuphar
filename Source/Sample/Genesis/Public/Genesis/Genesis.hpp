@@ -4,13 +4,17 @@
 #include "Nenuphar/Core/Engine.hpp"
 #include "Nenuphar/ApplicationCore/WindowDefinition.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Entity/Entity.hpp"
 #include "Nenuphar/Math/Camera.hpp"
 
+#include "Nenuphar/Entity/EntityRegistry.hpp"
 #include "Nenuphar/Rendering/GraphicContext.hpp"
-#include "Nenuphar/Rendering/OpenGL/OpenGLVertexArray.hpp"
-#include "Nenuphar/Rendering/Texture.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLShader.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLVertexArray.hpp"
 #include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
+#include "Nenuphar/Rendering/Texture.hpp"
+
 
 namespace Np = Nenuphar;
 
@@ -23,7 +27,7 @@ namespace gn
 
         UniquePtr<Np::OpenGLVertexArray> VAO;
         UniquePtr<Np::OpenGLVertexBuffer> VBO;
-        Np::TextureID WallTexture;
+        Np::OpenGLTexture2D WallTexture;
         UniquePtr<Np::OpenGLShader> ShaderProgram;
         UniquePtr<Np::UniformRegistry> Registry;
     };
@@ -35,20 +39,21 @@ namespace gn
         void Render();
 
     private:
-        void ResetCameraTarget(const Np::KeyEvent& evt);
-        void OnMoveCameraXY(const Np::MouseMoveEvent& evt);
-        void OnRotateCamera(const Np::MouseMoveEvent& evt);
-        void OnMoveCameraZOnScroll(const Np::MouseWheelEvent& evt);
+        void ResetCameraTarget(const Np::KeyEvent& evt, Np::OrbitCamera& camera);
+        void OnMoveCameraXY(const Np::MouseMoveEvent& evt, Np::OrbitCamera& camera);
+        void OnRotateCamera(const Np::MouseMoveEvent& evt, Np::OrbitCamera& camera);
+        void OnMoveCameraZOnScroll(const Np::MouseWheelEvent& evt, Np::OrbitCamera& camera);
 
     public:
         GenesisApp();
         ~GenesisApp() = default;
 
     private:
+        Np::EntityRegistry m_registry;
+        Np::Entity MainCamera;
         UniquePtr<Np::GraphicContext> MainGraphicContext;
         SharedRef<Np::WindowInterface> MainWindow;
         SharedRef<RenderData> MainRenderData;
-        Np::OrbitCamera MainCamera;
         float CameraVelocity = 0.005f;
     };
 

@@ -10,6 +10,7 @@ set(DEPS
                 Engine.Core 
                 Engine.Common
                 Engine.Math
+                Engine.Entity
                 Engine.ApplicationCore
                 Engine.EventSystem
                 Engine.InputSystem

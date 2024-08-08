@@ -21,11 +21,6 @@ namespace Nenuphar
         virtual void Enable() const = 0;
 
         virtual void Clear(const Vector4f& color) const = 0;
-
-        virtual TextureID MakeTexture2D(Path path) const = 0;
-
-        virtual void BindTexture(TextureID textureId) const = 0;
-
     };
 
 
