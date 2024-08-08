@@ -26,6 +26,8 @@ namespace Nenuphar
         static Path FromAssets(StringView path);
     };
 
+    String ReadFileContent(const Path& path);
+
     String ReadFileContent(const File& path);
 
 }

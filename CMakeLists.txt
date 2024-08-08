@@ -60,7 +60,7 @@ add_subdirectory(Source/Engine/Math)
 add_subdirectory(Source/Engine/ApplicationCore)
 add_subdirectory(Source/Engine/EventSystem)
 add_subdirectory(Source/Engine/InputSystem)
-add_subdirectory(Source/Engine/MeshLoader)
+add_subdirectory(Source/Engine/Model)
 add_subdirectory(Source/Engine/Rendering)
 add_subdirectory(Source/Engine/Entity)
 

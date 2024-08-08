@@ -14,7 +14,7 @@ namespace Nenuphar
     {
 
     };
-    
+
     class MeshLoader
     {
     public:

@@ -41,7 +41,7 @@ namespace Nenuphar
 		stbi_set_flip_vertically_on_load(true);
 		dataImage.Data = stbi_load
         (
-            Path::FilePathData(path),
+            path.GetFilePath().c_str(),
             &dataImage.Width, 
             &dataImage.Height, 
             &dataImage.Format, 
@@ -50,7 +50,7 @@ namespace Nenuphar
 
         if (!dataImage.Data)
         {
-            NP_ERROR(LoadDataImage, "Cannot load '{}' image.\n", Path::FilePathData(path));
+            NP_ERROR(LoadDataImage, "Cannot load '{}' image.\n", path.GetFilePath());
             return;
         }
 

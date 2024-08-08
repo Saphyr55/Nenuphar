@@ -1,17 +1,15 @@
 #pragma once
 
 #include "Nenuphar/Common/Type/Type.hpp"
-#include "Nenuphar/MeshLoader/MeshLoader.hpp"
+#include "Nenuphar/Model/Obj/ObjMeshLoader.hpp"
 
 namespace Nenuphar
 {
-
-    class ObjMeshLoader : public MeshLoader
+    
+    class ObjMeshLoaderImpl : public ObjMeshLoader
     {
     public:
         SharedRef<Mesh> Load(const File& file) override;
-        
-    private:
     };
 
 }

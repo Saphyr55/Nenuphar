@@ -1,4 +1,5 @@
 #include "Nenuphar/Core/Resource/Resource.hpp"
+#include "Nenuphar/Common/Debug/Debug.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
 
 #include <filesystem>
@@ -37,11 +38,11 @@ namespace Nenuphar
         return Path(NP_PROJECT_DIR +  String(filepath));
     }
 
-    String ReadStringContent(const Path& path)
+    String ReadFileContent(const Path& path)
     {
         if (!path.IsExists())
         {
-            NP_ERROR(ResourceManager::ReadStringContent, "The path '{}' doesn't exist.", path.GetFilePath());
+            NP_ERROR(ResourceManager::ReadFileContent, "The path '{}' doesn't exist.", path.GetFilePath());
             throw std::exception();
         }
 
@@ -49,6 +50,12 @@ namespace Nenuphar
         std::string content((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
 
         return content;
+    }
+
+    String ReadFileContent(const File& path)
+    {
+        NP_ASSERT(false);
+        return "";
     }
 
 }

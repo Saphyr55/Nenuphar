@@ -3,6 +3,7 @@
 #include "Nenuphar/ApplicationCore/WindowDefinition.hpp"
 #include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Core/Resource/Resource.hpp"
 #include "Nenuphar/InputSystem/InputSystem.hpp"
 #include "Nenuphar/Math/Camera.hpp"
 #include "Nenuphar/Rendering/GraphicContext.hpp"
@@ -179,8 +180,8 @@ namespace gn
         auto fragmentFilepath = Np::ResourceManager::FromAssets("/Shaders/MainFragment.glsl");
 
         auto program = MakeUnique<Np::OpenGLShader>(
-                Np::ResourceManager::ReadStringContent(vertexFilepath),
-                Np::ResourceManager::ReadStringContent(fragmentFilepath));
+                Np::ReadFileContent(vertexFilepath),
+                Np::ReadFileContent(fragmentFilepath));
 
         auto registry = MakeUnique<Np::UniformRegistry>(*program);
         registry->Register("tex1", TextureID(wall))
