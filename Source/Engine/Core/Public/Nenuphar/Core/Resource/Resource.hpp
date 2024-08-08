@@ -1,18 +1,17 @@
 #pragma once
 
-
+#include "Nenuphar/Core/Resource/File.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 
 namespace Nenuphar
 {
-
+    
     class Path
     {
     public:
-        static bool Exists(const Path& path);
-        static String FilePathStr(const Path& path);
-        static const char* FilePathData(const Path& path);
-
+        bool IsExists() const;
+        String GetFilePath() const;
+        
         explicit Path(StringView path);
         ~Path() = default;
 
@@ -23,9 +22,10 @@ namespace Nenuphar
     class ResourceManager
     {
     public:
-        static String ReadStringContent(const Path& path);
         static Path FromProject(StringView path);
         static Path FromAssets(StringView path);
     };
+
+    String ReadFileContent(const File& path);
 
 }

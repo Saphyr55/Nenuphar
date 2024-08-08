@@ -10,7 +10,7 @@ Matrix4<R> Matrix4<R>::Identity()
 }
 
 template<Real R>
-std::array<R, 4 * 4> Matrix4<R>::ValueArray(Mat mat)
+std::array<R, 4 * 4> Matrix4<R>::ValueArray(const Mat& mat)
 {
 	std::array<R, 4 * 4> content;
 	for (Int8 i = 0; i < 4; i++) {
@@ -22,7 +22,7 @@ std::array<R, 4 * 4> Matrix4<R>::ValueArray(Mat mat)
 }
 
 template<Real R>
-Matrix4<R> Matrix4<R>::Translate(Mat mat, Vector3<R> vec)
+Matrix4<R> Matrix4<R>::Translate(const Mat& mat, const Vector3<R>& vec)
 {
 	Mat transformation_mat(1);
 	transformation_mat[3] = Vector4<R>(vec, 1);
@@ -30,7 +30,7 @@ Matrix4<R> Matrix4<R>::Translate(Mat mat, Vector3<R> vec)
 }
 
 template<Real R>
-Matrix4<R> Matrix4<R>::Scale(Mat mat, Vector3<R> vec)
+Matrix4<R> Matrix4<R>::Scale(const Mat& mat, const Vector3<R>& vec)
 {
 	return mat * Mat
 	(
@@ -42,7 +42,7 @@ Matrix4<R> Matrix4<R>::Scale(Mat mat, Vector3<R> vec)
 }
 
 template<Real R>
-Matrix4<R> Matrix4<R>::Rotate(Mat mat, const Real auto& theta, Vector3<R> vec)
+Matrix4<R> Matrix4<R>::Rotate(const Mat& mat, const Real auto& theta, const Vector3<R>& vec)
 {
 	auto c = std::cos(theta);
 	auto s = std::sin(theta);
@@ -58,7 +58,7 @@ Matrix4<R> Matrix4<R>::Rotate(Mat mat, const Real auto& theta, Vector3<R> vec)
 }
 
 template<Real R>
-Matrix4<R> Matrix4<R>::RotateX(const Float theta)
+Matrix4<R> Matrix4<R>::RotateX(const Float& theta)
 {
 	return Mat
 	(
@@ -70,7 +70,7 @@ Matrix4<R> Matrix4<R>::RotateX(const Float theta)
 }
 
 template<Real R>
-Matrix4<R> Matrix4<R>::RotateY(const Float theta)
+Matrix4<R> Matrix4<R>::RotateY(const Float& theta)
 {
 	return Mat
 	(
@@ -82,7 +82,7 @@ Matrix4<R> Matrix4<R>::RotateY(const Float theta)
 }
 
 template<Real R>
-Matrix4<R> Matrix4<R>::RotateZ(const Float theta)
+Matrix4<R> Matrix4<R>::RotateZ(const Float& theta)
 {
 	return Matrix4<R>(
 		Vector4<R>(std::cos(theta), std::sin(theta), 0, 0),
@@ -131,9 +131,9 @@ Matrix4<R> Matrix4<R>::Orthographic(
 
 template<Real R>
 Matrix4<R> Matrix4<R>::LookAt(
-	Vector3<R> const& eye,
-	Vector3<R> const& center,
-	Vector3<R> const& up)
+	const Vector3<R>& eye,
+	const Vector3<R>& center,
+	const Vector3<R>& up)
 {
 
 	auto f = Vector3<R>::Normalize(center - eye);
@@ -199,7 +199,7 @@ Matrix4<R>::Matrix4(R r) :
 		) { }
 
 template<Real R>
-auto Matrix4<R>::operator*(Mat m) -> Mat
+Matrix4<R> Matrix4<R>::operator*(const Mat& m) const
 {
 	Mat result(0);
 	for (Int8 i = 0; i < 4; i++) {
@@ -215,7 +215,7 @@ auto Matrix4<R>::operator*(Mat m) -> Mat
 }
 
 template<Real R>
-Vector4<R> Matrix4<R>::operator*(Vector4<R> v)
+Vector4<R> Matrix4<R>::operator*(const Vector4<R>& v) const
 {
 	return Vec
 	(
@@ -224,6 +224,12 @@ Vector4<R> Matrix4<R>::operator*(Vector4<R> v)
 		(*this)[2][0] * v[0] + (*this)[2][1] * v[1] + (*this)[2][2] * v[2] + (*this)[2][3] * v[3],
 		(*this)[3][0] * v[0] + (*this)[3][1] * v[1] + (*this)[3][2] * v[2] + (*this)[3][3] * v[3]
 	);
+}
+
+template<Real R>
+const Vector4<R>& Matrix4<R>::operator[](std::size_t i) const
+{
+    return value[i];
 }
 
 template<Real R>

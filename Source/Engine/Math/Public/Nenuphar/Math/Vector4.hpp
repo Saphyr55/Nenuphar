@@ -18,8 +18,9 @@ struct Vector4
 
 	auto Dot(const Vector4& vec) const;
 	R& operator[](std::size_t i);
+    const R& operator[](std::size_t i) const; 
 
-	Vector4 operator*(const Real auto&) const;
+    Vector4 operator*(const Real auto&) const;
 	Vector4 operator+(const Real auto&) const;
 	Vector4 operator-(const Real auto&) const;
 	Vector4 operator/(const Real auto&) const;
