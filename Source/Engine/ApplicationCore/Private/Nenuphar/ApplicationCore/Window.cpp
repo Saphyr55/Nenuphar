@@ -9,8 +9,8 @@ namespace Nenuphar
         return m_base->GetID();
     }
 
-    Window::Window(const WindowDefinition& definition, PlatformApplication& app)
-        : m_base(WindowBase::Create(definition, app))
+    Window::Window(const WindowDefinition& definition)
+        : m_base(WindowBase::Create(definition))
     {
     }
 

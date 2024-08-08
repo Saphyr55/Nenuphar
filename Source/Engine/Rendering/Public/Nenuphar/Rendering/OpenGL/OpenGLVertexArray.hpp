@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Nenuphar/Common/Common.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLBuffer.hpp"
 
 namespace Nenuphar
@@ -8,7 +7,7 @@ namespace Nenuphar
 
     using VertexArrayID = UInt;
 
-    class OpenGLVertexArray final
+    class OpenGLVertexArray
     {
 
     public:

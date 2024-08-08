@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Type/Type.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
 
 namespace Nenuphar
 {
@@ -11,8 +11,8 @@ namespace Nenuphar
         return std::make_shared<T>(std::forward<Args>(args)...);
     }
 
-    template<typename T, typename ...Args>
-    constexpr Ptr<T> MakeUnique(Args&&... args)
+    template<typename T, typename... Args>
+    constexpr UniquePtr<T> MakeUnique(Args&&... args)
     {
         return std::make_unique<T>(std::forward<Args>(args)...);
     }

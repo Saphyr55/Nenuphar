@@ -1,24 +1,25 @@
 #include "Nenuphar/Core/Engine.hpp"
 
-#include "Nenuphar/ApplicationCore/Application.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
 
 namespace Nenuphar
 {
 
-    void Engine::Initialize(int argc, const char** argv)
-    {
-    }
+    Bool Engine::IsFinish = true;
 
-    int Engine::Start(const std::function<void()>& runnable)
+    int Engine::LoopRun(const std::function<void()>& runnable)
     {
-        
         try
         {
-            while (!GIsFinish)
+            NP_INFO(Engine::LoopRun, "Engine start the main loop.");
+            IsFinish = false;
+
+            while (!IsFinish)
             {
                 runnable();
             }
+
+            NP_INFO(Engine::LoopRun, "Engine closed the main loop.");
         }
         catch (const std::exception& e)
         {

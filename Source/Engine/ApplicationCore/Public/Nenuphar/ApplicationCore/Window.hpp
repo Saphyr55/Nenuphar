@@ -46,8 +46,7 @@ namespace Nenuphar
         inline WindowBase& Base() { return *m_base; }
 
     public:
-        Window(const WindowDefinition& definition, PlatformApplication& app =
-                PlatformApplication::GetPlatformApplication());
+        Window(const WindowDefinition& definition);
 
         Window(StringView title, Int width, Int height);
 

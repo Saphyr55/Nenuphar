@@ -1,9 +1,6 @@
 #pragma once
 
-#include "Nenuphar/Common/Common.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
-
-using namespace Nenuphar;
 
 template<Real R>
 struct Vector4

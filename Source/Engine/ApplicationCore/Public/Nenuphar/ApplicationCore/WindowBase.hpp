@@ -11,7 +11,7 @@ namespace Nenuphar
     class WindowBase : public WindowInterface
     {
     public:
-        static SharedRef<WindowBase> Create(WindowDefinition definition,PlatformApplication& app);
+        static SharedRef<WindowBase> Create(const WindowDefinition& definition);
 
         virtual const WindowSignals& GetWindowSignals() const override = 0;
 

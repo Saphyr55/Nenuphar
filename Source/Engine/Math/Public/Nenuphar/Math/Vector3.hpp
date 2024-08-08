@@ -4,8 +4,6 @@
 #include "Nenuphar/Math/CommonMath.hpp"
 #include "Nenuphar/Math/Vector2.hpp"
 
-using namespace Nenuphar;
-
 template<Real R>
 struct Vector3 final
 {

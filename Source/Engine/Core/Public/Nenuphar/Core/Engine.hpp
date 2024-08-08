@@ -1,5 +1,6 @@
 #pragma once
 
+#include <concepts>
 #include <functional>
 
 #include "Nenuphar/Common/Instanciate.hpp"
@@ -11,13 +12,10 @@ namespace Nenuphar
     class Engine final
     {
     public:
-        void Initialize(int argc, const char** argv);
+        static int LoopRun(const std::function<void()>& runnable);
 
-        static int Start(const std::function<void()>& runnable);
-
+        static Bool IsFinish;
     };
 
-    inline Bool GIsFinish = false;
-    const inline Ptr<Engine> GEngine = MakeUnique<Engine>();
 
 }

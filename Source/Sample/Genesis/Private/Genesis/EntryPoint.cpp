@@ -1,17 +1,20 @@
 #include "Genesis/Genesis.hpp"
+#include "Nenuphar/Core/Engine.hpp"
+#include "Nenuphar/Core/Logger/Logger.hpp"
 
 using namespace Nenuphar;
 
 int main(int argc, const char* argv[])
 {
-    GEngine->Initialize(argc, argv);
+    gn::GenesisApp app;
+    NP_INFO(main, "Genesis application created.");
 
-    Window window("Genesis Application", 1080, 720);
+    app.Init();
 
-    auto& env = Env::New(window);
-    Env::Init(env);
-
-    return GEngine->Start([&] { Env::Render(env); });
+    return Engine::LoopRun([&app]
+    {
+        app.Render();
+    });
 }
 
 

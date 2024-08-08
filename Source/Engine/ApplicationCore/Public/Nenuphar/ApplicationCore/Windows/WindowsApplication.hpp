@@ -1,7 +1,5 @@
 #pragma once
 
-#include <functional>
-
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Windows.hpp"
 #include "Nenuphar/ApplicationCore/PlatformApplication.hpp"

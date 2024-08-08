@@ -6,8 +6,6 @@
 #include "Nenuphar/Math/Vector4.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
 
-using namespace Nenuphar;
-
 template<Real R>
 struct Matrix4
 {

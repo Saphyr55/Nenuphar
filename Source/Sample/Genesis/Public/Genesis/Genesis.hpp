@@ -1,10 +1,9 @@
 #pragma once
 
+#include "Nenuphar/ApplicationCore/WindowInterface.hpp"
 #include "Nenuphar/Core/Engine.hpp"
-
-#include "Nenuphar/ApplicationCore/Window.hpp"
-
-#include "Nenuphar/Math/Math.hpp"
+#include "Nenuphar/ApplicationCore/WindowDefinition.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Math/Camera.hpp"
 
 #include "Nenuphar/Rendering/GraphicContext.hpp"
@@ -13,38 +12,46 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLShader.hpp"
 #include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
 
-#include "Generated/Generated.hpp"
+namespace Np = Nenuphar;
 
-using namespace Nenuphar;
-
-struct RenderData
+namespace gn
 {
-    static Ptr<RenderData> New();
 
-    Ptr<OpenGLVertexArray> VAO;
-    Ptr<OpenGLVertexBuffer> VBO;
-    TextureID WallTexture;
-    Ptr<OpenGLShader> Program;
-    Ptr<UniformRegistry> Registry;
-};
+    struct RenderData
+    {
+        static SharedRef<RenderData> Default();
 
-struct Env
-{
-    static Env& New(Window& window);
-    static void Init(Env& env);
-    static void Render(Env& env);
+        UniquePtr<Np::OpenGLVertexArray> VAO;
+        UniquePtr<Np::OpenGLVertexBuffer> VBO;
+        Np::TextureID WallTexture;
+        UniquePtr<Np::OpenGLShader> ShaderProgram;
+        UniquePtr<Np::UniformRegistry> Registry;
+    };
 
-    Env(UInt16 id, Ptr<GraphicContext> graphicContext, Window& window);
-    ~Env() = default;
+    class GenesisApp
+    {
+    public:
+        void Init();
+        void Render();
 
-    UInt16 Id;
-    Ptr<GraphicContext> MainGraphicContext;
-    Ptr<RenderData> MainRenderData;
-    Window& MainWindow;
-    OrbitCamera MainCamera;
-    Float CameraVelocity = 0.005f;
-};
+    private:
+        void ResetCameraTarget(const Np::KeyEvent& evt);
+        void OnMoveCameraXY(const Np::MouseMoveEvent& evt);
+        void OnRotateCamera(const Np::MouseMoveEvent& evt);
+        void OnMoveCameraZOnScroll(const Np::MouseWheelEvent& evt);
 
+    public:
+        GenesisApp();
+        ~GenesisApp() = default;
 
-static thread_local std::unordered_map<UInt16, Ptr<Env>> EnvRegistry;
+    private:
+        UniquePtr<Np::GraphicContext> MainGraphicContext;
+        SharedRef<Np::WindowInterface> MainWindow;
+        SharedRef<RenderData> MainRenderData;
+        Np::OrbitCamera MainCamera;
+        float CameraVelocity = 0.005f;
+    };
+
+}
+
 
