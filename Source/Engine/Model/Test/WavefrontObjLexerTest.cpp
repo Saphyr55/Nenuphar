@@ -30,11 +30,9 @@ TEST_CASE("Obj file lexing test.", "[WavefrontObjLexer::Scan]")
 
     auto tokens = lexer.Scan();
 
-    for (auto& token: tokens)
-    {
-        NP_INFO(WavefrontObjLexer::Scan::Test, "{} {}", token.Text, (int) token.Kind);
-    }
-    
-    REQUIRE(tokens[4].Text == "mtllib");
-    REQUIRE(tokens[4].Kind == WavefrontObjToken::Type::MaterialLib);
+    REQUIRE(tokens[3].Text == "mtllib");
+    REQUIRE(tokens[3].Kind == WavefrontObjToken::Type::MaterialLib);
+
+    REQUIRE(tokens[10].Text == "2.000000");
+    REQUIRE(tokens[10].Kind == WavefrontObjToken::Type::Float);
 }

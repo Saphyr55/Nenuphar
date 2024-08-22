@@ -72,7 +72,7 @@ namespace Nenuphar
 
             // Basic token type for the lexer.
             NewLine,   // New line (\n)
-            Eof,       // End of file.
+            Eos,       // End of file.
             Identifier,// Any identifier.
             Dot        // Dot. (.)
         };
@@ -114,7 +114,7 @@ namespace Nenuphar
         Int m_line = 1;
         Int m_col = 1;
         std::vector<WavefrontObjToken> m_tokens;
-        static std::unordered_map<const char*, WavefrontObjToken::Type> Keywords;
+        static std::unordered_map<std::string, WavefrontObjToken::Type> Keywords;
     };
 
 }

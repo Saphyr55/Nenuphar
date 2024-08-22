@@ -9,7 +9,7 @@ namespace Nenuphar
 {
     using InputStream = std::istringstream;
 
-    std::unordered_map<const char*, WavefrontObjToken::Type> WavefrontObjLexer::Keywords
+    std::unordered_map<std::string, WavefrontObjToken::Type> WavefrontObjLexer::Keywords
     {
         {"v", WavefrontObjToken::Type::V},
         {"vt", WavefrontObjToken::Type::VT},
@@ -66,37 +66,40 @@ namespace Nenuphar
 
     void WavefrontObjLexer::AddToken(WavefrontObjToken::Type kind)
     {
-        String subText = m_source.substr(m_start, m_position);
+        String subText = m_source.substr(m_start, m_position - m_start);
         AddToken(subText, kind);
     }
 
     void WavefrontObjLexer::AddDefaultToken(const char& current)
     {
-        if (std::isalpha(current))
+        auto c = static_cast<unsigned char>(current);
+        if (std::isalpha(c))
         {
             AddIdentifierToken();
         }
-        else if (std::isdigit(current))
+        else if (std::isdigit(c))
         {
             AddNumberToken();
         }
-
-        Report("Unexpected character.");
+        else
+        {
+            Report("Unexpected character.");
+        }
     }
 
     void WavefrontObjLexer::AddIdentifierToken()
     {
-        while (std::isalnum(Peek()))
+        while (std::isalnum(static_cast<unsigned char>(Peek())))
         {
             GetPosAndNext();
-        }
+        }   
 
-        String text = m_source.substr(m_start, m_position);
+        std::string text = m_source.substr(m_start, m_position - m_start);
         WavefrontObjToken::Type kind = WavefrontObjToken::Type::Identifier;
 
-        if (Keywords.contains(text.c_str()))
+        if (Keywords.contains(text))
         {
-            kind = Keywords.at(text.c_str());
+            kind = Keywords.at(text);
         }
 
         AddToken(text, kind);
@@ -104,7 +107,28 @@ namespace Nenuphar
 
     void WavefrontObjLexer::AddNumberToken()
     {
-        
+        while (std::isdigit(static_cast<unsigned char>(Peek()))) 
+        {
+            GetPosAndNext();
+        }
+
+        if (Peek() == '.')
+        {
+            GetPosAndNext();
+            while (std::isdigit(static_cast<unsigned char>(Peek()))) 
+            {
+                GetPosAndNext();
+            }
+
+            std::string text = m_source.substr(m_start, m_position - m_start);
+            AddToken(WavefrontObjToken::Type::Float);
+        }
+        else
+        {
+            std::string text = m_source.substr(m_start, m_position - m_start);
+            AddToken(WavefrontObjToken::Type::Integer);
+        }
+
     }
 
     std::vector<WavefrontObjToken> WavefrontObjLexer::Scan()
@@ -115,14 +139,17 @@ namespace Nenuphar
             NextToken();
         }
 
-        m_tokens.push_back(WavefrontObjToken("\0", WavefrontObjToken::Type::Eof));
+        m_tokens.push_back(WavefrontObjToken("\0", WavefrontObjToken::Type::Eos));
 
         return m_tokens;
     }
 
     void WavefrontObjLexer::SkipComment()
     {
-        while (Peek() == '\n');
+        while (Peek() != '\n')
+        {
+            GetPosAndNext();
+        }
     }
 
     Void WavefrontObjLexer::NextToken()
@@ -145,6 +172,10 @@ namespace Nenuphar
         case '\n':
             AddToken(WavefrontObjToken::Type::NewLine);
             break;
+        case ' ':
+        case '\r':
+        case '\t':
+            break;
         default:
             AddDefaultToken(current);
             break;
@@ -158,7 +189,7 @@ namespace Nenuphar
 
     Char WavefrontObjLexer::GetAndAdvance()
     {
-        return m_source.at(GetPosAndNext());
+        return IsAtEnd() ? '\0' :  m_source.at(GetPosAndNext());
     }
 
     Int WavefrontObjLexer::GetPosAndNext()
@@ -176,7 +207,7 @@ namespace Nenuphar
     {
         if (IsAtEnd())
         {
-            return false;
+            return c == '\0';
         }
 
         if (Peek() == c)
