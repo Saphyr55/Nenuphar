@@ -6,13 +6,9 @@
 namespace Nenuphar
 {
 
-    static UniquePtr<ObjMeshLoader> Create()
-    {
-        return MakeUnique<ObjMeshLoaderImpl>();    
-    }
-
     SharedRef<Mesh> ObjMeshLoader::Load(const File& file)
     {
         return nullptr;    
     }
+    
 }

@@ -1,4 +1,4 @@
-#include "WavefrontObjLexer.hpp"
+#include "Nenuphar/Model/Obj/WavefrontObjLexer.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
 
@@ -7,7 +7,12 @@
 
 namespace Nenuphar
 {
-    using InputStream = std::istringstream;
+
+    WavefrontObjTokenVector WavefrontObjLexing(std::string_view source)
+    {
+        WavefrontObjLexer lexer;
+        return lexer.Scan(source);
+    }
 
     std::unordered_map<std::string, WavefrontObjToken::Type> WavefrontObjLexer::Keywords
     {
@@ -48,8 +53,7 @@ namespace Nenuphar
         {"stech", WavefrontObjToken::Type::Stech},
     };
 
-    WavefrontObjLexer::WavefrontObjLexer(StringView source)
-            : m_source(source)
+    WavefrontObjLexer::WavefrontObjLexer()
     {
 
     }
@@ -131,8 +135,16 @@ namespace Nenuphar
 
     }
 
-    std::vector<WavefrontObjToken> WavefrontObjLexer::Scan()
+    std::vector<WavefrontObjToken> WavefrontObjLexer::Scan(StringView source)
     {
+        // Reset data.
+        m_source = source;
+        m_position = 0;
+        m_start = 0;
+        m_line = 1;
+        m_col = 1;
+        m_tokens = { };
+
         while (!IsAtEnd())
         {
             m_start = m_position;

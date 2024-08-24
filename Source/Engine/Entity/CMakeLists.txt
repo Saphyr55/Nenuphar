@@ -7,7 +7,6 @@ set(LOCATION        .)
 set(TARGET          Engine.Entity)
 set(GROUP           Engine)
 set(DEPS            fmt::fmt
-                    stb
                     Engine.Common
                     Engine.Core
                     )

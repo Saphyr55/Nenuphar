@@ -10,10 +10,12 @@ set(DEPS        fmt::fmt
 
 add_executable_module(${TARGET} ${LOCATION})
 
+message(STATUS ${CMAKE_BINARY_DIR}/Bin/NPBuild.exe)
+
 add_custom_target(NPBuildGen
     DEPENDS NPBuild
     COMMAND NPBuild ${CMAKE_BINARY_DIR}/Generated/Generated.hpp
-    COMMENT "NPBuild processing..."
+    COMMENT "NPBuild processing."
     VERBATIM
     )
 
