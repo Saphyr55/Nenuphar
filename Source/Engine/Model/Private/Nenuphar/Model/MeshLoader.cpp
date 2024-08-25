@@ -1,4 +1,4 @@
-#include "Nenuphar/Model/MeshLoader.hpp"
+#include "Nenuphar/Model/ModelLoader.hpp"
 
 namespace Nenuphar
 {

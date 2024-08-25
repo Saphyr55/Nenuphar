@@ -15,6 +15,7 @@ set(DEPS
                 Engine.EventSystem
                 Engine.InputSystem
                 Engine.Rendering
+                Engine.Model
                 glad
     )
 

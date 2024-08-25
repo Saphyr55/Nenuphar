@@ -1,5 +1,5 @@
 # ========================================================
-# Setup Engine Mesh Loader Module.
+# Setup Engine Model Module.
 # ========================================================
 project(Engine.Model)
 
@@ -7,6 +7,7 @@ set(LOCATION        .)
 set(TARGET          Engine.Model)
 set(GROUP           Engine)
 set(DEPS            fmt::fmt
+                    tinyobj
                     Engine.Common
                     Engine.Math
                     Engine.Core 

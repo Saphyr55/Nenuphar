@@ -12,6 +12,7 @@ set(DEPS            fmt::fmt
                     Engine.Common 
                     Engine.Math
                     Engine.Core 
+                    Engine.Model
                     Engine.ApplicationCore
                     Engine.EventSystem
                     Engine.InputSystem

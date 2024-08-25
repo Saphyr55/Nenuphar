@@ -27,7 +27,7 @@ namespace Nenuphar
          * @param source
          * @return WavefrontObjFile 
          */
-        WavefrontObjFile Parse(std::string_view source);
+        UniquePtr<WavefrontObjFile> Parse(std::string_view source);
 
         /**
          * @brief Construct a new Wavefront Obj Parser object.

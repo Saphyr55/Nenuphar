@@ -6,14 +6,13 @@
 #include <glad/glad.h>
 
 #include "Nenuphar/Common/Common.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLShader.hpp"
+#include "Nenuphar/Rendering/Shader.hpp"
 
 namespace Nenuphar
 {
 
-    using OpenGLProgramID = UInt;
-    using OpenGLShaderID = UInt;
     using OpenGLShaderStatus = UInt;
-
 
 	class OpenGLShader;
 
@@ -40,22 +39,24 @@ namespace Nenuphar
 		~OpenGLShaderPart();
 
 	private:
-		void CheckInfo(OpenGLShaderID status) const;
+		void CheckInfo(ShaderId status) const;
 
 	private:
 		OpenGLShaderType m_shaderType;
-		OpenGLShaderID m_shaderID;
+		ShaderId m_shaderID;
 	};
 
 
-	class OpenGLShader
+	class OpenGLShader : public Shader
 	{
-
 	public:
 
-		void Use() const;
+		virtual void Use() const override;
 
-		OpenGLShaderID GetID() const { return m_programID; }
+        virtual ShaderProgramId Id() const override
+        {
+            return m_programID;
+        }
 
         void Link() const;
 
@@ -69,7 +70,7 @@ namespace Nenuphar
         void CheckInfo(OpenGLShaderStatus status) const;
 
 	private:
-		OpenGLProgramID m_programID = -1;
+		ShaderProgramId m_programID = -1;
         mutable std::vector<std::unique_ptr<OpenGLShaderPart>> m_parts;
     };
 

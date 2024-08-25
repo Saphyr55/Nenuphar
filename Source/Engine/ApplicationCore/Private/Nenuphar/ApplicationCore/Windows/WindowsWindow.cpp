@@ -147,7 +147,6 @@ namespace Nenuphar
 
     Int WindowsWindow::ProcessEvent(MSG msg)
     {
-
         auto& message = msg.message;
         auto& wParam = msg.wParam;
         auto& lParam = msg.lParam;
@@ -170,9 +169,7 @@ namespace Nenuphar
         case WM_SYSKEYDOWN:
         case WM_KEYDOWN:
         {
-            KeyEvent e{};
-            e.Key = static_cast<Input::Key>(wParam);
-
+            KeyEvent e(static_cast<Input::Key>(wParam));
             if ((HIWORD(lParam) & KF_REPEAT) != KF_REPEAT)
             {
                 m_windowSignals.EmitOnKeyPressed(e);
@@ -183,43 +180,43 @@ namespace Nenuphar
         }
         case WM_LBUTTONUP:
         {
-            constexpr auto button = Input::Button::Left;
-            constexpr MouseButtonEvent e(button);
+            const auto button = Input::Button::Left;
+            const MouseButtonEvent e(button);
             m_windowSignals.EmitOnButtonRelease(e);
             break;
         }
         case WM_MBUTTONUP:
         {
-            constexpr auto button = Input::Button::Middle;
-            constexpr MouseButtonEvent e(button);
+            const auto button = Input::Button::Middle;
+            const MouseButtonEvent e(button);
             m_windowSignals.EmitOnButtonRelease(e);
             break;
         }
         case WM_RBUTTONUP:
         {
-            constexpr auto button = Input::Button::Right;
-            constexpr MouseButtonEvent e(button);
+            const auto button = Input::Button::Right;
+            const MouseButtonEvent e(button);
             m_windowSignals.EmitOnButtonRelease(e);
             break;
         }
         case WM_LBUTTONDOWN:
         {
-            constexpr auto button = Input::Button::Left;
-            constexpr MouseButtonEvent e(button);
+            const auto button = Input::Button::Left;
+            const MouseButtonEvent e(button);
             m_windowSignals.EmitOnButtonDown(e);
             break;
         }
         case WM_MBUTTONDOWN:
         {
-            constexpr auto button = Input::Button::Middle;
-            constexpr MouseButtonEvent e(button);
+            const auto button = Input::Button::Middle;
+            const MouseButtonEvent e(button);
             m_windowSignals.EmitOnButtonDown(e);
             break;
         }
         case WM_RBUTTONDOWN:
         {
-            constexpr auto button = Input::Button::Right;
-            constexpr MouseButtonEvent e(button);
+            const auto button = Input::Button::Right;
+            const MouseButtonEvent e(button);
             m_windowSignals.EmitOnButtonDown(e);
             break;
         }

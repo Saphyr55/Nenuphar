@@ -19,7 +19,7 @@ namespace Nenuphar
 
 
 	template<typename T>
-    concept UniformValue =
+    concept IsUniformValue =
 		std::is_same_v<T, Matrix4f>   or
         std::is_same_v<T, Vector2f>   or
         std::is_same_v<T, Vector3f>   or
@@ -29,7 +29,7 @@ namespace Nenuphar
 		std::is_same_v<T, Int>        ;
 
 
-    template<UniformValue T>
+    template<IsUniformValue T>
     class Uniform final
     {
 
@@ -71,12 +71,12 @@ namespace Nenuphar
     class UniformRegistry
     {
     public:
-        UniformRegistry& Register(StringView name, UniformValue auto value);
+        UniformRegistry& Register(StringView name, IsUniformValue auto value);
 
-        template<UniformValue V>
+        template<IsUniformValue V>
         Uniform<V>& Get(StringView name);
 
-        template<UniformValue V>
+        template<IsUniformValue V>
         UniformRegistry& Handle(StringView name, std::function<void(Uniform<V>&)> handle);
 
         inline OpenGLShader& Owner() { return m_owner; }
@@ -89,55 +89,55 @@ namespace Nenuphar
     };
 
 
-    template<UniformValue T>
+    template<IsUniformValue T>
     void Uniform<T>::UpdateValue(const T& value_) const
     {
         m_value = value_;
         Update();
     }
 
-    template<UniformValue T>
+    template<IsUniformValue T>
     void Uniform<T>::Update() const
     {
         m_owner.Use();
         SetUniform(m_location, m_value);
     }
 
-    template<UniformValue T>
+    template<IsUniformValue T>
     const T& Uniform<T>::GetValue() const 
     { 
         return m_value;
     }
 
-    template<UniformValue T>
+    template<IsUniformValue T>
     UniformLocation Uniform<T>::GetLocation() const 
     { 
         return m_location;
     }
 
-    template<UniformValue T>
+    template<IsUniformValue T>
     Uniform<T>::Uniform(OpenGLShader& shader, StringView name, T value)
         : m_value(value), m_owner(shader), m_name(name)
     {
 
-        m_location = glGetUniformLocation(m_owner.GetID(), name.data());
+        m_location = glGetUniformLocation(m_owner.Id(), name.data());
         Update();
     }
 
-    UniformRegistry& UniformRegistry::Register(StringView name, UniformValue auto value)
+    UniformRegistry& UniformRegistry::Register(StringView name, IsUniformValue auto value)
     {
         m_registry.insert(std::make_pair(name.data(), Uniform<decltype(value)>(m_owner, name, value)));
         return *this;
     }
 
-    template<UniformValue V>
+    template<IsUniformValue V>
     auto UniformRegistry::Get(StringView name) -> Uniform<V>&
     {
         IUniform& uniform = m_registry.at(name.data());
         return std::get<Uniform<V>>(uniform);
     }
 
-    template<UniformValue V>
+    template<IsUniformValue V>
     UniformRegistry& UniformRegistry::Handle(std::string_view name, std::function<void(Uniform<V>&)> handle)
     {
         Uniform<V> uniform = Get<V>(name);

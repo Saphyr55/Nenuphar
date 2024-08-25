@@ -9,11 +9,11 @@
 
 #include "Nenuphar/Entity/EntityRegistry.hpp"
 #include "Nenuphar/Rendering/GraphicContext.hpp"
-#include "Nenuphar/Rendering/OpenGL/OpenGLShader.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLVertexArray.hpp"
 #include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
-#include "Nenuphar/Rendering/Texture.hpp"
+#include "Nenuphar/Rendering/Renderer.hpp"
+#include "Nenuphar/Rendering/Shader.hpp"
 
 
 namespace Np = Nenuphar;
@@ -26,9 +26,9 @@ namespace gn
         static SharedRef<RenderData> Default();
 
         UniquePtr<Np::OpenGLVertexArray> VAO;
-        UniquePtr<Np::OpenGLVertexBuffer> VBO;
+        UniquePtr<Np::OpenGLArrayBuffer<VertexMinimalInfo>> VBO;
         Np::OpenGLTexture2D WallTexture;
-        UniquePtr<Np::OpenGLShader> ShaderProgram;
+        UniquePtr<Np::Shader> Shader;
         UniquePtr<Np::UniformRegistry> Registry;
     };
 
@@ -49,6 +49,7 @@ namespace gn
         ~GenesisApp() = default;
 
     private:
+        UniquePtr<Np::Renderer> Renderer;
         Np::EntityRegistry m_registry;
         Np::Entity MainCamera;
         UniquePtr<Np::GraphicContext> MainGraphicContext;

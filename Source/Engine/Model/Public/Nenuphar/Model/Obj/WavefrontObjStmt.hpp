@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Nenuphar/Rendering/OpenGL/Vertex.hpp"
 
 namespace Nenuphar 
 {

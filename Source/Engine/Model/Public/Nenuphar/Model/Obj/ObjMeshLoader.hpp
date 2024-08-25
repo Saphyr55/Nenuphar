@@ -1,18 +1,19 @@
 #pragma once
 
 #include "Nenuphar/Common/Type/Type.hpp"
-#include "Nenuphar/Model/MeshLoader.hpp"
+#include "Nenuphar/Model/ModelLoader.hpp"
+
+#include <optional>
 
 namespace Nenuphar
 {
 
-    class ObjMeshLoader : public MeshLoader
+    class ObjModelLoader : public ModelLoader
     {
     public:
-        
-        virtual SharedRef<Mesh> Load(const File& file);
+        Result<Model, ModelLoaderError> Load(const Path& path) const override;
 
-        static UniquePtr<ObjMeshLoader> Create();
+        static UniquePtr<ObjModelLoader> Create();
 
     };
 

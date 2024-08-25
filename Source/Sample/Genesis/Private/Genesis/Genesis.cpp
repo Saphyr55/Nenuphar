@@ -3,14 +3,19 @@
 #include "Nenuphar/ApplicationCore/WindowDefinition.hpp"
 #include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Core/IO/Path.hpp"
 #include "Nenuphar/Core/Resource/Resource.hpp"
 #include "Nenuphar/InputSystem/InputSystem.hpp"
 #include "Nenuphar/Math/Camera.hpp"
+#include "Nenuphar/Model/TOL/TOLMeshLoader.hpp"
 #include "Nenuphar/Rendering/GraphicContext.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLBuffer.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLRenderer.hpp"
 #include "Nenuphar/Rendering/RenderSystem.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
+#include "Nenuphar/Rendering/Vertex.hpp"
+#include "Nenuphar/Model/TOL/TOLMeshLoader.hpp"
 
 #include <glad/glad.h>
 
@@ -35,6 +40,7 @@ namespace gn
         MainRenderData = RenderData::Default();
 
         MainCamera = m_registry.Create();
+        Renderer = MakeUnique<Np::OpenGLRenderer>();
 
         OrbitCamera orbitCameraComponent(Radians(45.0f),
                                          Radians(45.0f), 3.0f,
@@ -57,8 +63,9 @@ namespace gn
         Matrix4f view = Matrix4f::LookAt(camera.Position(), camera.Target, camera.Up);
 
         // We create the world model.
-        Matrix4f model = Matrix4f::Identity();//Matrix4f::Rotate(Matrix4f(1), Oc::Radians(90), { 0.5f, 1.0f, 0.0f });
-
+        // Matrix4f model = Matrix4f::Rotate(Matrix4f(1), Np::Radians(90), { 0.5f, 1.0f, 0.0f });
+        Matrix4f model = Matrix4f::Identity();
+        
         // We obtain uniforms from the register and indicate their respective values.
         registry.Get<Matrix4f>("proj").UpdateValue(proj);
         registry.Get<Matrix4f>("model").UpdateValue(model);
@@ -168,23 +175,46 @@ namespace gn
     {
         Np::RenderSystem::Instance().Enable();
 
-        auto pathWall = Np::ResourceManager::FromAssets("/Textures/Wall.jpg");
+        auto cubePathObj = Np::FromAssets("/Models/Cube.obj");
+        auto pathWall = Np::FromAssets("/Textures/Wall.jpg");
         auto wall = Np::OpenGLTexture2D::LoadFromImage(pathWall, &DefaultParameterTexture);
 
         auto vao = MakeUnique<Np::OpenGLVertexArray>();
-        auto vbo = MakeUnique<Np::OpenGLVertexBuffer>(CubeVertices);
+        auto vbo = MakeUnique<Np::OpenGLArrayBuffer<VertexMinimalInfo>>(CubeVertices);
+        
+        TOLModelLoader modelLoader;
+        auto res = modelLoader.Load(cubePathObj);
+        if (!res.HasValue())
+        {
+            return nullptr;
+        }
 
+        auto model = res.Value();
+        
         LinkBuffer(*vbo, LayoutVertex);
 
-        auto vertexFilepath = Np::ResourceManager::FromAssets("/Shaders/MainVertex.glsl");
-        auto fragmentFilepath = Np::ResourceManager::FromAssets("/Shaders/MainFragment.glsl");
+        auto vertexFilepath = Np::FromAssets("/Shaders/MainVertex.glsl");
+        auto fragmentFilepath = Np::FromAssets("/Shaders/MainFragment.glsl");
+
+        auto resultVertex = Np::ReadFileContent(vertexFilepath);
+        auto resultFragment = Np::ReadFileContent(fragmentFilepath);
+
+        if (!resultVertex.HasValue())
+        {
+            return nullptr;
+        }
+
+        if (!resultFragment.HasValue())
+        {
+            return nullptr;
+        }
 
         auto program = MakeUnique<Np::OpenGLShader>(
-                Np::ReadFileContent(vertexFilepath),
-                Np::ReadFileContent(fragmentFilepath));
+                resultVertex.Value(),
+                resultFragment.Value());
 
         auto registry = MakeUnique<Np::UniformRegistry>(*program);
-        registry->Register("tex1", TextureID(wall))
+        registry->Register("tex1", Texture(wall))
                 .Register("proj", Matrix4f(1))
                 .Register("view", Matrix4f(1))
                 .Register("model", Matrix4f(1));

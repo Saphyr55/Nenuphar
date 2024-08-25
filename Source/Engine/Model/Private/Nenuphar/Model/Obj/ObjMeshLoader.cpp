@@ -1,14 +1,12 @@
 #include "Nenuphar/Model/Obj/ObjMeshLoader.hpp"
-#include "Nenuphar/Common/Instanciate.hpp"
-
-#include "ObjMeshLoaderImpl.hpp"
 
 namespace Nenuphar
 {
 
-    SharedRef<Mesh> ObjMeshLoader::Load(const File& file)
+    Result<Model, ModelLoaderError> ObjModelLoader::Load(const Path& path) const
     {
-        return nullptr;    
+        using Res = Result<Model, ModelLoaderError>;
+        return Res(Res::kErrTag, ModelLoaderError::MalFormat);
     }
     
 }

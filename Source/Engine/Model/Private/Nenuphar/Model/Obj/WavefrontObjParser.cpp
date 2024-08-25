@@ -1,24 +1,31 @@
 #include "Nenuphar/Model/Obj/WavefrontObjParser.hpp"
+#include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
 #include "Nenuphar/Model/Obj/WavefrontObjLexer.hpp"
+#include "Nenuphar/Model/Obj/WavefrontObjStmt.hpp"
 
 #include <exception>
 
 namespace Nenuphar
 {
 
-    WavefrontObjFile WavefrontObjParser::Parse(std::string_view source) 
+    UniquePtr<WavefrontObjFile> WavefrontObjParser::Parse(std::string_view source) 
     {
         m_tokens = WavefrontObjLexing(source);
         m_position = 0;
 
-        return WavefrontObjFile();      
+        if (Check(WavefrontObjToken::Type::V))
+        {
+            ParseVertex();    
+        }
+
+        return MakeUnique<WavefrontObjFile>();
     }
 
     UniquePtr<WavefrontObjStmt> WavefrontObjParser::ParseVertex()
     {
-        
+        return nullptr;
     }
 
     const WavefrontObjToken& WavefrontObjParser::Consume(WavefrontObjToken::Type kind, String message)

@@ -7,7 +7,7 @@
 namespace Nenuphar
 {
 
-	void TexImage2D(UInt target, Int level, const DataImage& dataImage)
+	void TexImage2D(UInt target, Int level, const TextureInformation& dataImage)
 	{
 		glTexImage2D(target, level, GL_RGB, dataImage.Width, dataImage.Height, 0, dataImage.Format, GL_UNSIGNED_BYTE, dataImage.Data);
 	}
@@ -22,7 +22,7 @@ namespace Nenuphar
 		glActiveTexture(GL_TEXTURE0 + slot);
 	}
 
-    void DefaultParameterTexture(const DataImage& dataImage, OpenGLTexture<Texture2D>::Parameter parameter)
+    void DefaultParameterTexture(const TextureInformation& dataImage, OpenGLTexture<Texture2D>::Parameter parameter)
 	{
         parameter
                 .WithParameter(GL_TEXTURE_WRAP_T, GL_REPEAT)
@@ -34,19 +34,16 @@ namespace Nenuphar
         GenerateMipmap(GL_TEXTURE_2D);
     }
 
-    void LoadDataImage(const Path& path, const std::function<void(const DataImage&)>& f)
+    void LoadDataImage(const Path& path, const std::function<void(const TextureInformation&)>& f)
 	{
-
-		DataImage dataImage{};
-		stbi_set_flip_vertically_on_load(true);
-		dataImage.Data = stbi_load
-        (
-            path.GetFilePath().c_str(),
-            &dataImage.Width, 
-            &dataImage.Height, 
-            &dataImage.Format, 
-            0
-        );
+        TextureInformation dataImage{};
+        stbi_set_flip_vertically_on_load(true);
+        dataImage.Data = stbi_load(
+                path.GetFilePath().c_str(),
+                &dataImage.Width,
+                &dataImage.Height,
+                &dataImage.Format,
+                0);
 
         if (!dataImage.Data)
         {

@@ -25,10 +25,10 @@ TEST_CASE("Obj file lexing test.", "[WavefrontObjLexer::Scan]")
         # 1 element
         )";
 
+    
+    WavefrontObjLexer lexer;
 
-    WavefrontObjLexer lexer(source);
-
-    auto tokens = lexer.Scan();
+    auto tokens = lexer.Scan(source);
 
     REQUIRE(tokens[3].Text == "mtllib");
     REQUIRE(tokens[3].Kind == WavefrontObjToken::Type::MaterialLib);
