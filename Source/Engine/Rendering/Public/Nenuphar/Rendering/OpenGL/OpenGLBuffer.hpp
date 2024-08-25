@@ -74,8 +74,10 @@ namespace Nenuphar
     { 
         return m_bufferID; 
     }
-
-	using OpenGLElementBuffer = OpenGLBuffer<UInt, OpenGLBufferTarget::ElementArrayBuffer>;
+    
+    using OpenGLElementBuffer = OpenGLBuffer<UInt, OpenGLBufferTarget::ElementArrayBuffer>;
+    
     template<typename T = Vertex>
     using OpenGLArrayBuffer = OpenGLBuffer<T, OpenGLBufferTarget::ArrayBuffer>;
+
 }

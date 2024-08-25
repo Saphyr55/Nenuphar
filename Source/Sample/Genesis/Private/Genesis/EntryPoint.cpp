@@ -6,14 +6,14 @@ using namespace Nenuphar;
 
 int main(int argc, const char* argv[])
 {
-    gn::GenesisApp app;
+    GenesisApp app;
     NP_INFO(main, "Genesis application created.");
 
-    app.Init();
+    app.OnInit();
 
     return Engine::LoopRun([&app]
     {
-        app.Render();
+        app.OnRender();
     });
 }
 

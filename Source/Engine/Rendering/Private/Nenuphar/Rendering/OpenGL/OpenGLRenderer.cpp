@@ -10,6 +10,7 @@ namespace Nenuphar
     ModelId OpenGLRenderer::PersistModel(const Model& model) const
     {
         ModelId id = ModelsStorage.size();
+        ModelsStorage.push_back({ });
         for (auto& mesh: model.Meshes)
         {
             ModelsStorage[id].push_back(PersistMesh(mesh));
@@ -26,6 +27,14 @@ namespace Nenuphar
     {
         shader.Use();
         OpenGLDrawMesh(mesh);
+    }
+
+    void OpenGLRenderer::DrawModel(const Shader& shader, const ModelId& model) const
+    {
+        for (const MeshId& mesh: ModelsStorage[model])
+        {
+            OpenGLDrawMesh(mesh);
+        }
     }
 
 }

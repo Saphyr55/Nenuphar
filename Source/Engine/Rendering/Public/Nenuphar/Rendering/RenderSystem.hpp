@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Nenuphar/Core/Core.hpp"
 #include "Nenuphar/Math/Vector4.hpp"
-#include "Nenuphar/Rendering/Texture.hpp"
 
 namespace Nenuphar
 {

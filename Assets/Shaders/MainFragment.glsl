@@ -1,11 +1,24 @@
 #version 450 core
 
 out vec4 FragColor;
+
+
+in vec3 Pos;
+in vec3 Normal;
 in vec2 UV;
 
+uniform vec4 UColor;
+uniform bool UIsTextured;
 uniform sampler2D tex1;
 
 void main() 
 {
-    FragColor = texture(tex1, UV);
+    if (UIsTextured)
+    {
+        FragColor = texture(tex1, UV);
+    }
+    else
+    {
+        FragColor = UColor;
+    }
 }

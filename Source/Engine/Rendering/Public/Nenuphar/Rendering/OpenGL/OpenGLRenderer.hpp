@@ -12,6 +12,8 @@ namespace Nenuphar
 
         virtual MeshId PersistMesh(const Mesh& mesh) const override;
 
+        virtual void DrawModel(const Shader& shader, const ModelId& model) const override;
+
         virtual void DrawMesh(const Shader& shader, const MeshId& mesh) const override;
     };
 
