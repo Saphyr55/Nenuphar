@@ -12,10 +12,11 @@ struct Matrix4
 	using Mat = Matrix4<R>;
 	using Vec = Vector4<R>;
 
-	Mat operator*(Mat m);
-	Vec operator*(Vector4<R> v);
+	Mat operator*(const Mat& m) const;
+	Vec operator*(const Vector4<R>& v) const;
 	Vec& operator[](std::size_t i);
-	Vec GetCol(UInt index) const;
+    const Vec& operator[](std::size_t i) const;
+    Vec GetCol(UInt index) const;
 
     Matrix4() = default;
 	Matrix4(R r);
@@ -27,20 +28,20 @@ struct Matrix4
 	Matrix4(const Vec& col_1, const Vec& col_2, const Vec& col_3, const Vec& col_4);
 
 	static Matrix4 Identity();
-	static std::array<R, 4 * 4> ValueArray(Mat mat);
-	static Matrix4 Translate(Mat mat, Vector3<R> vec);
-	static Matrix4 Scale(Mat mat, Vector3<R> vec);
-	static Matrix4 Rotate(Mat mat, const Real auto& theta, Vector3<R> vec);
-	static Matrix4 RotateX(Float theta);
-	static Matrix4 RotateY(Float theta);
-	static Matrix4 RotateZ(Float theta);
+	static std::array<R, 4 * 4> ValueArray(const Mat& mat);
+    static Matrix4 Translate(const Mat& mat, const Vector3<R>& vec);
+    static Matrix4 Scale(const Mat& mat, const Vector3<R>& vec);
+    static Matrix4 Rotate(const Mat& mat, const Real auto& theta, const Vector3<R>& vec);
+	static Matrix4 RotateX(const Float& theta);
+	static Matrix4 RotateY(const Float& theta);
+	static Matrix4 RotateZ(const Float& theta);
 	static Matrix4 Perspective(const Real auto& view, const Real auto& aspect, const Real auto& near, const Real auto& far);
 	static Matrix4 Orthographic(
 		const Real auto& left, const Real auto& right,
 		const Real auto& bottom, const Real auto& top,
 		const Real auto& near, const Real auto& far
 	);
-	static Matrix4 LookAt(Vector3<R> const& eye, Vector3<R> const& center, Vector3<R> const& up);
+    static Matrix4 LookAt(const Vector3<R>& eye, const Vector3<R>& center, const Vector3<R>& up);
 
 private:
 	Vec value[4];

@@ -1,8 +1,8 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLRenderSystem.hpp"
 
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
-#include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
-#include "glad/glad.h"
+
+#include <glad/glad.h>
 
 namespace Nenuphar 
 {

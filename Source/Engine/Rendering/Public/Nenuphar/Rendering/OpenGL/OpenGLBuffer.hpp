@@ -6,7 +6,7 @@
 #include <fmt/core.h>
 #include <glad/glad.h>
 
-#include "Nenuphar/Rendering/OpenGL/Vertex.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLLayoutBuffer.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 
 
@@ -39,7 +39,7 @@ namespace Nenuphar
 	template<typename T, OpenGLBufferTarget bt>
     OpenGLBuffer<T, bt>::~OpenGLBuffer() 
     { 
-        glDeleteBuffers(1, &m_bufferID); 
+        glDeleteBuffers(1, &m_bufferID);
     }
 
 	template<typename T, OpenGLBufferTarget bt>
@@ -76,6 +76,6 @@ namespace Nenuphar
     }
 
 	using OpenGLElementBuffer = OpenGLBuffer<UInt, OpenGLBufferTarget::ElementArrayBuffer>;
-	using OpenGLVertexBuffer = OpenGLBuffer<Vertex, OpenGLBufferTarget::ArrayBuffer>;
-
+    template<typename T = Vertex>
+    using OpenGLArrayBuffer = OpenGLBuffer<T, OpenGLBufferTarget::ArrayBuffer>;
 }

@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Nenuphar/Common/Common.hpp"
+#include <functional>
 
 namespace Nenuphar
 {
 
-    using TextureID = UInt32;
+    using Texture = UInt32;
 
-    struct DataImage
+    struct TextureInformation
     {
         Word8* Data;
         Int Format;

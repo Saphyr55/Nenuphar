@@ -1,5 +1,6 @@
 #include "Nenuphar/ApplicationCore/WindowBase.hpp"
 #include "Nenuphar/ApplicationCore/PlatformApplication.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
 
 #ifdef NP_PLATFORM_WINDOWS
 

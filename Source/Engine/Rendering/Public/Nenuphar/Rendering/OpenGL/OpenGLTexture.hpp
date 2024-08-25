@@ -1,13 +1,14 @@
 #pragma once
 
-#include "Nenuphar/Common/Common.hpp"
+#include "Nenuphar/Core/IO/Path.hpp"
 #include "Nenuphar/Core/Resource/Resource.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
 
+
 namespace Nenuphar
 {
-
+	
     template<OpenGLTextureTarget target>
     class OpenGLTexture
 	{
@@ -23,14 +24,14 @@ namespace Nenuphar
         void Bind() const;
         void Unbind() const;
 
-		explicit operator TextureID() { return texture; }
+		explicit operator Texture() { return texture; }
 
-		static OpenGLTexture<target> LoadFromImage(const Path& path, const std::function<void(const DataImage&, Parameter)>&);
+		static OpenGLTexture<target> LoadFromImage(const Path& path, const std::function<void(const TextureInformation&, Parameter)>&);
 
         OpenGLTexture();
 
     private:
-        TextureID texture{};
+        Texture texture;
     };
 
     /**
@@ -44,7 +45,7 @@ namespace Nenuphar
     class OpenGLRegistry
     {
     private:
-        std::unordered_map<TextureID, OpenGLTexture2D> m_registry;
+        std::unordered_map<Texture, OpenGLTexture2D> m_registry;
     };
 
     /**
@@ -69,15 +70,15 @@ namespace Nenuphar
 		glBindTexture(target, 0);
 	}
 
-    void LoadDataImage(const Path& path, const std::function<void(const DataImage&)>& f);
+    void LoadDataImage(const Path& path, const std::function<void(const TextureInformation&)>& f);
 
-	void TexImage2D(UInt target, Int level, const DataImage& dataImage);
+	void TexImage2D(UInt target, Int level, const TextureInformation& dataImage);
 
 	void GenerateMipmap(UInt target);
 
 	void ActiveTexture(UInt slot);
 
-    void DefaultParameterTexture(const DataImage& dataImage, OpenGLTexture<Texture2D>::Parameter parameter);
+    void DefaultParameterTexture(const TextureInformation& dataImage, OpenGLTexture<Texture2D>::Parameter parameter);
 
     template<OpenGLTextureTarget target>
 	auto OpenGLTexture<target>::Parameter::WithParameter(UInt pName, Int param) const -> const Parameter&
@@ -108,7 +109,7 @@ namespace Nenuphar
 	}
 
 	template<OpenGLTextureTarget target>
-    OpenGLTexture<target> OpenGLTexture<target>::LoadFromImage(const Path& path, const std::function<void(const DataImage&, OpenGLTexture::Parameter)>& f)
+    OpenGLTexture<target> OpenGLTexture<target>::LoadFromImage(const Path& path, const std::function<void(const TextureInformation&, OpenGLTexture::Parameter)>& f)
 	{
         OpenGLTexture<target> texture;
 		texture.Bind();

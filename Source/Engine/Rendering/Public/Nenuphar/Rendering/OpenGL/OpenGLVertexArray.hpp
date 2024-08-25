@@ -1,18 +1,19 @@
 #pragma once
 
+#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLBuffer.hpp"
 
 namespace Nenuphar
 {
 
-    using VertexArrayID = UInt;
+    using VertexArrayId = UInt32;
 
     class OpenGLVertexArray
     {
 
     public:
 
-        [[nodiscard]] inline VertexArrayID GetID() const  { return m_vertexArrayID;  }
+        [[nodiscard]] inline VertexArrayId GetID() const  { return m_vertexArrayId;  }
 
         void Bind() const;
 
@@ -22,7 +23,7 @@ namespace Nenuphar
         ~OpenGLVertexArray();
 
     private:
-        VertexArrayID m_vertexArrayID;
+        VertexArrayId m_vertexArrayId;
     };
 
 

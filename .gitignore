@@ -23,8 +23,5 @@ cmake-*/
 .vscode/
 *.code-workspace
 
-
-# .NET
-*.DotSettings.user
-obj/
-bin/
+# Clangd
+.clangd

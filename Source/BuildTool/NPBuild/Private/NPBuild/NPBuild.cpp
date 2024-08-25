@@ -2,7 +2,6 @@
 
 #include <Nenuphar/Core/Core.hpp>
 
-#include <iostream>
 #include <fstream>
 #include <filesystem>
 
