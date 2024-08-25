@@ -1,5 +1,6 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -9,18 +10,27 @@ namespace Nenuphar
 
 	void TexImage2D(UInt target, Int level, const TextureInformation& dataImage)
 	{
-		glTexImage2D(target, level, GL_RGB, dataImage.Width, dataImage.Height, 0, dataImage.Format, GL_UNSIGNED_BYTE, dataImage.Data);
-	}
+        NPOGL_CHECK_CALL(glTexImage2D(
+                target,
+                level,
+                GL_RGB,
+                dataImage.Width,
+                dataImage.Height,
+                0,
+                dataImage.Format,
+                GL_UNSIGNED_BYTE,
+                dataImage.Data));
+    }
 
 	void GenerateMipmap(UInt target) 
 	{
-		glGenerateMipmap(target);
-	}
+		NPOGL_CHECK_CALL(glGenerateMipmap(target));
+    }
 
 	void ActiveTexture(UInt slot)
 	{
-		glActiveTexture(GL_TEXTURE0 + slot);
-	}
+		NPOGL_CHECK_CALL(glActiveTexture(GL_TEXTURE0 + slot));
+    }
 
     void DefaultParameterTexture(const TextureInformation& dataImage, OpenGLTexture<Texture2D>::Parameter parameter)
 	{

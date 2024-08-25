@@ -1,5 +1,4 @@
 #include "Nenuphar/Rendering/Windows/WindowsDeviceContext.hpp"
-#include "Nenuphar/Core/Windows.hpp"
 
 namespace Nenuphar
 {

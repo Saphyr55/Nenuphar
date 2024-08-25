@@ -4,8 +4,8 @@
 
 namespace Nenuphar
 {
-    using ShaderId = UInt;
-    using ShaderProgramId = UInt;
+    using ShaderId = UInt32;
+    using ShaderProgramId = UInt32;
 
     class Shader
     {

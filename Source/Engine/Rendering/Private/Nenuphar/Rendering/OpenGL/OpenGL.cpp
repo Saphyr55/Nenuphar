@@ -1,80 +1,91 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
 
 namespace Nenuphar
 {
     UInt32 CreateShader(UInt32 type)
     {
-        return glCreateShader(type);
+        return NPOGL_CHECK_RCALL(glCreateShader(type));
     }
 
     void ShaderSource(UInt32 shader, Int count, const Char** source, const Int* length)
     {
-        glShaderSource(shader, count, source, length);
+        NPOGL_CHECK_CALL(glShaderSource(shader, count, source, length));
     }
 
     void UseProgram(UInt32 program)
     {
-        glUseProgram(program);
+        NPOGL_CHECK_CALL(glUseProgram(program));
     }
 
     void DeleteShader(UInt32 shader)
     {
-        glDeleteShader(shader);
+        NPOGL_CHECK_CALL(glDeleteShader(shader));
     }
 
     UInt32 GetUniformLocation(UInt32 program, const char* uniform)
     {
-        return glGetUniformLocation(program, uniform);
+        return NPOGL_CHECK_RCALL(glGetUniformLocation(program, uniform));
     }
 
     void CompileShader(UInt32 shader)
     {
-        glCompileShader(shader);
+        NPOGL_CHECK_CALL(glCompileShader(shader));
     }
 
     void LinkProgram(UInt32 program)
     {
-        glLinkProgram(program);
+        NPOGL_CHECK_CALL(glLinkProgram(program));
     }
 
     UInt32 CreateProgram()
     {
-        return glCreateProgram();
+        return NPOGL_CHECK_RCALL(glCreateProgram());
+    }
+
+    void DeleteProgram(UInt32 program)
+    {
+        NPOGL_CHECK_CALL(glDeleteProgram(program));
     }
 
     void SetUniform(Int location, Matrix4f value)
     {
-        glUniformMatrix4fv(location, 1, GL_FALSE, Matrix4f::ValueArray(value).data());
+        NPOGL_CHECK_CALL(glUniformMatrix4fv(
+                location,
+                1,
+                GL_FALSE,
+                Matrix4f::ValueArray(value).data()
+                ));
     }
 
     void SetUniform(Int location, Vector4f value)
     {
-        glUniform4f(location, value.x, value.y, value.z, value.w);
+        NPOGL_CHECK_CALL(glUniform4f(location, value.x, value.y, value.z, value.w));
     }
 
     void SetUniform(Int location, Vector3f value)
     {
-        glUniform3f(location, value.x, value.y, value.z);
+        NPOGL_CHECK_CALL(glUniform3f(location, value.x, value.y, value.z));
     }
 
     void SetUniform(Int location, Vector2f value)
     {
-        glUniform2f(location, value.x, value.y);
+        NPOGL_CHECK_CALL(glUniform2f(location, value.x, value.y));
     }
 
     void SetUniform(Int location, Float value)
     {
-        glUniform1f(location, value);
+        NPOGL_CHECK_CALL(glUniform1f(location, value));
     }
 
     void SetUniform(Int location, UInt32 value)
     {
-        glUniform1ui(location, value);
+        NPOGL_CHECK_CALL(glUniform1ui(location, value));
     }
 
     void SetUniform(Int location, Int value)
     {
-        glUniform1i(location, value);
+        NPOGL_CHECK_CALL(glUniform1i(location, value));
     }
 
 }

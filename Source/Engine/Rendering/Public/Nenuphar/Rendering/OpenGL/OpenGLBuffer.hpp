@@ -6,6 +6,7 @@
 #include <fmt/core.h>
 #include <glad/glad.h>
 
+#include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLLayoutBuffer.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 
@@ -39,28 +40,28 @@ namespace Nenuphar
 	template<typename T, OpenGLBufferTarget bt>
     OpenGLBuffer<T, bt>::~OpenGLBuffer() 
     { 
-        glDeleteBuffers(1, &m_bufferID);
+        NPOGL_CHECK_CALL(glDeleteBuffers(1, &m_bufferID));
     }
 
 	template<typename T, OpenGLBufferTarget bt>
     OpenGLBuffer<T, bt>::OpenGLBuffer(const std::vector<T>& data, OpenGLBufferUsage usage) 
         : m_usage(usage)
 	{
-		glGenBuffers(1, &m_bufferID);
+		NPOGL_CHECK_CALL(glGenBuffers(1, &m_bufferID));
 		Bind();
-		glBufferData(bt, data.size() * sizeof(T), data.data(), usage);
-	}
+		NPOGL_CHECK_CALL(glBufferData(bt, data.size() * sizeof(T), data.data(), usage));
+    }
 	  
 	template<typename T, OpenGLBufferTarget bt>
     inline void OpenGLBuffer<T, bt>::Bind() const 
     { 
-        glBindBuffer(bt, m_bufferID);
+        NPOGL_CHECK_CALL(glBindBuffer(bt, m_bufferID));
     }
 
 	template<typename T, OpenGLBufferTarget bt>
     inline void OpenGLBuffer<T, bt>::Unbind() const 
     { 
-        glBindBuffer(bt, 0);
+        NPOGL_CHECK_CALL(glBindBuffer(bt, 0));
     }
 
 	template<typename T, OpenGLBufferTarget bt>

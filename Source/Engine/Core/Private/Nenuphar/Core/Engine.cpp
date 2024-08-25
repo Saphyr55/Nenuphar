@@ -4,8 +4,8 @@
 
 namespace Nenuphar
 {
-
-    Bool Engine::IsFinish = true;
+    Bool Engine::HasStarted = false;
+    Bool Engine::IsFinish = false;
 
     int Engine::LoopRun(const std::function<void()>& runnable)
     {
@@ -13,6 +13,7 @@ namespace Nenuphar
         {
             NP_INFO(Engine::LoopRun, "Engine start the main loop.");
             IsFinish = false;
+            HasStarted = true;
 
             while (!IsFinish)
             {

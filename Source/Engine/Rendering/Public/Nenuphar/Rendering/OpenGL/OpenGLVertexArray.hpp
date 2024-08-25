@@ -35,8 +35,14 @@ namespace Nenuphar
         buffer.Bind();
         for (const auto& lb : layouts)
         {
-            glVertexAttribPointer(lb.Index, lb.Size, lb.Type, lb.Normalized, lb.Stride, lb.Offset);
-            glEnableVertexAttribArray(lb.Index);
+            NPOGL_CHECK_CALL(glVertexAttribPointer(
+                    lb.Index,
+                    lb.Size,
+                    lb.Type,
+                    lb.Normalized,
+                    lb.Stride,
+                    lb.Offset));
+            NPOGL_CHECK_CALL(glEnableVertexAttribArray(lb.Index));
         }
         buffer.Unbind();
     }

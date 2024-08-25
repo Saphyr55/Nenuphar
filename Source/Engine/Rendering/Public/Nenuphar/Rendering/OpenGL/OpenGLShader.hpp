@@ -27,19 +27,20 @@ namespace Nenuphar
 
 	class OpenGLShaderPart
 	{
+    public:
+        void Source(const char* source) const;
 
-	friend class OpenGLShader;
+		inline OpenGLShaderType Type() const { return m_shaderType; }
 
-	private:
-		void Source(const char* source) const;
-		void Compile() const;
+        inline ShaderId Id() const { return m_shaderID; }
 
-	public:
-		explicit OpenGLShaderPart(OpenGLShaderType type);
+        void Compile() const;
+
+        void CheckInfo(ShaderId status) const;
+
+    public:
+        explicit OpenGLShaderPart(OpenGLShaderType type);
 		~OpenGLShaderPart();
-
-	private:
-		void CheckInfo(ShaderId status) const;
 
 	private:
 		OpenGLShaderType m_shaderType;
@@ -50,8 +51,9 @@ namespace Nenuphar
 	class OpenGLShader : public Shader
 	{
 	public:
+        void CheckInfo(OpenGLShaderStatus status) const;
 
-		virtual void Use() const override;
+        virtual void Use() const override;
 
         virtual ShaderProgramId Id() const override
         {
@@ -62,16 +64,14 @@ namespace Nenuphar
 
 		const OpenGLShader& Attach(OpenGLShaderType st, StringView source) const;
 
+    public:
         OpenGLShader(StringView vs, StringView fs);
         OpenGLShader();
 		~OpenGLShader();
 
-    private:
-        void CheckInfo(OpenGLShaderStatus status) const;
-
 	private:
 		ShaderProgramId m_programID = -1;
-        mutable std::vector<std::unique_ptr<OpenGLShaderPart>> m_parts;
+        mutable std::vector<UniquePtr<OpenGLShaderPart>> m_parts;
     };
 
 

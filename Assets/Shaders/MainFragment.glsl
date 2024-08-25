@@ -13,12 +13,5 @@ uniform sampler2D tex1;
 
 void main() 
 {
-    if (UIsTextured)
-    {
-        FragColor = texture(tex1, UV);
-    }
-    else
-    {
-        FragColor = UColor;
-    }
+    FragColor = texture(tex1, UV);
 }

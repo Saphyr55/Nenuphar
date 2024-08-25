@@ -3,6 +3,7 @@
 #include "Nenuphar/Core/IO/Path.hpp"
 #include "Nenuphar/Core/Resource/Resource.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
 
 
@@ -23,7 +24,7 @@ namespace Nenuphar
 
         void Bind() const;
         void Unbind() const;
-
+		
 		explicit operator Texture() { return texture; }
 
 		static OpenGLTexture<target> LoadFromImage(const Path& path, const std::function<void(const TextureInformation&, Parameter)>&);
@@ -54,21 +55,21 @@ namespace Nenuphar
     template<OpenGLTextureTarget target>
     OpenGLTexture<target>::OpenGLTexture()
     {
-        glGenTextures(1, &texture);
+        NPOGL_CHECK_CALL(glGenTextures(1, &texture));
         Bind();
     }
 
     template<OpenGLTextureTarget target>
 	void OpenGLTexture<target>::Bind() const
 	{
-		glBindTexture(target, texture);
-	}
+		NPOGL_CHECK_CALL(glBindTexture(target, texture));
+    }
 
 	template<OpenGLTextureTarget target>
 	void OpenGLTexture<target>::Unbind() const
 	{
-		glBindTexture(target, 0);
-	}
+		NPOGL_CHECK_CALL(glBindTexture(target, 0));
+    }
 
     void LoadDataImage(const Path& path, const std::function<void(const TextureInformation&)>& f);
 
@@ -83,30 +84,30 @@ namespace Nenuphar
     template<OpenGLTextureTarget target>
 	auto OpenGLTexture<target>::Parameter::WithParameter(UInt pName, Int param) const -> const Parameter&
     {
-		glTexParameteri(target, pName, param);
-		return *this;
-	}
+        NPOGL_CHECK_CALL(glTexParameteri(target, pName, param));
+        return *this;
+    }
 
 	template<OpenGLTextureTarget target>
 	auto OpenGLTexture<target>::Parameter::WithParameter(UInt pName, Float param) const -> const Parameter&
     {
-		glTexParameterf(target, pName, param);
+		NPOGL_CHECK_CALL(glTexParameterf(target, pName, param));
 		return *this;
-	}
+    }
 
 	template<OpenGLTextureTarget target>
 	auto OpenGLTexture<target>::Parameter::WithParameter(UInt pName, const Int* param) const -> const Parameter&
     {
-		glTexParameteriv(target, pName, param);
+		NPOGL_CHECK_CALL(glTexParameteriv(target, pName, param));
 		return *this;
-	}
+    }
 
 	template<OpenGLTextureTarget target>
 	auto OpenGLTexture<target>::Parameter::WithParameter(UInt pName, const Float* param) const -> const Parameter&
     {
-		glTexParameterfv(target, pName, param);
+		NPOGL_CHECK_CALL(glTexParameterfv(target, pName, param));
 		return *this;
-	}
+    }
 
 	template<OpenGLTextureTarget target>
     OpenGLTexture<target> OpenGLTexture<target>::LoadFromImage(const Path& path, const std::function<void(const TextureInformation&, OpenGLTexture::Parameter)>& f)

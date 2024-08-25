@@ -33,7 +33,10 @@ SharedRef<RenderData> RenderData::Default()
     }
     
     auto model = res.Value();
-    auto modelId = renderer->PersistModel(model);
+    auto modelId = renderer->PersistModel(FloorModel);
+    
+    auto mesh = FloorModel.Meshes[0];
+    mesh.Textures.push_back(Texture(wall));
 
     auto vertexFilepath = Np::FromAssets("/Shaders/MainVertex.glsl");
     auto fragmentFilepath = Np::FromAssets("/Shaders/MainFragment.glsl");
@@ -56,7 +59,7 @@ SharedRef<RenderData> RenderData::Default()
             resultFragment.Value());
 
     auto registry = MakeUnique<Np::UniformRegistry>(*program);
-    registry->Register("tex1", Texture(wall))
+    registry->Register("tex1",  (Int) Texture(wall))
             .Register("proj", Matrix4f(1))
             .Register("view", Matrix4f(1))
             .Register("model", Matrix4f(1));

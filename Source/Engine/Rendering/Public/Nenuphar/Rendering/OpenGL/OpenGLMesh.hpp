@@ -9,14 +9,14 @@
 namespace Nenuphar
 {
 
-    template<typename V = Vertex>
     struct OpenGLMesh
-    {
+    {   
+        Mesh mesh;
         OpenGLVertexArray VAO;
         Int Count;
     };
 
-    using OpenGLMeshStorage = std::vector<OpenGLMesh<>>;
+    using OpenGLMeshStorage = std::vector<OpenGLMesh>;
     static OpenGLMeshStorage Storage;
 
     MeshId OpenGLPersistMesh(const Mesh& mesh);

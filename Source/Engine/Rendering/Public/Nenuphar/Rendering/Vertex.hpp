@@ -5,7 +5,7 @@
 
 namespace Nenuphar
 {
-    using VIndice = UInt32;
+    using VIndice = UInt;
 
     struct VertexMinimalInfo
     {

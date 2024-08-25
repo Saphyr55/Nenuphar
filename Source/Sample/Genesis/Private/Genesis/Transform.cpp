@@ -1,14 +1,16 @@
 #include "Genesis/Transform.hpp"
 #include "Nenuphar/Math/Matrix4.hpp"
+#include "Nenuphar/Math/Quaternion.hpp"
 
-namespace gn
+Matrix4f Transform::Tranformation(const Matrix4f& mat, const Transform& transform)
 {
+    auto model = Matrix4f::Translate(mat, transform.Translation);
+    model = Matrix4f::Scale(model, transform.Scale);
+    // model = model * Quaternion::ToMat4f(transform.Rotation);
+    return model;
+}
 
-
-    Matrix4f Transform::Tranformation(const Transform& transform)
-    {
-        return Matrix4f::Translate(Matrix4f::Identity(), transform.Translation);
-    }
-
-    
+Matrix4f Transform::Tranformation(const Transform& transform)
+{
+    return Tranformation(Matrix4f::Identity(), transform);
 }

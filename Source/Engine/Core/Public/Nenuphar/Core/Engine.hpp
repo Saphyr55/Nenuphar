@@ -14,6 +14,7 @@ namespace Nenuphar
     public:
         static int LoopRun(const std::function<void()>& runnable);
 
+        static Bool HasStarted;
         static Bool IsFinish;
     };
 

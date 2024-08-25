@@ -1,8 +1,9 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLMesh.hpp"
-#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLBuffer.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLLayoutBuffer.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLVertexArray.hpp"
+#include "Nenuphar/Rendering/Vertex.hpp"
 
 namespace Nenuphar
 {
@@ -10,18 +11,17 @@ namespace Nenuphar
     MeshId OpenGLPersistMesh(const Mesh& mesh)
     {
         MeshId id = Storage.size();
+        OpenGLMesh glMesh;
+        glMesh.mesh = mesh;
+        auto vbo = OpenGLArrayBuffer<Vertex>(glMesh.mesh.Vertices);
+        auto ebo = OpenGLElementBuffer(glMesh.mesh.Indices);
+        auto count = glMesh.mesh.Indices.size();
+        glMesh.Count = count;
 
-        auto vao = OpenGLVertexArray();
-        auto vbo = OpenGLArrayBuffer<Vertex>(mesh.Vertices);
-        auto ebo = OpenGLElementBuffer(mesh.Indices);
-        auto count = mesh.Indices.size();
-        
         LinkBuffer(vbo, LayoutVertex);
 
-        auto glMesh = OpenGLMesh<Vertex>(std::move(vao), std::move(count));
-
         Storage.push_back(std::move(glMesh));
-        
+
         return id;
     }
 
@@ -29,7 +29,7 @@ namespace Nenuphar
     {
         auto mesh = Storage[id];
         mesh.VAO.Bind();
-        glDrawElements(GL_TRIANGLES, mesh.Count, GL_UNSIGNED_INT, nullptr);
+        NPOGL_CHECK_CALL(glDrawElements(GL_TRIANGLES, mesh.Count, GL_UNSIGNED_INT, nullptr));
         mesh.VAO.Unbind();
     }
 }

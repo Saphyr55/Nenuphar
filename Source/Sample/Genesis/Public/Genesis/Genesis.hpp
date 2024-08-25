@@ -38,6 +38,7 @@ public:
 private:
     Np::EntityRegistry m_registry;
     Np::Entity MainCamera;
+    Np::Entity EFloor;
     UniquePtr<Np::GraphicContext> MainGraphicContext;
     SharedRef<Np::Window> MainWindow;
     SharedRef<RenderData> MainRenderData;

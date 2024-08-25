@@ -31,6 +31,7 @@ namespace Nenuphar
 
     void OpenGLRenderer::DrawModel(const Shader& shader, const ModelId& model) const
     {
+        shader.Use();
         for (const MeshId& mesh: ModelsStorage[model])
         {
             OpenGLDrawMesh(mesh);

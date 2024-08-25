@@ -13,6 +13,26 @@ namespace Nenuphar
         std::vector<Mesh> Meshes;
     };
 
+    const Model FloorModel = []() {
+        
+        const std::vector<Vertex> Vertices
+        {
+            Vertex{Vector3f(-1.0f, 0.0f, 1.0f), Vector3f(1.0f, 1.0f, 1.0f), Vector2f(0.0f, 0.0f)},
+            Vertex{Vector3f(-1.0f, 0.0f, -1.0f), Vector3f(1.0f, 1.0f, 1.0f), Vector2f(0.0f, 1.0f)},
+            Vertex{Vector3f(1.0f, 0.0f, -1.0f), Vector3f(1.0f, 1.0f, 1.0f), Vector2f(1.0f, 1.0f)},
+            Vertex{Vector3f(1.0f, 0.0f, 1.0f), Vector3f(1.0f, 1.0f, 1.0f), Vector2f(1.0f, 0.0f)}
+        };
+
+        // Indices for vertices order
+        std::vector<VIndice> Indices =
+        {
+            0, 1, 2,
+            0, 2, 3
+        };
+
+        return Model({Mesh(Vertices, Indices, { })});
+    }();
+
     const Model CubeModel = []() {
         
         const std::vector<Vertex> CubeVertices{
@@ -38,7 +58,7 @@ namespace Nenuphar
                 1, 4, 0,
                 4, 5, 6,
                 4, 6, 7};
-        
+
         return Model({Mesh(CubeVertices, CubeIndices, { })});
     }();
 }

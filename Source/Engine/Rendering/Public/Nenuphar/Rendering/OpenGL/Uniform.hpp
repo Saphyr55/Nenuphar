@@ -119,8 +119,7 @@ namespace Nenuphar
     Uniform<T>::Uniform(OpenGLShader& shader, StringView name, T value)
         : m_value(value), m_owner(shader), m_name(name)
     {
-
-        m_location = glGetUniformLocation(m_owner.Id(), name.data());
+        m_location = NPOGL_CHECK_RCALL(glGetUniformLocation(m_owner.Id(), name.data()));
         Update();
     }
 

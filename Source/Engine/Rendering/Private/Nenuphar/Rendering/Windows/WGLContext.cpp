@@ -1,6 +1,9 @@
 #include "Nenuphar/Rendering/Windows/WGLContext.hpp"
-#include "Nenuphar/Core/Core.hpp"
 #include "Nenuphar/Common/Debug/Debug.hpp"
+#include "Nenuphar/Core/Logger/Logger.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
+
+#include <glad/glad.h>
 
 namespace Nenuphar
 {
@@ -56,9 +59,15 @@ namespace Nenuphar
 
         Int openGLAttributes[] =
         {
-            WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
-            WGL_CONTEXT_MINOR_VERSION_ARB, 6,
-            WGL_CONTEXT_PROFILE_MASK_ARB, 
+            WGL_CONTEXT_MAJOR_VERSION_ARB,
+            4,
+            WGL_CONTEXT_MINOR_VERSION_ARB,
+            6,
+#if defined(_DEBUG) || defined(DEBUG)
+            WGL_CONTEXT_FLAGS_ARB,
+            WGL_CONTEXT_DEBUG_BIT_ARB,
+#endif
+            WGL_CONTEXT_PROFILE_MASK_ARB,
             WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
             0
         };
@@ -72,7 +81,24 @@ namespace Nenuphar
         }
 
         Current();
+        
+        NP_INFO(WGLContext::WGLContext, "Setup WGL context.");
 
+#if defined(_DEBUG) || defined(DEBUG)
+        
+        int contextFlags = 0;
+        glGetIntegerv(GL_CONTEXT_FLAGS, &contextFlags);
+
+        if (contextFlags & GL_CONTEXT_FLAG_DEBUG_BIT)
+        {
+            OpenGLInitDebugger();
+            NP_INFO(WGLContext::WGLContext, "WGL context was setup in debug mode.");
+        }
+        else
+        {
+            NP_ERROR(WGLContext::WGLContext, "Failed to setup WGL context in debug mode.");
+        }
+#endif
     }
 
     WGLContext::~WGLContext()
@@ -114,7 +140,7 @@ namespace Nenuphar
         PIXELFORMATDESCRIPTOR pfd = {};
         pfd.nSize = sizeof(pfd);
         pfd.nVersion = 1;
-        pfd.dwFlags = 
+        pfd.dwFlags =
             PFD_DRAW_TO_WINDOW | 
             PFD_SUPPORT_OPENGL | 
             PFD_DOUBLEBUFFER   ;

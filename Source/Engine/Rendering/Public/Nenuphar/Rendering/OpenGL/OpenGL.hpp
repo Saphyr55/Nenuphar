@@ -79,6 +79,8 @@ namespace Nenuphar
 
     UInt32 CreateProgram();
 
+    void DeleteProgram(UInt32 program);
+
     void SetUniform(Int location, Matrix4f value);
 
     void SetUniform(Int location, Vector4f value);

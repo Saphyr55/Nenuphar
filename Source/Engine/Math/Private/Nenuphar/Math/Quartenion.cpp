@@ -1,5 +1,34 @@
+#include "Nenuphar/Math/Matrix4.hpp"
 #include "Nenuphar/Math/Quaternion.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
+
+static Matrix4f ToMat4f(const Quaternion& q)
+{
+    Matrix4f Result = Matrix4f::Identity();
+    Float qxx(q.X * q.X);
+    Float qyy(q.Y * q.Y);
+    Float qzz(q.Z * q.Z);
+    Float qxz(q.X * q.Z);
+    Float qxy(q.X * q.Y);
+    Float qyz(q.Y * q.Z);
+    Float qwx(q.W * q.X);
+    Float qwy(q.W * q.Y);
+    Float qwz(q.W * q.Z);
+
+    Result[0][0] = Float(1) - Float(2) * (qyy + qzz);
+    Result[0][1] = Float(2) * (qxy + qwz);
+    Result[0][2] = Float(2) * (qxz - qwy);
+
+    Result[1][0] = Float(2) * (qxy - qwz);
+    Result[1][1] = Float(1) - Float(2) * (qxx + qzz);
+    Result[1][2] = Float(2) * (qyz + qwx);
+
+    Result[2][0] = Float(2) * (qxz + qwy);
+    Result[2][1] = Float(2) * (qyz - qwx);
+    Result[2][2] = Float(1) - Float(2) * (qxx + qyy);
+    
+    return Result;
+}
 
 float Quaternion::Norm(const Quaternion& q)
 {
