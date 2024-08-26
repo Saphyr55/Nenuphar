@@ -36,7 +36,7 @@ SharedRef<RenderData> RenderData::Default()
     auto modelId = renderer->PersistModel(FloorModel);
     
     auto mesh = FloorModel.Meshes[0];
-    mesh.Textures.push_back(Texture(wall));
+    mesh->Textures.push_back(Texture(wall));
 
     auto vertexFilepath = Np::FromAssets("/Shaders/MainVertex.glsl");
     auto fragmentFilepath = Np::FromAssets("/Shaders/MainFragment.glsl");

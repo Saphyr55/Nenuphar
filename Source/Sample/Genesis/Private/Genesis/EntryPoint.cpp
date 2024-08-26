@@ -11,8 +11,8 @@ int main(int argc, const char* argv[])
 
     app.OnInit();
 
-    return Engine::LoopRun([&app]
-    {
+    return Engine::LoopRun([&app] {
+        app.OnUpdate();
         app.OnRender();
     });
 }

@@ -1,4 +1,5 @@
 #include "Nenuphar/Model/TOL/TOLMeshLoader.hpp"
+#include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Result.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
@@ -56,7 +57,7 @@ namespace Nenuphar
 
         NP_INFO(TOLModelLoader::Load, "Load the model from '{}'", path.GetFilePath());
 
-        std::vector<Mesh> meshes;
+        std::vector<SharedRef<Mesh>> meshes;
 
         // Loop over shapes
         for (size_t s = 0; s < shapes.size(); s++)
@@ -115,7 +116,10 @@ namespace Nenuphar
                 // shapes[s].mesh.material_ids[f];
             }
 
-            Mesh mesh(vertices, indices, textures);
+            auto mesh = MakeSharedRef<Mesh>(
+                    std::move(vertices),
+                    std::move(indices), 
+                    std::move(textures));
             meshes.push_back(mesh);
         }
 

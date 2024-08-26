@@ -10,7 +10,7 @@ namespace Nenuphar
     public:
         virtual ModelId PersistModel(const Model& model) const override;
 
-        virtual MeshId PersistMesh(const Mesh& mesh) const override;
+        virtual MeshId PersistMesh(SharedRef<Mesh> mesh) const override;
 
         virtual void DrawModel(const Shader& shader, const ModelId& model) const override;
 

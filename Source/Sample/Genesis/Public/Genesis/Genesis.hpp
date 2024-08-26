@@ -24,6 +24,7 @@ class GenesisApp
 public:
     void OnInit();
     void OnRender();
+    void OnUpdate();
 
 private:
     void ResetCameraTarget(const Np::KeyEvent& evt, Np::OrbitCamera& camera);
@@ -36,9 +37,10 @@ public:
     ~GenesisApp() = default;
 
 private:
-    Np::EntityRegistry m_registry;
-    Np::Entity MainCamera;
+    Np::EntityRegistry Registry;
+    Np::Entity ECamera;
     Np::Entity EFloor;
+    Np::Entity ECube;
     UniquePtr<Np::GraphicContext> MainGraphicContext;
     SharedRef<Np::Window> MainWindow;
     SharedRef<RenderData> MainRenderData;

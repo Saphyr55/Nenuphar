@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Nenuphar/Common/Instanciate.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
 #include "Nenuphar/Rendering/Mesh.hpp"
 #include "Nenuphar/Rendering/Vertex.hpp"
@@ -10,7 +12,7 @@ namespace Nenuphar
 
     struct Model
     {
-        std::vector<Mesh> Meshes;
+        std::vector<SharedRef<Mesh>> Meshes;
     };
 
     const Model FloorModel = []() {
@@ -30,7 +32,9 @@ namespace Nenuphar
             0, 2, 3
         };
 
-        return Model({Mesh(Vertices, Indices, { })});
+        auto mesh = SharedRef<Mesh>(new Mesh(std::move(Vertices), std::move(Indices), { }));
+
+        return Model({mesh});
     }();
 
     const Model CubeModel = []() {
@@ -59,6 +63,8 @@ namespace Nenuphar
                 4, 5, 6,
                 4, 6, 7};
 
-        return Model({Mesh(CubeVertices, CubeIndices, { })});
+        auto mesh = SharedRef<Mesh>(new Mesh(std::move(CubeVertices), std::move(CubeIndices), { }));
+
+        return Model({mesh});
     }();
 }

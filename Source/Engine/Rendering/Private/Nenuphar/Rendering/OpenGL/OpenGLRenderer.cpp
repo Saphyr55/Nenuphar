@@ -1,4 +1,5 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLRenderer.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLMesh.hpp"
 
 namespace Nenuphar
@@ -18,7 +19,7 @@ namespace Nenuphar
         return id;
     }
 
-    MeshId OpenGLRenderer::PersistMesh(const Mesh& mesh) const
+    MeshId OpenGLRenderer::PersistMesh(SharedRef<Mesh> mesh) const
     {
         return OpenGLPersistMesh(mesh);
     }
