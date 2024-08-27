@@ -36,7 +36,7 @@ namespace Nenuphar
 #define NPGL_CHECKER
 
 #ifdef NPGL_CHECKER
-#define NPOGL_CHECK CHECK(::Nenuphar::OpenGLCheckError(__FUNCTION__, __FILE__, __LINE__))
+#define NPOGL_CHECK CHECK(::Nenuphar::OpenGLCheckError(__FUNCTION__, __FILE__, __LINE__) == GL_NO_ERROR)
 #else
 #define NPOGL_CHECK
 #endif

@@ -18,16 +18,17 @@ namespace Nenuphar
 	using UniformLocation = UInt;
 
 
-	template<typename T>
+    template<typename T>
     concept IsUniformValue =
-		std::is_same_v<T, Matrix4f>   or
-        std::is_same_v<T, Vector2f>   or
-        std::is_same_v<T, Vector3f>   or
-        std::is_same_v<T, Vector4f>   or
-        std::is_same_v<T, Float>      or
-        std::is_same_v<T, UInt>       or
-		std::is_same_v<T, Int>        ;
-
+            std::is_same_v<T, Matrix4f> or
+            std::is_same_v<T, Vector2f> or
+            std::is_same_v<T, Vector3f> or
+            std::is_same_v<T, Vector4f> or
+            std::is_same_v<T, Float> or
+            std::is_same_v<T, UInt> or
+            std::is_same_v<T, Int> or
+            std::is_same_v<T, Bool>
+            ;       
 
     template<IsUniformValue T>
     class Uniform final
@@ -49,6 +50,7 @@ namespace Nenuphar
         mutable T m_value;
     };
 
+    using UniformBool = Uniform<Bool>;
     using UniformInt = Uniform<Int>;
     using UniformSampler2D = Uniform<UInt>;
     using UniformU32 = Uniform<UInt>;
@@ -58,16 +60,18 @@ namespace Nenuphar
 	using UniformVec2f = Uniform<Vector2f>;
     using UniformMat4f = Uniform<Matrix4f>;
 
+    
     using IUniform = std::variant<
             Uniform<Int>,
+            Uniform<Bool>,
             Uniform<UInt>,
             Uniform<Float>,
             Uniform<Vector2f>,
             Uniform<Vector3f>,
             Uniform<Vector4f>,
-            Uniform<Matrix4f>
-            >;
+            Uniform<Matrix4f>>;
 
+    
     class UniformRegistry
     {
     public:
@@ -81,7 +85,7 @@ namespace Nenuphar
 
         inline OpenGLShader& Owner() { return m_owner; }
 
-        explicit UniformRegistry(OpenGLShader& s) : m_owner(s) { }
+        UniformRegistry(OpenGLShader& s) : m_owner(s) { }
 
     private:
         OpenGLShader& m_owner;

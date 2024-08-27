@@ -9,9 +9,18 @@ in vec2 UV;
 
 uniform vec4 UColor;
 uniform bool UIsTextured;
-uniform sampler2D tex1;
+uniform sampler2D UTex;
 
 void main() 
 {
-    FragColor = texture(tex1, UV);
+    
+    if (UIsTextured)
+    {
+        FragColor = texture(UTex, UV);
+    }
+    else
+    {
+        FragColor = UColor;
+    }
+
 }

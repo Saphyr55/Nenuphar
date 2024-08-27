@@ -11,9 +11,16 @@ namespace Nenuphar
     class Renderer
     {
     public:
+                
         virtual ModelId PersistModel(const Model& model) const = 0;
 
-        virtual MeshId PersistMesh(SharedRef<Mesh> mesh) const = 0;
+        virtual MeshId PersistMesh(const Mesh& mesh) const = 0;
+
+        virtual void TextureModel(const MeshId& model,
+                                  const Texture& texture) const = 0;
+
+        virtual void TextureMesh(const MeshId& mesh,
+                                 const Texture& texture) const = 0;
 
         virtual void DrawModel(const Shader& shader,
                                const ModelId& model) const = 0;

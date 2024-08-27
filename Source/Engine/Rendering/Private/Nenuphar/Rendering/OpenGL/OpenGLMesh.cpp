@@ -1,42 +1,74 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLMesh.hpp"
+#include "Nenuphar/Common/Debug/Debug.hpp"
 #include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Rendering/Mesh.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLBuffer.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLLayoutBuffer.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLVertexArray.hpp"
 #include "Nenuphar/Rendering/Vertex.hpp"
+#include <cstdlib>
+
 
 namespace Nenuphar
 {
+    OpenGLMeshStorage OpenGLMeshStorage::s_mainStorage;
 
-    MeshId OpenGLPersistMesh(SharedRef<Mesh> mesh)
+    OpenGLMeshStorage::TStorage& OpenGLMeshStorage::GetGlobalStorage()
     {
-        MeshId id = Storage.size();
-        OpenGLMesh glMesh;
-        glMesh.mesh = mesh;
-        glMesh.VAO = MakeSharedRef<OpenGLVertexArray>();
-        auto vbo = OpenGLArrayBuffer<Vertex>(glMesh.mesh->Vertices);
-        auto ebo = OpenGLElementBuffer(glMesh.mesh->Indices);
-        auto count = glMesh.mesh->Indices.size();
-        glMesh.Count = count;
+        return OpenGLMeshStorage::s_mainStorage.m_storage;
+    }
+
+    void OpenGLPersistMesh(const MeshId& meshId)
+    {
+        Mesh& mesh = MeshStorage::GetGlobalStorage()[meshId];
+        Int count = mesh.Indices.size();
+
+        auto vao = MakeUnique<OpenGLVertexArray>();
+        OpenGLArrayBuffer<> vbo(mesh.Vertices);
+        OpenGLElementBuffer ebo(mesh.Indices);
 
         LinkBuffer(vbo, LayoutVertex);
 
-        glMesh.VAO->Unbind();
+        vao->Unbind();
         vbo.Unbind();
         ebo.Unbind();
-        
-        Storage.push_back(std::move(glMesh));
 
-        return id;
+        OpenGLMeshStorage::GetGlobalStorage().insert({
+                meshId,
+                OpenGLMesh(meshId, std::move(vao), count)
+        });
     }
 
     void OpenGLDrawMesh(const MeshId& id)
     {
-        auto mesh = Storage[id];
-        mesh.VAO->Bind();
-        NPOGL_CHECK_CALL(glDrawElements(GL_TRIANGLES, mesh.Count, GL_UNSIGNED_INT, 0));
-        mesh.VAO->Unbind();
+        CHECK(OpenGLMeshStorage::GetGlobalStorage().contains(id))
+        CHECK(MeshStorage::GetGlobalStorage().contains(id))
+
+        auto& openGLMesh = OpenGLMeshStorage::GetGlobalStorage().at(id);
+        auto& mesh = MeshStorage::GetGlobalStorage().at(id);
+
+        for (const auto& texture: mesh.Textures)
+        {
+            if (OpenGLTextureStorage::GetGlobalStorageTexture2D()
+                        .contains(texture))
+            {
+                SharedRef<OpenGLTexture2D> openGLTexture =
+                        OpenGLTextureStorage::GetGlobalStorageTexture2D()
+                                .at(texture);
+                ActiveTexture(openGLTexture->GetUnit());
+                openGLTexture->Bind();
+            }
+        }
+        ActiveTexture(0);
+
+        openGLMesh.VAO->Bind();
+
+        NPOGL_CHECK_CALL(glDrawElements(
+                GL_TRIANGLES, openGLMesh.Count, GL_UNSIGNED_INT, 0));
+
+        openGLMesh.VAO->Unbind();
     }
 }

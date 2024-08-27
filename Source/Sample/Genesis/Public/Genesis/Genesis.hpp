@@ -26,12 +26,6 @@ public:
     void OnRender();
     void OnUpdate();
 
-private:
-    void ResetCameraTarget(const Np::KeyEvent& evt, Np::OrbitCamera& camera);
-    void OnMoveCameraXY(const Np::MouseMoveEvent& evt, Np::OrbitCamera& camera);
-    void OnRotateCamera(const Np::MouseMoveEvent& evt, Np::OrbitCamera& camera);
-    void OnMoveCameraZOnScroll(const Np::MouseWheelEvent& evt, Np::OrbitCamera& camera);
-
 public:
     GenesisApp();
     ~GenesisApp() = default;
@@ -44,5 +38,4 @@ private:
     UniquePtr<Np::GraphicContext> MainGraphicContext;
     SharedRef<Np::Window> MainWindow;
     SharedRef<RenderData> MainRenderData;
-    float CameraVelocity = 0.005f;
 };

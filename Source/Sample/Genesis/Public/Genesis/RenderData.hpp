@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Model/Model.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
 #include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
@@ -12,8 +13,9 @@ struct RenderData
 {
     static SharedRef<RenderData> Default();
 
-    Np::ModelId Model;
-    Np::OpenGLTexture2D WallTexture;
+    Np::ModelId FloorModelId;
+    Np::ModelId CubeModelId;
+    SharedRef<Np::OpenGLTexture2D> WallTexture;
     UniquePtr<Np::Shader> Shader;
     UniquePtr<Np::UniformRegistry> Registry;
     UniquePtr<Np::Renderer> Renderer;

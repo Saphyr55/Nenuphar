@@ -8,7 +8,14 @@
 namespace Nenuphar
 {
 
-	void TexImage2D(UInt target, Int level, const TextureInformation& dataImage)
+    OpenGLTextureStorage OpenGLTextureStorage::s_mainStorage;
+
+    OpenGLTextureStorage::TStorageTexture2D& OpenGLTextureStorage::GetGlobalStorageTexture2D()
+    {
+        return OpenGLTextureStorage::s_mainStorage.m_storageTexture2D;
+    }
+
+    void TexImage2D(UInt target, Int level, const TextureInformation& dataImage)
 	{
         NPOGL_CHECK_CALL(glTexImage2D(
                 target,

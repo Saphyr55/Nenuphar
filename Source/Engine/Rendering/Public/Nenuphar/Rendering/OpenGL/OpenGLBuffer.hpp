@@ -80,5 +80,5 @@ namespace Nenuphar
     
     template<typename T = Vertex>
     using OpenGLArrayBuffer = OpenGLBuffer<T, OpenGLBufferTarget::ArrayBuffer>;
-
+    
 }

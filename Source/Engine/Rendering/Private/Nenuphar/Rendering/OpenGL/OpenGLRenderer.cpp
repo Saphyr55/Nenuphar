@@ -1,39 +1,64 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLRenderer.hpp"
-#include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Rendering/Mesh.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLMesh.hpp"
+#include "Nenuphar/Rendering/Texture.hpp"
 
 namespace Nenuphar
 {
-    
-    // TODO: Better way to store models.
-    static std::vector<std::vector<MeshId>> ModelsStorage;
 
+    // TODO: Use a sparse set and the pagination technique to have better perfomance.
+    static std::vector<std::vector<MeshId>> ModelStorage;
+
+    
     ModelId OpenGLRenderer::PersistModel(const Model& model) const
     {
-        ModelId id = ModelsStorage.size();
-        ModelsStorage.push_back({ });
+        ModelId id = ModelStorage.size();
+        ModelStorage.push_back({ });
         for (auto& mesh: model.Meshes)
         {
-            ModelsStorage[id].push_back(PersistMesh(mesh));
+            ModelStorage[id].push_back(PersistMesh(mesh));
         }
         return id;
     }
 
-    MeshId OpenGLRenderer::PersistMesh(SharedRef<Mesh> mesh) const
+
+    MeshId OpenGLRenderer::PersistMesh(const Mesh& mesh) const
     {
-        return OpenGLPersistMesh(mesh);
+        static MeshId LastId = 0;
+        MeshId id = LastId++;
+        MeshStorage::GetGlobalStorage().insert({id, mesh});
+        OpenGLPersistMesh(id);
+        return id;
     }
 
+
+    void OpenGLRenderer::TextureModel(const MeshId& model, const Texture& texture) const
+    {
+        for (const MeshId& mesh: ModelStorage[model])
+        {
+            TextureMesh(mesh, texture);
+        }
+    }
+
+    
+    void OpenGLRenderer::TextureMesh(const MeshId& meshId, const Texture& texture) const
+    {
+        Mesh& mesh = MeshStorage::GetGlobalStorage().at(meshId);
+        mesh.Textures.push_back(texture);
+    }
+
+    
     void OpenGLRenderer::DrawMesh(const Shader& shader, const MeshId& mesh) const
     {
         shader.Use();
         OpenGLDrawMesh(mesh);
     }
 
+    
     void OpenGLRenderer::DrawModel(const Shader& shader, const ModelId& model) const
     {
         shader.Use();
-        for (const MeshId& mesh: ModelsStorage[model])
+        for (const MeshId& mesh: ModelStorage[model])
         {
             OpenGLDrawMesh(mesh);
         }

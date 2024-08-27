@@ -7,6 +7,7 @@
 #include "Nenuphar/Rendering/Vertex.hpp"
 
 #define TINYOBJLOADER_IMPLEMENTATION
+#define TINYOBJLOADER_USE_MAPBOX_EARCUT
 #include <tiny_obj_loader.h>
 
 #include <optional>
@@ -57,7 +58,7 @@ namespace Nenuphar
 
         NP_INFO(TOLModelLoader::Load, "Load the model from '{}'", path.GetFilePath());
 
-        std::vector<SharedRef<Mesh>> meshes;
+        std::vector<Mesh> meshes;
 
         // Loop over shapes
         for (size_t s = 0; s < shapes.size(); s++)
@@ -113,18 +114,18 @@ namespace Nenuphar
                 index_offset += fv;
 
                 // per-face material
-                // shapes[s].mesh.material_ids[f];
+                int mat = shapes[s].mesh.material_ids[f];
             }
 
-            auto mesh = MakeSharedRef<Mesh>(
+            meshes.push_back(Mesh(
                     std::move(vertices),
-                    std::move(indices), 
-                    std::move(textures));
-            meshes.push_back(mesh);
+                    std::move(indices),
+                    std::move(textures)));
         }
 
         NP_INFO(TOLModelLoader::Load, "Finish to load the model from '{}'", path.GetFilePath());
 
         return Res(Res::kValTag, Model(meshes));
     }
+    
 }

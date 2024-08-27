@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Nenuphar/Common/Instanciate.hpp"
-#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
 #include "Nenuphar/Rendering/Mesh.hpp"
 #include "Nenuphar/Rendering/Vertex.hpp"
@@ -12,10 +10,10 @@ namespace Nenuphar
 
     struct Model
     {
-        std::vector<SharedRef<Mesh>> Meshes;
+        std::vector<Mesh> Meshes;
     };
 
-    const Model FloorModel = []() {
+    const auto FloorModelFactory = []() {
         
         const std::vector<Vertex> Vertices
         {
@@ -32,22 +30,20 @@ namespace Nenuphar
             0, 2, 3
         };
 
-        auto mesh = SharedRef<Mesh>(new Mesh(std::move(Vertices), std::move(Indices), { }));
+        return Model({Mesh(std::move(Vertices), std::move(Indices), { })});
+    };
 
-        return Model({mesh});
-    }();
-
-    const Model CubeModel = []() {
-        
+    const auto CubeModelFactory = []() {
         const std::vector<Vertex> CubeVertices{
-                Vertex{Vector3f(-0.05f, -0.05f, 0.05f)},
-                Vertex{Vector3f(-0.05f, -0.05f, -0.05f)},
-                Vertex{Vector3f(0.05f, -0.05f, -0.05f)},
-                Vertex{Vector3f(0.05f, -0.05f, 0.05f)},
-                Vertex{Vector3f(-0.05f, 0.05f, 0.05f)},
-                Vertex{Vector3f(-0.05f, 0.05f, -0.05f)},
-                Vertex{Vector3f(0.05f, 0.05f, -0.05f)},
-                Vertex{Vector3f(0.05f, 0.05f, 0.05f)}};
+            Vertex(Vector3f(-0.5f, -0.5f, 0.5f)),
+            Vertex(Vector3f(-0.5f, -0.5f, -0.5f)),
+            Vertex(Vector3f(0.5f, -0.5f, -0.5f)),
+            Vertex(Vector3f(0.5f, -0.5f, 0.5f)),
+            Vertex(Vector3f(-0.5f, 0.5f, 0.5f)),
+            Vertex(Vector3f(-0.5f, 0.5f, -0.5f)),
+            Vertex(Vector3f(0.5f, 0.5f, -0.5f)),
+            Vertex(Vector3f(0.5f, 0.5f, 0.5f))
+        };
 
         const std::vector<VIndice> CubeIndices{
                 0, 1, 2,
@@ -63,8 +59,6 @@ namespace Nenuphar
                 4, 5, 6,
                 4, 6, 7};
 
-        auto mesh = SharedRef<Mesh>(new Mesh(std::move(CubeVertices), std::move(CubeIndices), { }));
-
-        return Model({mesh});
-    }();
+        return Model({Mesh(std::move(CubeVertices), std::move(CubeIndices), {})});
+    };
 }

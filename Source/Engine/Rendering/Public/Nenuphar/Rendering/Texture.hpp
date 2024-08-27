@@ -7,6 +7,13 @@ namespace Nenuphar
 {
 
     using Texture = UInt32;
+    using TextureUnit = UInt32;
+
+    struct TextureIdentication
+    {
+        Texture Handle;
+        TextureUnit Unit;
+    };
 
     struct TextureInformation
     {
