@@ -7,8 +7,7 @@
 
 namespace Nenuphar
 {
-    
-    
+     
     class TextureLoader
     {
     public:

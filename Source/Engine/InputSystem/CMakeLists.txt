@@ -8,7 +8,6 @@ set(TARGET          Engine.InputSystem)
 set(GROUP           Engine)
 set(DEPS            Engine.Common
                     Engine.Core
-                    Engine.ApplicationCore
                     Engine.EventSystem
     )
 

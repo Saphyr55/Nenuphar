@@ -1,9 +1,8 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
+#include "Nenuphar/Common/Debug/Debug.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include "Nenuphar/Rendering/Texture.hpp"
 
 namespace Nenuphar
 {
@@ -15,18 +14,34 @@ namespace Nenuphar
         return OpenGLTextureStorage::s_mainStorage.m_storageTexture2D;
     }
 
-    void TexImage2D(UInt target, Int level, const TextureInformation& dataImage)
-	{
+    OpenGLFormatPixel OpenGLInternalFormat(const TextureInformation& info)
+    {
+        switch (info.Format)
+        {
+            case ImageFormat::RGB:
+                return OpenGLFormatPixel::RGB;
+            case ImageFormat::RGBA:
+                return OpenGLFormatPixel::RGBA;
+            case ImageFormat::RED:
+                return OpenGLFormatPixel::RED;
+            default:
+                CCHECK(false)
+        }
+    }
+
+    void TexImage2D(UInt target, Int level, const TextureInformation& info)
+    {
+        OpenGLFormatPixel format = OpenGLInternalFormat(info);
         NPOGL_CHECK_CALL(glTexImage2D(
                 target,
                 level,
-                GL_RGB,
-                dataImage.Width,
-                dataImage.Height,
+                format,
+                info.Width,
+                info.Height,
                 0,
-                dataImage.Format,
+                format,
                 GL_UNSIGNED_BYTE,
-                dataImage.Data));
+                info.Data));
     }
 
 	void GenerateMipmap(UInt target) 
@@ -50,52 +65,6 @@ namespace Nenuphar
         TexImage2D(GL_TEXTURE_2D, 0, dataImage);
         GenerateMipmap(GL_TEXTURE_2D);
     }
-
-    void LoadDataImage(const Path& path, const std::function<void(const TextureInformation&)>& f)
-	{
-        TextureInformation dataImage{};
-        stbi_set_flip_vertically_on_load(true);
-        dataImage.Data = stbi_load(
-                path.GetFilePath().c_str(),
-                &dataImage.Width,
-                &dataImage.Height,
-                &dataImage.Format,
-                0);
-
-        if (!dataImage.Data)
-        {
-            NP_ERROR(LoadDataImage, "Cannot load '{}' image.\n", path.GetFilePath());
-            return;
-        }
-
-		switch (dataImage.Format) 
-        {
-            case 4:
-            {
-                dataImage.Format = OpenGLFormatPixel::RGBA;
-                break;
-            }
-            case 3:
-            {
-                dataImage.Format = OpenGLFormatPixel::RGB;
-                break;
-            }
-            case 1:
-            {
-                dataImage.Format = OpenGLFormatPixel::RED;
-                break;
-            }
-            default:
-            {
-                NP_ERROR(LoadDataImage, "Error Load Textures: Automatic Textures type recognition failed");
-                throw std::exception();
-            }
-		}
-
-		f(dataImage);
-
-		stbi_image_free(dataImage.Data);
-	}
 
 }
 

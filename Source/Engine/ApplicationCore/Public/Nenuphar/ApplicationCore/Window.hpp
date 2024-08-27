@@ -6,11 +6,18 @@ namespace Nenuphar
 {
 
     class Application;
-    class WindowDefinition;
     class WindowEventHandler;
     class WindowSignals;
 
     using WindowID = UInt16;
+
+
+    struct WindowDefinition
+    {
+        String Title;
+        Float Width;
+        Float Height;
+    };
 
 
     enum class WindowMode : Int

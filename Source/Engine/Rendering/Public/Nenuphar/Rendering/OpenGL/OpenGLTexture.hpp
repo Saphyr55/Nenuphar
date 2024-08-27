@@ -3,26 +3,19 @@
 #include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
-#include "Nenuphar/Core/Resource/Resource.hpp"
+#include "Nenuphar/Resource/Resource.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
 #include "glad/glad.h"
+#include <cstddef>
 #include <memory>
 
 
 namespace Nenuphar
 {
 
-
-    /**
-     *
-     */
-    void LoadDataImage(const Path& path,
-                       const std::function<void(const TextureInformation&)>& f);
-
-    
     /**
      *
      */
@@ -68,6 +61,7 @@ namespace Nenuphar
     class OpenGLTexture
 	{
     public:
+        
 		struct Parameter
     	{
             auto WithParameter(UInt pName, Int param) const
@@ -84,9 +78,12 @@ namespace Nenuphar
 		};
 
         using TOnCreateTexture =
-                std::function<void(const TextureInformation&, Parameter)>;
+                std::function<void(const TextureInformation&,
+                                   const Parameter&)>;
 
+        
         void Bind() const;
+
         void Unbind() const;
 
         inline Texture GetHandle() const
@@ -182,7 +179,7 @@ namespace Nenuphar
     template<OpenGLTextureTarget target>
     OpenGLTexture<target>::~OpenGLTexture()
     {
-        
+        // TODO: Remove this texture from the corresponding storage.
     }
 
 
@@ -260,13 +257,21 @@ namespace Nenuphar
     template<OpenGLTextureTarget target>
     SharedRef<OpenGLTexture<target>>
     OpenGLTexture<target>::LoadFromImage(const Path& path,
-                                         const TOnCreateTexture& f)
+                                         const TOnCreateTexture& onCreate)
 	{
         auto texture = CreateOpenGLTexture<target>(0);
-        auto bindedF = std::bind(f, std::placeholders::_1, OpenGLTexture::Parameter());
+
+        auto bindedOnCreate = [&](const TextureInformation& info) {
+            onCreate(info, Parameter());
+        };
 
         texture->Bind();
-        LoadDataImage(path, bindedF);
+
+        if (!LoadDataImage(path, bindedOnCreate))
+        {
+            texture = nullptr;
+        }
+
         texture->Unbind();
 
         return texture;

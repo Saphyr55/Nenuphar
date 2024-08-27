@@ -1,8 +1,11 @@
 #pragma once
 
 #include "Nenuphar/Common/Type/Result.hpp"
-#include "Nenuphar/Core/Resource/Resource.hpp"
+#include "Nenuphar/Core/IO/Path.hpp"
+#include "Nenuphar/Resource/Resource.hpp"
 #include "Nenuphar/Model/Model.hpp"
+
+#include <optional>
 
 namespace Nenuphar
 {
@@ -16,7 +19,11 @@ namespace Nenuphar
     class ModelLoader
     {
     public:
-        virtual Result<Model, ModelLoaderError> Load(const Path& path) const = 0;
+        using TRes = Result<Model, ModelLoaderError>;
+
+    public :
+        virtual TRes Load(const Path& path,
+                          std::optional<Path> mtlPathDir = std::nullopt) const = 0;
     };
 
 }

@@ -1,10 +1,9 @@
 #pragma once
 
 #include "Nenuphar/ApplicationCore/WindowBase.hpp"
+#include "Nenuphar/ApplicationCore/WindowSignals.hpp"
 #include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
-#include "Nenuphar/ApplicationCore/WindowDefinition.hpp"
 #include "Nenuphar/Core/Windows.hpp"
-#include "Nenuphar/EventSystem/EventSystem.hpp"
 
 
 namespace Nenuphar

@@ -3,9 +3,10 @@
 namespace Nenuphar
 {
 
-    Result<Model, ModelLoaderError> ObjModelLoader::Load(const Path& path) const
+    ModelLoader::TRes ObjModelLoader::Load(const Path& path,
+                                           std::optional<Path> mtlPathDir) const
     {
-        using Res = Result<Model, ModelLoaderError>;
+        using Res = ModelLoader::TRes;
         return Res(Res::kErrTag, ModelLoaderError::MalFormat);
     }
     

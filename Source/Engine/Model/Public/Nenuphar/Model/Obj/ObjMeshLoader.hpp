@@ -11,7 +11,8 @@ namespace Nenuphar
     class ObjModelLoader : public ModelLoader
     {
     public:
-        Result<Model, ModelLoaderError> Load(const Path& path) const override;
+        virtual TRes Load(const Path& path,
+                          std::optional<Path> mtlPathDir = std::nullopt) const override;
 
         static UniquePtr<ObjModelLoader> Create();
 

@@ -3,6 +3,7 @@
 #include "Nenuphar/Common/Type/Result.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
+#include "Nenuphar/Math/Vector3.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
 #include "Nenuphar/Rendering/Vertex.hpp"
 
@@ -16,15 +17,18 @@
 namespace Nenuphar
 {
 
-    Result<Model, ModelLoaderError> TOLModelLoader::Load(const Path& path) const
+    ModelLoader::TRes TOLModelLoader::Load(const Path& path,
+                                           std::optional<Path> mtlPathDir) const
     {
-        using Res = Result<Model, ModelLoaderError>;
+        using TRes = ModelLoader::TRes;
+
+        NP_INFO(TOLModelLoader::Load, "Load the model from '{}'", path.GetFilePath());
 
         if (!path.IsExists())
         {
-            return Res(Res::kErrTag, ModelLoaderError::PathNotExist);
+            return TRes(TRes::kErrTag, ModelLoaderError::PathNotExist);
         }
-        
+
         tinyobj::attrib_t attrib;
         std::vector<tinyobj::shape_t> shapes;
         std::vector<tinyobj::material_t> materials;
@@ -32,13 +36,13 @@ namespace Nenuphar
         std::string warn;
         std::string err;
 
-        NP_INFO(TOLModelLoader::Load, "Load the model from '{}'", path.GetFilePath());
-
         bool ret = tinyobj::LoadObj(&attrib,
                                     &shapes,
                                     &materials,
                                     &err,
-                                    path.GetFilePath().c_str());
+                                    path.GetFilePath().c_str(),
+                                    mtlPathDir.has_value()
+                                    ? mtlPathDir->GetFilePath().c_str() : nullptr);
 
         if (!warn.empty())
         {
@@ -55,29 +59,36 @@ namespace Nenuphar
         {
             NP_ERROR(TOLModelLoader::Load, "Impossible to parse the model from '{}'", path.GetFilePath());
 
-            return Res(Res::kErrTag, ModelLoaderError::MalFormat);
+            return TRes(TRes::kErrTag, ModelLoaderError::MalFormat);
         }
 
         std::vector<Mesh> meshes;
 
-        // Loop over shapes
-        for (std::size_t s = 0; s < shapes.size(); s++)
+        for (const tinyobj::material_t& material: materials)
         {
+            
+        }
+
+        // Loop over shapes
+        for (const tinyobj::shape_t& shape : shapes)
+        {
+            const tinyobj::mesh_t& mesh = shape.mesh;
+
             std::vector<Vertex> vertices;
             std::vector<VIndice> indices;
             std::vector<Texture> textures;
 
             // Loop over faces(polygon)
             std::size_t index_offset = 0;
-            for (std::size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++)
+            for (std::size_t f = 0; f < mesh.num_face_vertices.size(); f++)
             {
-                std::size_t fv = size_t(shapes[s].mesh.num_face_vertices[f]);
+                std::size_t fv = size_t(mesh.num_face_vertices[f]);
 
                 // Loop over vertices in the face.
                 for (std::size_t v = 0; v < fv; v++)
                 {
                     // access to vertex
-                    tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
+                    tinyobj::index_t idx = mesh.indices[index_offset + v];
 
                     tinyobj::real_t vx = attrib.vertices[3 * std::size_t(idx.vertex_index) + 0];
                     tinyobj::real_t vy = attrib.vertices[3 * std::size_t(idx.vertex_index) + 1];
@@ -94,6 +105,7 @@ namespace Nenuphar
                         tinyobj::real_t ny = attrib.normals[3 * std::size_t(idx.normal_index) + 1];
                         tinyobj::real_t nz = attrib.normals[3 * std::size_t(idx.normal_index) + 2];
                         normal = Vector3f(nx, ny, nz);
+                        normal = Vector3f::Normalize(normal);
                     }
 
                     // Check if `texcoord_index` is zero or positive. negative = no texcoord data
@@ -112,9 +124,8 @@ namespace Nenuphar
                 index_offset += fv;
 
                 // per-face material
-                int mat = shapes[s].mesh.material_ids[f];
+                // int m = shapes[s].mesh.material_ids[f];
             }
-
 
             meshes.push_back(Mesh(
                     std::move(vertices),
@@ -122,9 +133,10 @@ namespace Nenuphar
                     std::move(textures)));
         }
 
+
         NP_INFO(TOLModelLoader::Load, "Finish to load the model from '{}'", path.GetFilePath());
 
-        return Res(Res::kValTag, Model(meshes));
+        return TRes(TRes::kValTag, Model(meshes));
     }
     
 }

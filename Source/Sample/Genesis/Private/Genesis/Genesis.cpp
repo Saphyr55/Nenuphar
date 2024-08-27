@@ -3,7 +3,7 @@
 #include "Genesis/RenderData.hpp"
 #include "Genesis/Transform.hpp"
 #include "Nenuphar/ApplicationCore/WindowBase.hpp"
-#include "Nenuphar/ApplicationCore/WindowDefinition.hpp"
+#include "Nenuphar/ApplicationCore/WindowSignals.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Entity/EntityRegistry.hpp"
 #include "Nenuphar/Math/Camera.hpp"
@@ -27,6 +27,7 @@ GenesisApp::GenesisApp()
     EFloor = Registry.Create();
     ECube = Registry.Create();
     EBunny = Registry.Create();
+    EBarrel = Registry.Create();
 
     OrbitCamera orbitCameraComponent(Radians(45.0f),
                                      Radians(45.0f), 3.0f,
@@ -45,6 +46,11 @@ GenesisApp::GenesisApp()
     cubeTransform.Scale = Vector3f(1.0f);
     cubeTransform.Translation = Vector3f(0.0f, 0.5f, 0.0f);
     Registry.AddComponent<Transform>(ECube, cubeTransform);
+
+    Transform barrelTransform;
+    barrelTransform.Scale = Vector3f(1.0f);
+    barrelTransform.Translation = Vector3f(2.0f, 0.5f, 2.0f);
+    Registry.AddComponent<Transform>(EBarrel, barrelTransform);
 
     Transform bunnyTransform;
     bunnyTransform.Scale = Vector3f(8.0f);
@@ -100,7 +106,7 @@ void GenesisApp::OnRender()
     Vector4f backgroundColor(0.58, 0.69, 0.8, 0.78);
     Np::RenderSystem::Instance().Clear(backgroundColor);
 
-    OnRenderData(*MainRenderData, Registry, EFloor, EBunny, ECube);
+    OnRenderData(*MainRenderData, Registry, EFloor, EBunny, ECube, EBarrel);
 
     glViewport(0, 0, (Int) width, (Int) height);
 

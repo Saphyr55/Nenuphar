@@ -36,6 +36,7 @@ private:
     Np::Entity EFloor;
     Np::Entity ECube;
     Np::Entity EBunny;
+    Np::Entity EBarrel; 
     UniquePtr<Np::GraphicContext> MainGraphicContext;
     SharedRef<Np::Window> MainWindow;
     SharedRef<RenderData> MainRenderData;

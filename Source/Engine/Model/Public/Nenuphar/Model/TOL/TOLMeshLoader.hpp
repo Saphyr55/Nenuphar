@@ -10,7 +10,9 @@ namespace Nenuphar
     class TOLModelLoader : public ModelLoader
     {
     public:
-        virtual Result<Model, ModelLoaderError> Load(const Path& path) const override;
+        virtual ModelLoader::TRes Load(const Path& path,
+                                       std::optional<Path> mtlPathDir = std::nullopt
+                                               ) const override;
     };
     
 }

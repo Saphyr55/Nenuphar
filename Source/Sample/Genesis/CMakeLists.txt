@@ -6,18 +6,19 @@ project(Genesis)
 set(LOCATION    .)
 set(TARGET      Genesis)
 set(GROUP       Sample)
-set(DEPS        
-                Engine.Core 
-                Engine.Common
-                Engine.Math
-                Engine.Entity
-                Engine.ApplicationCore
-                Engine.EventSystem
-                Engine.InputSystem
-                Engine.Rendering
-                Engine.Model
-                glad
-    )
+set(DEPS
+    Engine.Core
+    Engine.Common
+    Engine.Math
+    Engine.Entity
+    Engine.ApplicationCore
+    Engine.EventSystem
+    Engine.InputSystem
+    Engine.Rendering
+    Engine.Model
+    Engine.Resource
+    glad
+)
 
 add_executable(${TARGET})
 add_module(${TARGET} ${LOCATION})

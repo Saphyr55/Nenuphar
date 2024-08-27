@@ -4,6 +4,8 @@
 
 #define NP_ASSERT(exp) assert(exp)
 
+#define NpSASSERT(exp) static_assert(exp)
+
 #if defined(_MSC_VER)
     #define NP_DEBUG_BREAK __debugbreak()
 #else
@@ -21,7 +23,7 @@
 #endif
 
 #if defined(_DEBUG) || defined(DEBUG)
-#define DCHECK(exp)     \
+#define CCHECK(exp)     \
     if constexpr (!(exp)) \
     {                   \
         NP_DEBUG_BREAK; \

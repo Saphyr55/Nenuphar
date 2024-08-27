@@ -1,18 +1,16 @@
 # ========================================================
-# Setup Engine Model Module.
+# Setup Engine Resource Module.
 # ========================================================
-project(Engine.Model)
+project(Engine.Resource)
 
 set(LOCATION        .)
-set(TARGET          Engine.Model)
+set(TARGET          Engine.Resource)
 set(GROUP           Engine)
 set(DEPS            fmt::fmt
-                    tinyobj
                     Engine.Common
                     Engine.Math
-                    Engine.Core 
-                    Engine.Rendering                    
-                    Engine.Resource
+                    Engine.Core
+                    Engine.EventSystem
                     )
 
 add_library_module(${TARGET} STATIC ${LOCATION})
@@ -22,7 +20,7 @@ set_target_properties(${TARGET} PROPERTIES FOLDER ${GROUP})
 
 
 # ========================================================
-# Setup Engine Mesh Loader Test.
+# Setup Engine Rendering Test.
 # ========================================================
 if(NENUPHAR_TEST_ENABLE)
 
@@ -30,7 +28,7 @@ if(NENUPHAR_TEST_ENABLE)
 
     set(TARGET_TEST     ${TARGET}.Test)
     set(SRCS 
-                        Test/WavefrontObjLexerTest.cpp)
+                        Test/ResourceRegistryTest.cpp)
 
     add_executable(${TARGET_TEST} ${SRCS})
 

@@ -64,6 +64,7 @@ add_subdirectory(Source/Engine/Model)
 add_subdirectory(Source/Engine/Rendering)
 add_subdirectory(Source/Engine/RenderLight)
 add_subdirectory(Source/Engine/Entity)
+add_subdirectory(Source/Engine/Resource)
 
 
 # ===================================================================================================

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Nenuphar/ApplicationCore/WindowDefinition.hpp"
+#include "Nenuphar/ApplicationCore/WindowSignals.hpp"
 #include "Nenuphar/ApplicationCore/Window.hpp"
 
 namespace Nenuphar

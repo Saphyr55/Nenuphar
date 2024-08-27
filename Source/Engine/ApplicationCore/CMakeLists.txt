@@ -8,8 +8,8 @@ set(TARGET      Engine.ApplicationCore)
 set(GROUP       Engine)
 set(DEPS        Engine.Core 
                 Engine.Common
-                Engine.InputSystem
                 Engine.EventSystem
+                Engine.InputSystem
                 SDL2
 )
 

@@ -1,11 +1,17 @@
 #pragma once
 
 #include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Core/IO/Path.hpp"
 
 namespace Nenuphar
 {
 
-    class Path;
+    using ResourceId = std::size_t;
+
+    class Resource
+    {
+        Path FilePath;
+    };
 
     Path FromProject(StringView path);
 

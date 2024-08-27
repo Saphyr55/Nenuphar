@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Nenuphar/ApplicationCore/WindowDefinition.hpp"
+#include "Nenuphar/ApplicationCore/WindowSignals.hpp"
 #include "Nenuphar/InputSystem/Event.hpp"
 #include "Nenuphar/Math/Camera.hpp"
 

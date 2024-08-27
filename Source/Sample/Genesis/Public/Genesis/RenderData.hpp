@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Entity/Entity.hpp"
 #include "Nenuphar/Entity/EntityRegistry.hpp"
 #include "Nenuphar/Model/Model.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
@@ -17,6 +18,7 @@ struct RenderData
     Np::ModelId BunnyModelId;
     Np::ModelId FloorModelId;
     Np::ModelId CubeModelId;
+    Np::ModelId BarrelModelId;
     SharedRef<Np::OpenGLTexture2D> WallTexture;
     UniquePtr<Np::Shader> Shader;
     UniquePtr<Np::UniformRegistry> Registry;
@@ -28,4 +30,5 @@ void OnRenderData(RenderData& data,
                   Np::EntityRegistry& registry,
                   Np::Entity floor,
                   Np::Entity bunny,
-                  Np::Entity cube);
+                  Np::Entity cube,
+                  Np::Entity barrel);

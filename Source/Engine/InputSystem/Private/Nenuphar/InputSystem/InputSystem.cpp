@@ -1,5 +1,4 @@
 #include "Nenuphar/InputSystem/InputSystem.hpp"
-#include "Nenuphar/EventSystem/EventSystem.hpp"
 
 namespace Nenuphar
 {
