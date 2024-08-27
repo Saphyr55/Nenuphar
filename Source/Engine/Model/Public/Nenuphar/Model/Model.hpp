@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Nenuphar/Math/Vector2.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
 #include "Nenuphar/Rendering/Mesh.hpp"
 #include "Nenuphar/Rendering/Vertex.hpp"
@@ -35,29 +36,28 @@ namespace Nenuphar
 
     const auto CubeModelFactory = []() {
         const std::vector<Vertex> CubeVertices{
-            Vertex(Vector3f(-0.5f, -0.5f, 0.5f)),
-            Vertex(Vector3f(-0.5f, -0.5f, -0.5f)),
-            Vertex(Vector3f(0.5f, -0.5f, -0.5f)),
-            Vertex(Vector3f(0.5f, -0.5f, 0.5f)),
-            Vertex(Vector3f(-0.5f, 0.5f, 0.5f)),
-            Vertex(Vector3f(-0.5f, 0.5f, -0.5f)),
-            Vertex(Vector3f(0.5f, 0.5f, -0.5f)),
-            Vertex(Vector3f(0.5f, 0.5f, 0.5f))
-        };
+                Vertex(Vector3f(0.5f, 0.5f, 0.5f),    Vector3f(1.0f),  Vector2f(0.0f, 0.0f)),
+                Vertex(Vector3f(-0.5f, 0.5f, -0.5f),  Vector3f(1.0f),  Vector2f(0.0f, 1.0f)),
+                Vertex(Vector3f(-0.5f, 0.5f, 0.5f),   Vector3f(1.0f),  Vector2f(1.0f, 0.0f)),
+                Vertex(Vector3f(0.5f, -0.5f, -0.5f),  Vector3f(1.0f),  Vector2f(1.0f, 1.0f)),
+                Vertex(Vector3f(-0.5f, -0.5f, -0.5f), Vector3f(1.0f),  Vector2f(0.0f, 0.0f)),
+                Vertex(Vector3f(0.5f, 0.5f, -0.5f),   Vector3f(1.0f),  Vector2f(1.0f, 0.0f)),
+                Vertex(Vector3f(0.5f, -0.5f, 0.5f),   Vector3f(1.0f),  Vector2f(0.0f, 1.0f)),
+                Vertex(Vector3f(-0.5f, -0.5f, 0.5f),  Vector3f(1.0f),  Vector2f(1.0f, 1.0f))};
 
         const std::vector<VIndice> CubeIndices{
                 0, 1, 2,
-                0, 2, 3,
-                0, 4, 7,
-                0, 7, 3,
-                3, 7, 6,
-                3, 6, 2,
-                2, 6, 5,
-                2, 5, 1,
-                1, 5, 4,
-                1, 4, 0,
-                4, 5, 6,
-                4, 6, 7};
+                1, 3, 4,
+                5, 6, 3,
+                7, 3, 6,
+                2, 4, 7,
+                0, 7, 6,
+                0, 5, 1,
+                1, 5, 3,
+                5, 0, 6,
+                7, 4, 3,
+                2, 1, 4,
+                0, 2, 7};
 
         return Model({Mesh(std::move(CubeVertices), std::move(CubeIndices), {})});
     };

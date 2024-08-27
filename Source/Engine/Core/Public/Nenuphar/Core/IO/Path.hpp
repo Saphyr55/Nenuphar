@@ -15,6 +15,10 @@ namespace Nenuphar
     class Path
     {
     public:
+        using TRes = Result<std::string, ErrorReadFileContent>;
+
+    public:
+        
         bool IsExists() const;
         std::string GetFilePath() const;
 
@@ -25,5 +29,5 @@ namespace Nenuphar
         std::string m_path;
     };
 
-    Result<std::string, ErrorReadFileContent> ReadFileContent(const Path& path);
+    Path::TRes ReadFileContent(const Path& path);
 }

@@ -35,6 +35,7 @@ private:
     Np::Entity ECamera;
     Np::Entity EFloor;
     Np::Entity ECube;
+    Np::Entity EBunny;
     UniquePtr<Np::GraphicContext> MainGraphicContext;
     SharedRef<Np::Window> MainWindow;
     SharedRef<RenderData> MainRenderData;

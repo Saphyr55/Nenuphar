@@ -62,6 +62,7 @@ add_subdirectory(Source/Engine/EventSystem)
 add_subdirectory(Source/Engine/InputSystem)
 add_subdirectory(Source/Engine/Model)
 add_subdirectory(Source/Engine/Rendering)
+add_subdirectory(Source/Engine/RenderLight)
 add_subdirectory(Source/Engine/Entity)
 
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Entity/EntityRegistry.hpp"
 #include "Nenuphar/Model/Model.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
 #include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
@@ -13,6 +14,7 @@ struct RenderData
 {
     static SharedRef<RenderData> Default();
 
+    Np::ModelId BunnyModelId;
     Np::ModelId FloorModelId;
     Np::ModelId CubeModelId;
     SharedRef<Np::OpenGLTexture2D> WallTexture;
@@ -22,4 +24,8 @@ struct RenderData
 };
 
 
-void OnRenderData(RenderData& data);
+void OnRenderData(RenderData& data,
+                  Np::EntityRegistry& registry,
+                  Np::Entity floor,
+                  Np::Entity bunny,
+                  Np::Entity cube);

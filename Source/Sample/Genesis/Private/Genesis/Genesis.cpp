@@ -26,6 +26,7 @@ GenesisApp::GenesisApp()
     ECamera = Registry.Create();
     EFloor = Registry.Create();
     ECube = Registry.Create();
+    EBunny = Registry.Create();
 
     OrbitCamera orbitCameraComponent(Radians(45.0f),
                                      Radians(45.0f), 3.0f,
@@ -35,13 +36,20 @@ GenesisApp::GenesisApp()
     Registry.AddComponent<OrbitCamera>(ECamera, orbitCameraComponent);
     Registry.AddComponent<Velocity>(ECamera, Velocity(0.005f));
 
-    Transform eFloorTransform;
-    eFloorTransform.Scale = Vector3f(1.0f);
-    Registry.AddComponent<Transform>(EFloor, eFloorTransform);
+    Transform floorTransform;
+    floorTransform.Scale = Vector3f(1000.0f);
+    floorTransform.Translation = Vector3f(0.0f, -0.5f, 0.0f);
+    Registry.AddComponent<Transform>(EFloor, floorTransform);
 
-    Transform eCubeTransform;
-    eCubeTransform.Scale = Vector3f(1.0f);
-    Registry.AddComponent<Transform>(ECube, eCubeTransform);
+    Transform cubeTransform;
+    cubeTransform.Scale = Vector3f(1.0f);
+    cubeTransform.Translation = Vector3f(0.0f, 0.5f, 0.0f);
+    Registry.AddComponent<Transform>(ECube, cubeTransform);
+
+    Transform bunnyTransform;
+    bunnyTransform.Scale = Vector3f(8.0f);
+    bunnyTransform.Translation = Vector3f(0.0f, 1.2f, 0.0f);
+    Registry.AddComponent<Transform>(EBunny, bunnyTransform);
 }
 
 
@@ -80,14 +88,7 @@ void GenesisApp::OnUpdate()
     // We obtain the view in function of the camera.
     Matrix4f view = Matrix4f::LookAt(camera.Position(), camera.Target, camera.Up);
 
-    // We create the world model.
-    // Matrix4f model = Matrix4f::Rotate(Matrix4f(1), Np::Radians(90), { 0.5f, 1.0f, 0.0f });
-    Transform& transform = Registry.GetComponent<Transform>(EFloor);
-    Matrix4f model = Transform::Tranformation(transform);
-
-    // We obtain uniforms from the register and indicate their respective values.
     MainRenderData->Registry->Get<Matrix4f>("proj").UpdateValue(proj);
-    MainRenderData->Registry->Get<Matrix4f>("model").UpdateValue(model);
     MainRenderData->Registry->Get<Matrix4f>("view").UpdateValue(view);
 }
 
@@ -99,7 +100,7 @@ void GenesisApp::OnRender()
     Vector4f backgroundColor(0.58, 0.69, 0.8, 0.78);
     Np::RenderSystem::Instance().Clear(backgroundColor);
 
-    OnRenderData(*MainRenderData);
+    OnRenderData(*MainRenderData, Registry, EFloor, EBunny, ECube);
 
     glViewport(0, 0, (Int) width, (Int) height);
 

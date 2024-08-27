@@ -18,6 +18,8 @@ namespace Nenuphar
     void OpenGLRenderSystem::Enable() const
     {
         NPOGL_CHECK_CALL(glEnable(GL_DEPTH_TEST));
+        NPOGL_CHECK_CALL(glEnable(GL_BLEND));
+        NPOGL_CHECK_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     }
 
     void OpenGLRenderSystem::Clear(const Vector4f& color) const

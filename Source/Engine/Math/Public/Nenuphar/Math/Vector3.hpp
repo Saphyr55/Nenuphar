@@ -27,9 +27,19 @@ struct Vector3 final
 	Vector3 operator*(const Vec&vec) const;
 	Vector3 operator+(const Vec&vec) const;
 	Vector3 operator-(const Vec&vec) const;
-	Vector3 operator-() const;
+    Vector3 operator-() const;
 
-	static Float Length(const Vector3<R>& vec);
+    bool operator==(const Vector3& other) const
+    {
+        return x == other.x && y == other.y && z == other.z;
+    }
+    
+    bool operator!=(const Vec& other) const
+    {
+        return !(*this == other);
+    }
+    
+    static Float Length(const Vector3<R>& vec);
 	static Vector3 Normalize(const Vector3<R>& vec);
 	static Vector3 Cross(const Vector3<R>& v1, const Vector3<R>& v2);
 	static auto Dot(const Vec& v1, const Vec& v2);

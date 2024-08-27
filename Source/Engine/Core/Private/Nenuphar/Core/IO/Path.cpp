@@ -25,19 +25,17 @@ namespace Nenuphar
         return m_path;
     }
 
-    Result<std::string, ErrorReadFileContent> ReadFileContent(const Path& path)
+    Path::TRes ReadFileContent(const Path& path)
     {
-        using Res = Result<std::string, ErrorReadFileContent>;
-
         if (!path.IsExists())
         {
-            return Res(Res::kErrTag, ErrorReadFileContent::NotExist);
+            return Path::TRes(Path::TRes::kErrTag, ErrorReadFileContent::NotExist);
         }
 
         std::ifstream ifs(path.GetFilePath());
         std::string content((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
 
-        return Res(Res::kValTag, content);
+        return Path::TRes(Path::TRes::kValTag, content);
     }
     
 }
