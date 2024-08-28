@@ -157,11 +157,19 @@ namespace Nenuphar
         auto glTexture = MakeSharedRef<OpenGLTexture<target>>(unit);
         OpenGLTextureStorage::GetGlobalStorageTexture2D()
                 .insert({glTexture->GetHandle(), glTexture});
-        
+
         return glTexture;
     }
 
-    
+    /**
+     *
+     */
+    inline SharedRef<OpenGLTexture2D> CreateOpenGLTexture2D(TextureUnit unit)
+    {
+        return CreateOpenGLTexture<OpenGLTextureTarget::Texture2D>(unit);
+    }
+
+
     /**
      *
      */
@@ -249,33 +257,6 @@ namespace Nenuphar
     {
 		NPOGL_CHECK_CALL(glTexParameterfv(target, pName, param));
 		return *this;
-    }
-
-
-    /**
-     *
-     */
-    template<OpenGLTextureTarget target>
-    SharedRef<OpenGLTexture<target>>
-    OpenGLTexture<target>::LoadFromImage(const Path& path,
-                                         const TOnCreateTexture& onCreate)
-	{
-        auto texture = CreateOpenGLTexture<target>(0);
-
-        auto bindedOnCreate = [&](const TextureInformation& info) {
-            onCreate(info, Parameter());
-        };
-
-        texture->Bind();
-
-        if (!LoadDataImage(path, bindedOnCreate))
-        {
-            texture = nullptr;
-        }
-
-        texture->Unbind();
-
-        return texture;
     }
 
 

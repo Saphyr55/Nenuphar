@@ -7,16 +7,24 @@
 
 namespace Nenuphar
 {
-
+    
     class AssetRegistry
     {
+
+        template<typename T>
+        using TStorage = SparseSet<AssetHandle, T>;
+
+        using TMetadataStorage = TStorage<AssetMetadata>;
+
+        using TAssetStorage = TStorage<SharedRef<Asset>>;
+
     public:
-        using TStorage = SparseSet<AssetId, AssetMetadata>;
-
+        
         static SharedRef<AssetRegistry> Instance();
-
+    
     private:
-        TStorage m_storage;
+        TAssetStorage m_assets;
+        TMetadataStorage m_metadataStorage;
         static AssetRegistry s_mainStorage;
     };
 

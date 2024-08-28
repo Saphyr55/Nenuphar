@@ -1,6 +1,7 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLRenderer.hpp"
 #include "Nenuphar/Rendering/Mesh.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLMesh.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
 
 namespace Nenuphar
@@ -8,6 +9,16 @@ namespace Nenuphar
 
     // TODO: Use a sparse set and the pagination technique to have better perfomance.
     static std::vector<std::vector<MeshId>> ModelStorage;
+
+
+    Texture OpenGLRenderer::PersistTexture(SharedRef<TextureAsset> asset) const
+    {
+        SharedRef<OpenGLTexture2D> texture = CreateOpenGLTexture2D(0);
+        texture->Bind();
+        DefaultParameterTexture(asset->Information, OpenGLTexture2D::Parameter());
+        texture->Unbind();
+        return texture->GetHandle();
+    }
 
     
     ModelId OpenGLRenderer::PersistModel(const Model& model) const

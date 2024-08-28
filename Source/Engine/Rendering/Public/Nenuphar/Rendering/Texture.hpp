@@ -12,6 +12,7 @@ namespace Nenuphar
     using Texture = UInt32;
     using TextureUnit = UInt32;
 
+    
     enum class ImageFormat : Int
     {
         RED,
@@ -35,15 +36,4 @@ namespace Nenuphar
         Int Height;
     };
 
-    
-    using OnLoadTextureInformation = std::function<void(const TextureInformation&)>;
-
-    
-
-
-    /**
-     *
-     */
-    Bool LoadDataImage(const Path& path, const OnLoadTextureInformation& after);
-    
 }

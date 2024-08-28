@@ -8,6 +8,7 @@
 #include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
 #include "Nenuphar/Rendering/Renderer.hpp"
 #include "Nenuphar/Rendering/Shader.hpp"
+#include "Nenuphar/Rendering/Texture.hpp"
 
 namespace Np = Nenuphar;
 
@@ -19,10 +20,10 @@ struct RenderData
     Np::ModelId FloorModelId;
     Np::ModelId CubeModelId;
     Np::ModelId BarrelModelId;
-    SharedRef<Np::OpenGLTexture2D> WallTexture;
-    UniquePtr<Np::Shader> Shader;
-    UniquePtr<Np::UniformRegistry> Registry;
-    UniquePtr<Np::Renderer> Renderer;
+    Np::Texture WallTexture;
+    Np::UniquePtr<Np::Shader> Shader;
+    Np::UniformRegistry Registry;
+    Np::SharedRef<Np::Renderer> Renderer;
 };
 
 

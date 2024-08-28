@@ -1,7 +1,9 @@
 #include "Genesis/RenderData.hpp"
 #include "Genesis/Transform.hpp"
+#include "Nenuphar/Asset/AssetRegistry.hpp"
 #include "Nenuphar/Common/Debug/Debug.hpp"
 #include "Nenuphar/Common/Instanciate.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
 #include "Nenuphar/Entity/Entity.hpp"
 #include "Nenuphar/Entity/EntityRegistry.hpp"
@@ -11,8 +13,10 @@
 #include "Nenuphar/Model/TOL/TOLMeshLoader.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
 #include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
-#include "Nenuphar/Rendering/RenderSystem.hpp"
+#include "Nenuphar/Rendering/RenderService.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLRenderer.hpp"
+#include "Nenuphar/Rendering/TextureAsset.hpp"
+#include "glad/glad.h"
 
 #include <optional>
 #include <type_traits>
@@ -53,40 +57,42 @@ void OnRenderData(RenderData& data,
     // We obtain uniforms from the register and indicate their respective values.
     // We draw the non textured models.
     // We draw the Bunny.
-    data.Registry->Get<Bool>("UIsTextured").UpdateValue(false);
-    data.Registry->Get<Vector4f>("UColor").UpdateValue(bunnyColor);
-    data.Registry->Get<Matrix4f>("model").UpdateValue(bunnyModel);
+    data.Registry.Get<Bool>("UIsTextured").UpdateValue(false);
+    data.Registry.Get<Vector4f>("UColor").UpdateValue(bunnyColor);
+    data.Registry.Get<Matrix4f>("model").UpdateValue(bunnyModel);
     data.Renderer->DrawModel(*data.Shader, data.BunnyModelId);
 
     // We draw the Cube.
-    data.Registry->Get<Matrix4f>("model").UpdateValue(cubeModel);
-    data.Registry->Get<Bool>("UIsTextured").UpdateValue(true);
+    data.Registry.Get<Matrix4f>("model").UpdateValue(cubeModel);
+    data.Registry.Get<Bool>("UIsTextured").UpdateValue(true);
     data.Renderer->DrawModel(*data.Shader, data.CubeModelId);
 
     // We draw the Barrel.
-    data.Registry->Get<Matrix4f>("model").UpdateValue(barrelModel);
-    data.Registry->Get<Bool>("UIsTextured").UpdateValue(true);
+    data.Registry.Get<Matrix4f>("model").UpdateValue(barrelModel);
+    data.Registry.Get<Bool>("UIsTextured").UpdateValue(true);
     data.Renderer->DrawModel(*data.Shader, data.BarrelModelId);
 
     // We draw the Floor.
-    data.Registry->Get<Bool>("UIsTextured").UpdateValue(false);
-    data.Registry->Get<Matrix4f>("model").UpdateValue(floorModel);
-    data.Registry->Get<Vector4f>("UColor").UpdateValue(floorColor);
+    data.Registry.Get<Bool>("UIsTextured").UpdateValue(false);
+    data.Registry.Get<Matrix4f>("model").UpdateValue(floorModel);
+    data.Registry.Get<Vector4f>("UColor").UpdateValue(floorColor);
     data.Renderer->DrawModel(*data.Shader, data.FloorModelId);
 }
 
 
-SharedRef<RenderData> RenderData::Default()
+Np::SharedRef<RenderData> RenderData::Default()
 {
-    Np::RenderSystem::Instance().Enable();
+    Np::RenderService::Instance()->Enable();
+    Np::SharedRef<Np::Renderer> renderer = Np::RenderService::Instance()->GetRenderer();
 
     Np::TOLModelLoader modelLoader;
 
-    auto renderer = MakeUnique<Np::OpenGLRenderer>();
-
     Np::Path pathWall = Np::FromAssets("/Textures/Wall.jpg");
-    Np::SharedRef<OpenGLTexture2D> wall =
-            Np::OpenGLTexture2D::LoadFromImage(pathWall, &DefaultParameterTexture);
+    Np::TextureAssetLoader textureAssetLoader;
+    Np::SharedRef<Np::TextureAsset> assetWall = textureAssetLoader.Load(pathWall);
+    CHECK(assetWall);
+    Np::Texture wall = renderer->PersistTexture(assetWall);
+    textureAssetLoader.Unload(assetWall);
 
     Np::Path bunnyPathObj = Np::FromAssets("/Models/bunny.obj");
     Np::ModelLoader::TRes bunnyRes = modelLoader.Load(bunnyPathObj);
@@ -94,11 +100,14 @@ SharedRef<RenderData> RenderData::Default()
     Np::Model& bunnyModel = bunnyRes.Value();
     Np::ModelId bunnyModelId = renderer->PersistModel(bunnyModel);
 
+    
     Np::Path cubePathObj = Np::FromAssets("/Models/Cube.obj");
     Np::ModelLoader::TRes cubeRes = modelLoader.Load(cubePathObj);
     CHECK(cubeRes.HasValue())
     Np::Model& cubeModel = cubeRes.Value();
     Np::ModelId cubeModelId = renderer->PersistModel(cubeModel);
+    renderer->TextureModel(cubeModelId, wall);
+
 
     Np::Path barrelPathObj = Np::FromAssets("/Models/wine_barrel/wine_barrel_01_4k.obj");
     Np::Path mtlBarrelDirPath = Np::FromAssets("/Models/wine_barrel/");
@@ -107,15 +116,15 @@ SharedRef<RenderData> RenderData::Default()
     Np::Model& barrelModel = barrelRes.Value();
     Np::ModelId barrelModelId = renderer->PersistModel(barrelModel);
 
+    
     Np::Model floorModel = Np::FloorModelFactory();
     Np::ModelId floorModelId = renderer->PersistModel(floorModel);
 
-    renderer->TextureModel(cubeModelId, wall->GetHandle());
-
+    
     Np::Path vertexFilepath = Np::FromAssets("/Shaders/MainVertex.glsl");
     Np::Path::TRes resultVertex = Np::ReadFileContent(vertexFilepath);
     CHECK(resultVertex.HasValue())
-
+    
     Np::Path fragmentFilepath = Np::FromAssets("/Shaders/MainFragment.glsl");
     Np::Path::TRes resultFragment = Np::ReadFileContent(fragmentFilepath);
     CHECK(resultFragment.HasValue())
@@ -123,10 +132,10 @@ SharedRef<RenderData> RenderData::Default()
     auto program = MakeUnique<Np::OpenGLShader>(
             resultVertex.Value(),
             resultFragment.Value());
-    
-    auto registry = MakeUnique<Np::UniformRegistry>(*program);
+
+    Np::UniformRegistry registry(*program);
     registry
-            ->Register("UTex", 0)
+            .Register("UTex", 0)
             .Register("UColor", GDefaultColor)
             .Register("UIsTextured", false)
             .Register("proj", Matrix4f(1))
@@ -141,6 +150,6 @@ SharedRef<RenderData> RenderData::Default()
             wall,
             std::move(program),
             std::move(registry),
-            std::move(renderer)
+            renderer
     );
 }

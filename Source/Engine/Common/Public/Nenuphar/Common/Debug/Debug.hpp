@@ -1,22 +1,19 @@
 #pragma once
 
-#include <cassert>
-
-#define NP_ASSERT(exp) assert(exp)
-
 #define NpSASSERT(exp) static_assert(exp)
 
 #if defined(_MSC_VER)
-    #define NP_DEBUG_BREAK __debugbreak()
+    #define NP_DEBUGBREAK() __debugbreak()
 #else
-    #define NP_DEBUG_BREAK
+    #define NP_DEBUGBREAK() __builtin_trap()
 #endif
 
+
 #if defined(_DEBUG) || defined(DEBUG)
-#define CHECK(exp)     \
+#define CHECK(exp)       \
     if (!(exp))          \
-    {                  \
-        NP_DEBUG_BREAK;\
+    {                    \
+        NP_DEBUGBREAK();  \
     }
 #else
     #define CHECK(exp)
@@ -26,7 +23,7 @@
 #define CCHECK(exp)     \
     if constexpr (!(exp)) \
     {                   \
-        NP_DEBUG_BREAK; \
+        NP_DEBUGBREAK(); \
     }
 #else
     #define CHECK(exp)

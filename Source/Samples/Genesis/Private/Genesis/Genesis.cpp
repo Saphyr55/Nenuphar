@@ -10,7 +10,7 @@
 #include "Nenuphar/Math/Matrix4.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
 #include "Nenuphar/Rendering/GraphicContext.hpp"
-#include "Nenuphar/Rendering/RenderSystem.hpp"
+#include "Nenuphar/Rendering/RenderService.hpp"
 
 #include <glad/glad.h>
 
@@ -94,8 +94,8 @@ void GenesisApp::OnUpdate()
     // We obtain the view in function of the camera.
     Matrix4f view = Matrix4f::LookAt(camera.Position(), camera.Target, camera.Up);
 
-    MainRenderData->Registry->Get<Matrix4f>("proj").UpdateValue(proj);
-    MainRenderData->Registry->Get<Matrix4f>("view").UpdateValue(view);
+    MainRenderData->Registry.Get<Matrix4f>("proj").UpdateValue(proj);
+    MainRenderData->Registry.Get<Matrix4f>("view").UpdateValue(view);
 }
 
 void GenesisApp::OnRender()
@@ -104,7 +104,7 @@ void GenesisApp::OnRender()
     Float height = MainWindow->GetWindowDefinition().Height;
 
     Vector4f backgroundColor(0.58, 0.69, 0.8, 0.78);
-    Np::RenderSystem::Instance().Clear(backgroundColor);
+    Np::RenderService::Instance()->Clear(backgroundColor);
 
     OnRenderData(*MainRenderData, Registry, EFloor, EBunny, ECube, EBarrel);
 

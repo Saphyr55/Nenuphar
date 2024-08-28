@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Rendering/Mesh.hpp"
 #include "Nenuphar/Rendering/Renderer.hpp"
 
@@ -9,6 +10,8 @@ namespace Nenuphar
     class OpenGLRenderer : public Renderer
     {
     public:
+        virtual Texture PersistTexture(SharedRef<TextureAsset> asset) const override;
+
         virtual ModelId PersistModel(const Model& model) const override;
 
         virtual MeshId PersistMesh(const Mesh& mesh) const override;

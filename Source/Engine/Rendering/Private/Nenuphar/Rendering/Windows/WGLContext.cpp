@@ -1,5 +1,4 @@
 #include "Nenuphar/Rendering/Windows/WGLContext.hpp"
-#include "Nenuphar/Common/Debug/Debug.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
 
@@ -38,7 +37,6 @@ namespace Nenuphar
             &pixelFormat,
             &numFormats
         );
-        NP_ASSERT(numFormats);
 
         PIXELFORMATDESCRIPTOR pixelFormatDesc = {};
         {

@@ -9,11 +9,13 @@ namespace Nenuphar
 
     OpenGLTextureStorage OpenGLTextureStorage::s_mainStorage;
 
+    
     OpenGLTextureStorage::TStorageTexture2D& OpenGLTextureStorage::GetGlobalStorageTexture2D()
     {
         return OpenGLTextureStorage::s_mainStorage.m_storageTexture2D;
     }
 
+    
     OpenGLFormatPixel OpenGLInternalFormat(const TextureInformation& info)
     {
         switch (info.Format)
@@ -29,6 +31,7 @@ namespace Nenuphar
         }
     }
 
+    
     void TexImage2D(UInt target, Int level, const TextureInformation& info)
     {
         OpenGLFormatPixel format = OpenGLInternalFormat(info);
@@ -44,24 +47,28 @@ namespace Nenuphar
                 info.Data));
     }
 
+    
 	void GenerateMipmap(UInt target) 
 	{
 		NPOGL_CHECK_CALL(glGenerateMipmap(target));
     }
 
+    
 	void ActiveTexture(UInt slot)
 	{
 		NPOGL_CHECK_CALL(glActiveTexture(GL_TEXTURE0 + slot));
     }
 
-    void DefaultParameterTexture(const TextureInformation& dataImage, OpenGLTexture<Texture2D>::Parameter parameter)
+    
+    void DefaultParameterTexture(const TextureInformation& dataImage,
+                                 OpenGLTexture<Texture2D>::Parameter parameter)
 	{
         parameter
                 .WithParameter(GL_TEXTURE_WRAP_T, GL_REPEAT)
                 .WithParameter(GL_TEXTURE_WRAP_S, GL_REPEAT)
                 .WithParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR)
                 .WithParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        
+
         TexImage2D(GL_TEXTURE_2D, 0, dataImage);
         GenerateMipmap(GL_TEXTURE_2D);
     }

@@ -3,6 +3,7 @@
 #include "Nenuphar/Model/Model.hpp"
 #include "Nenuphar/Rendering/Mesh.hpp"
 #include "Nenuphar/Rendering/Shader.hpp"
+#include "Nenuphar/Rendering/TextureAsset.hpp"
 
 
 namespace Nenuphar
@@ -11,7 +12,8 @@ namespace Nenuphar
     class Renderer
     {
     public:
-                
+        virtual Texture PersistTexture(SharedRef<TextureAsset> asset) const = 0;
+
         virtual ModelId PersistModel(const Model& model) const = 0;
 
         virtual MeshId PersistMesh(const Mesh& mesh) const = 0;
