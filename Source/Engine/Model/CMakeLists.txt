@@ -12,7 +12,7 @@ set(DEPS            fmt::fmt
                     Engine.Math
                     Engine.Core 
                     Engine.Rendering                    
-                    Engine.Resource
+                    Engine.Asset
                     )
 
 add_library_module(${TARGET} STATIC ${LOCATION})

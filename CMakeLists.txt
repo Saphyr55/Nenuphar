@@ -64,13 +64,13 @@ add_subdirectory(Source/Engine/Model)
 add_subdirectory(Source/Engine/Rendering)
 add_subdirectory(Source/Engine/RenderLight)
 add_subdirectory(Source/Engine/Entity)
-add_subdirectory(Source/Engine/Resource)
+add_subdirectory(Source/Engine/Asset)
 
 
 # ===================================================================================================
 # Samples.
 # ===================================================================================================
-add_subdirectory(Source/Sample/Genesis)
+add_subdirectory(Source/Samples/Genesis)
 
 
 # ===================================================================================================
@@ -79,8 +79,9 @@ add_subdirectory(Source/Sample/Genesis)
 add_subdirectory(Source/ThirdParty/fmt)
 add_subdirectory(Source/ThirdParty/glad)
 add_subdirectory(Source/ThirdParty/stb)
-add_subdirectory(Source/ThirdParty/SDL2)
 add_subdirectory(Source/ThirdParty/tinyobj)
+add_subdirectory(Source/ThirdParty/SDL2)
+
 
 # If the variable NENUPHAR_TEST_ENABLE is ON, add Catch2.
 if(NENUPHAR_TEST_ENABLE)

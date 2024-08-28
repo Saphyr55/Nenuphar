@@ -1,9 +1,9 @@
 #pragma once
 
+#include "Nenuphar/Asset/Asset.hpp"
 #include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
-#include "Nenuphar/Resource/Resource.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
@@ -11,6 +11,7 @@
 #include "glad/glad.h"
 #include <cstddef>
 #include <memory>
+
 
 
 namespace Nenuphar

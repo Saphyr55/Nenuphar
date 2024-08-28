@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Nenuphar/Common/Common.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
 
 #include <functional>
@@ -11,7 +12,6 @@ namespace Nenuphar
     using Texture = UInt32;
     using TextureUnit = UInt32;
 
-    
     enum class ImageFormat : Int
     {
         RED,
@@ -34,11 +34,13 @@ namespace Nenuphar
         Int Width;
         Int Height;
     };
-    
+
     
     using OnLoadTextureInformation = std::function<void(const TextureInformation&)>;
 
     
+
+
     /**
      *
      */

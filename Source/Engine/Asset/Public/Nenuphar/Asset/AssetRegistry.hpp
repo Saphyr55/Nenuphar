@@ -1,22 +1,23 @@
 #pragma once
 
+#include "Nenuphar/Asset/Asset.hpp"
 #include "Nenuphar/Common/Container/SparseSet.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
-#include "Nenuphar/Resource/Resource.hpp"
+
 
 namespace Nenuphar
 {
 
-    class ResourceRegistry
+    class AssetRegistry
     {
     public:
-        using TStorage = SparseSet<ResourceId, Resource>;
+        using TStorage = SparseSet<AssetId, AssetMetadata>;
 
-        static SharedRef<ResourceRegistry> Instance();
+        static SharedRef<AssetRegistry> Instance();
 
     private:
         TStorage m_storage;
-        static ResourceRegistry s_mainStorage;
+        static AssetRegistry s_mainStorage;
     };
 
 }// namespace Nenuphar

@@ -9,6 +9,7 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLVertexArray.hpp"
 #include "Nenuphar/Rendering/Vertex.hpp"
+
 #include <cstdlib>
 
 

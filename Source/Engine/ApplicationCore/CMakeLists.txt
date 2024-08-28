@@ -10,7 +10,6 @@ set(DEPS        Engine.Core
                 Engine.Common
                 Engine.EventSystem
                 Engine.InputSystem
-                SDL2
 )
 
 add_library_module(${TARGET} STATIC ${LOCATION})

@@ -5,14 +5,10 @@
 
 namespace Nenuphar
 {
+
     using VIndice = UInt;
 
-    struct VertexMinimalInfo
-    {
-        Vector3f Pos;
-        Vector2f UV;
-    };
-
+    
     struct Vertex
     {
         Vector3f Pos;

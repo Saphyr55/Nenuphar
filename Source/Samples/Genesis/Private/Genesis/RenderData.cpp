@@ -13,14 +13,17 @@
 #include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
 #include "Nenuphar/Rendering/RenderSystem.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLRenderer.hpp"
+
 #include <optional>
 #include <type_traits>
+
 
 static Vector4f GDefaultColor =
         Vector4f(36.0f / 255.0f,
                  36.0f / 255.0f,
                  36.0f / 255.0f,
                  255.0f / 255.0f);
+
 
 void OnRenderData(RenderData& data,
                   Np::EntityRegistry& registry,

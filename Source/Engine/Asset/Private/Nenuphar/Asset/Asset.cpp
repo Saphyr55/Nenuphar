@@ -1,4 +1,4 @@
-#include "Nenuphar/Resource/Resource.hpp"
+#include "Nenuphar/Asset/Asset.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
 
 

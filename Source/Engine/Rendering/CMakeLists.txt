@@ -6,18 +6,18 @@ project(Engine.Rendering)
 set(LOCATION        .)
 set(TARGET          Engine.Rendering)
 set(GROUP           Engine)
-set(DEPS fmt::fmt
-    stb
-    glad
-    Engine.Common
-    Engine.Math
-    Engine.Core
-    Engine.Model
-    Engine.ApplicationCore
-    Engine.EventSystem
-    Engine.InputSystem
-    Engine.Resource
-)
+set(DEPS            fmt::fmt
+                    stb
+                    glad
+                    Engine.Common
+                    Engine.Math
+                    Engine.Core
+                    Engine.Model
+                    Engine.ApplicationCore
+                    Engine.EventSystem
+                    Engine.InputSystem
+                    Engine.Asset
+                    )
 
 add_library_module(${TARGET} STATIC ${LOCATION})
 target_link_libraries(${TARGET} PRIVATE ${DEPS} INTERFACE ${DEPS})

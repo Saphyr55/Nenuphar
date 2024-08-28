@@ -6,9 +6,9 @@
 namespace Nenuphar
 {
 
-    using ResourceId = std::size_t;
+    using AssetId = std::size_t;
 
-    class Resource
+    class AssetMetadata
     {
         Path FilePath;
     };

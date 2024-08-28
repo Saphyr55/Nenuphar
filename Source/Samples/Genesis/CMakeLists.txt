@@ -7,17 +7,17 @@ set(LOCATION    .)
 set(TARGET      Genesis)
 set(GROUP       Sample)
 set(DEPS
-    Engine.Core
-    Engine.Common
-    Engine.Math
-    Engine.Entity
-    Engine.ApplicationCore
-    Engine.EventSystem
-    Engine.InputSystem
-    Engine.Rendering
-    Engine.Model
-    Engine.Resource
-    glad
+                Engine.Core
+                Engine.Common
+                Engine.Math
+                Engine.Entity
+                Engine.ApplicationCore
+                Engine.EventSystem
+                Engine.InputSystem
+                Engine.Rendering
+                Engine.Model
+                Engine.Asset
+                glad
 )
 
 add_executable(${TARGET})

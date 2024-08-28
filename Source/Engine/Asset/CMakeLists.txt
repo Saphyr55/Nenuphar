@@ -1,10 +1,10 @@
 # ========================================================
-# Setup Engine Resource Module.
+# Setup Engine Asset Module.
 # ========================================================
-project(Engine.Resource)
+project(Engine.Asset)
 
 set(LOCATION        .)
-set(TARGET          Engine.Resource)
+set(TARGET          Engine.Asset)
 set(GROUP           Engine)
 set(DEPS            fmt::fmt
                     Engine.Common
@@ -20,7 +20,7 @@ set_target_properties(${TARGET} PROPERTIES FOLDER ${GROUP})
 
 
 # ========================================================
-# Setup Engine Rendering Test.
+# Setup Engine Asset Test.
 # ========================================================
 if(NENUPHAR_TEST_ENABLE)
 
@@ -28,7 +28,7 @@ if(NENUPHAR_TEST_ENABLE)
 
     set(TARGET_TEST     ${TARGET}.Test)
     set(SRCS 
-                        Test/ResourceRegistryTest.cpp)
+                        Test/AssetRegistryTest.cpp)
 
     add_executable(${TARGET_TEST} ${SRCS})
 
