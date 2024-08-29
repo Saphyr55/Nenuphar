@@ -18,9 +18,7 @@ struct Matrix3
 
     Matrix3() = default;
     Matrix3(R r);
-    Matrix3(R m11, R m21, R m31,
-            R m12, R m22, R m32,
-            R m13, R m23, R m33);
+    Matrix3(R m11, R m21, R m31, R m12, R m22, R m32, R m13, R m23, R m33);
     Matrix3(const Vec& col_1, const Vec& col_2, const Vec& col_3);
 
     static Matrix3 Identity();

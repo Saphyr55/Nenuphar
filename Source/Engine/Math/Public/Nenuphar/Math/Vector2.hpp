@@ -8,20 +8,19 @@ using namespace Nenuphar;
 template<Real R>
 struct Vector2 final
 {
-
     using Vec = Vector2;
 
-	R x = 0;
-	R y = 0;
+    R x = 0;
+    R y = 0;
 
-	auto Dot(const Vec& vec) const -> auto;
+    auto Dot(const Vec& vec) const -> auto;
 
-	Vec operator*(const Real auto&) const;
-	Vec operator+(const Real auto&) const;
-	Vec operator-(const Real auto&) const;
-	Vec operator*(const Vec&) const;
-	Vec operator+(const Vec&) const;
-	Vec operator-(const Vec&) const;
+    Vec operator*(const Real auto&) const;
+    Vec operator+(const Real auto&) const;
+    Vec operator-(const Real auto&) const;
+    Vec operator*(const Vec&) const;
+    Vec operator+(const Vec&) const;
+    Vec operator-(const Vec&) const;
     Vec operator-() const;
 
     bool operator==(const Vec& other) const
@@ -43,4 +42,3 @@ using Vector2u = Vector2<UInt>;
 
 
 #include "Nenuphar/Math/Vector2.inl"
-

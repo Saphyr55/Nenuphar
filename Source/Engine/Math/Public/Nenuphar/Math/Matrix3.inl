@@ -35,9 +35,9 @@ template<Real R>
 Matrix3<R> Matrix3<R>::Scale(Mat mat, Vector3<R> vec)
 {
     return mat * Mat(
-                    Vector3<R>(vec.x, 0, 0),
-                    Vector3<R>(0, vec.y, 0),
-                    Vector4<R>(0, 0, vec.z));
+                         Vector3<R>(vec.x, 0, 0),
+                         Vector3<R>(0, vec.y, 0),
+                         Vector4<R>(0, 0, vec.z));
 }
 
 template<Real R>
@@ -95,9 +95,7 @@ Matrix3<R>::Matrix3(const Vec& col_1, const Vec& col_2, const Vec& col_3)
 }
 
 template<Real R>
-Matrix3<R>::Matrix3(R m11, R m21, R m31,
-                    R m12, R m22, R m32,
-                    R m13, R m23, R m33)
+Matrix3<R>::Matrix3(R m11, R m21, R m31, R m12, R m22, R m32, R m13, R m23, R m33)
     : Matrix3(
               Vec(m11, m12, m13),
               Vec(m21, m22, m23),

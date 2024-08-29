@@ -5,14 +5,14 @@
 #include "Nenuphar/Math/Vector3.hpp"
 
 class Quaternion
-{    
+{
 public:
     /**
 	 * Compute the euclidean norm.
 	 *
-	 * \brief
-	 * \param vec four dimensional vector.
-	 * \return
+	 * @brief
+	 * @param vec four dimensional vector.
+	 * @return
 	 */
     static float Norm(const Quaternion& quaternion);
 

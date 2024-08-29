@@ -4,9 +4,8 @@ namespace Nenuphar
 {
 
     OrbitCamera::OrbitCamera(Float inTheta, Float inPhi, Float inRadius, Vector3f inTarget, Vector3f inUp)
-            : Theta(inTheta), Phi(inPhi), Radius(inRadius), Target(inTarget), Up(inUp)
+        : Theta(inTheta), Phi(inPhi), Radius(inRadius), Target(inTarget), Up(inUp)
     {
-
     }
 
     Vector3f Camera::Target() const
@@ -29,7 +28,7 @@ namespace Nenuphar
         float x = Radius * std::sin(Phi) * std::sin(Theta);
         float y = Radius * std::cos(Phi);
         float z = Radius * std::sin(Phi) * std::cos(Theta);
-        return { x, y, z };
+        return {x, y, z};
     }
 
     OrbitCamera& OrbitCamera::operator=(const OrbitCamera& camera)
@@ -52,4 +51,4 @@ namespace Nenuphar
         return *this;
     }
 
-}
+}// namespace Nenuphar

@@ -2,7 +2,7 @@
 #include "Nenuphar/Math/Quaternion.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
 
-static Matrix4f ToMat4f(const Quaternion& q)
+Matrix4f Quaternion::ToMat4f(const Quaternion& q)
 {
     Matrix4f Result = Matrix4f::Identity();
     Float qxx(q.X * q.X);
@@ -26,7 +26,7 @@ static Matrix4f ToMat4f(const Quaternion& q)
     Result[2][0] = Float(2) * (qxz + qwy);
     Result[2][1] = Float(2) * (qyz - qwx);
     Result[2][2] = Float(1) - Float(2) * (qxx + qyy);
-    
+
     return Result;
 }
 
@@ -42,8 +42,7 @@ Quaternion Quaternion::Normalize(const Quaternion& quaternion)
             quaternion.X / quaternionNorm,
             quaternion.Y / quaternionNorm,
             quaternion.Z / quaternionNorm,
-            quaternion.W / quaternionNorm
-    );
+            quaternion.W / quaternionNorm);
 }
 
 Quaternion Quaternion::Conjugate(const Quaternion& quaternion)
@@ -52,8 +51,7 @@ Quaternion Quaternion::Conjugate(const Quaternion& quaternion)
             -quaternion.X,
             -quaternion.Y,
             -quaternion.Z,
-             quaternion.W
-    );
+            quaternion.W);
 }
 
 Quaternion Quaternion::operator*(const Quaternion& q) const
@@ -68,9 +66,9 @@ Quaternion Quaternion::operator*(const Quaternion& q) const
 
 Quaternion Quaternion::operator*(const Vector3f& vec) const
 {
-    float x =  W * vec.x + Y * vec.z - Z * vec.y;
-    float y =  W * vec.y + Z * vec.x - X * vec.z;
-    float z =  W * vec.z + X * vec.y - Y * vec.x;
+    float x = W * vec.x + Y * vec.z - Z * vec.y;
+    float y = W * vec.y + Z * vec.x - X * vec.z;
+    float z = W * vec.z + X * vec.y - Y * vec.x;
     float w = -X * vec.x - Y * vec.y - Z * vec.z;
 
     return Quaternion(x, y, z, w);

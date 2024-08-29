@@ -4,9 +4,9 @@
 #include "Nenuphar/Common/Common.hpp"
 #include "Nenuphar/Math/Math.hpp"
 
+
 namespace Nenuphar
 {
-
     struct Camera
     {
         Vector3f Pos{};
@@ -90,4 +90,4 @@ namespace Nenuphar
     }
 
 
-}
+}// namespace Nenuphar
