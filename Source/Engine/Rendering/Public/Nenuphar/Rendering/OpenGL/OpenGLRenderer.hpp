@@ -10,7 +10,10 @@ namespace Nenuphar
     class OpenGLRenderer : public Renderer
     {
     public:
-        virtual Texture PersistTexture(SharedRef<TextureAsset> asset) const override;
+        
+        virtual Texture PersistTexture(SharedRef<TextureAsset> asset,
+                                       const PersitTextureOption& option = {})
+                const override;
 
         virtual ModelId PersistModel(const Model& model) const override;
 

@@ -14,25 +14,13 @@ max_line_length = 120
 
 # MSBuild
 [*.{csproj,proj,projitems,shproj,fsproj,target,props}]
-indent_style = space
-indent_size = 2
-
-# NPBuild 
-[{NPBuild.toml,*.Build.toml}]
-indent_style = space
 indent_size = 2
 
 # XML config files
-[*.{config,nuspec,resx,natvis}]
-indent_style = space
+[*.{xml,config,nuspec,resx,natvis}]
 indent_size = 2
 
-# Python files
-[*.py]
-indent_style = space
-indent_size = 4
-
 # YAML, XML files
-[*.{yaml,xml}]
+[*.{yaml,xml,clang-format}]
 indent_style = space
 indent_size = 2

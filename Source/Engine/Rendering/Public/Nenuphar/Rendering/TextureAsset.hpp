@@ -17,9 +17,10 @@ namespace Nenuphar
     class TextureAssetLoader : public AssetLoader<TextureAsset>
     {
     public:
-        virtual SharedRef<TextureAsset> Load(const Path& filePath) const override;
+        virtual SharedRef<TextureAsset> Load(const Path& filePath,
+                                             const AssetOptions&) override;
 
-        virtual void Unload(SharedRef<TextureAsset> asset) const override;
+        virtual void Unload(SharedRef<TextureAsset> asset) override;
     };
     
 }

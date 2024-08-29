@@ -11,7 +11,8 @@
 namespace Nenuphar
 {
 
-    SharedRef<TextureAsset> TextureAssetLoader::Load(const Path& filePath) const
+    SharedRef<TextureAsset> TextureAssetLoader::Load(const Path& filePath,
+                                                     const AssetOptions&)
     {
         SharedRef<TextureAsset> asset = MakeSharedRef<TextureAsset>();
         TextureInformation& info = asset->Information;
@@ -53,7 +54,7 @@ namespace Nenuphar
         return asset;
     }
 
-    void TextureAssetLoader::Unload(SharedRef<TextureAsset> asset) const
+    void TextureAssetLoader::Unload(SharedRef<TextureAsset> asset)
     {
         stbi_image_free(asset->Information.Data);
     }

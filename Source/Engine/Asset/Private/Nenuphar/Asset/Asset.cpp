@@ -4,6 +4,16 @@
 
 namespace Nenuphar
 {
+    constexpr Asset::Asset(const AssetHandle& handle)
+        : m_handle(handle)
+    {
+
+    }
+
+    AssetHandle Asset::GetHandle()
+    {
+        return m_handle;
+    }
 
     static const char* AssetsFolderPathName = "/Assets";
 

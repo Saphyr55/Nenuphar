@@ -4,7 +4,6 @@
 #include "Nenuphar/Entity/Entity.hpp"
 #include "Nenuphar/Entity/EntityRegistry.hpp"
 #include "Nenuphar/Model/Model.hpp"
-#include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
 #include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
 #include "Nenuphar/Rendering/Renderer.hpp"
 #include "Nenuphar/Rendering/Shader.hpp"
@@ -25,7 +24,6 @@ struct RenderData
     Np::UniformRegistry Registry;
     Np::SharedRef<Np::Renderer> Renderer;
 };
-
 
 void OnRenderData(RenderData& data,
                   Np::EntityRegistry& registry,

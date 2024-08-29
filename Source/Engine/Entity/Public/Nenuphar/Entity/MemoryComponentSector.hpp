@@ -1,9 +1,7 @@
 #pragma once
 
-#include "Nenuphar/Core/Core.hpp"
 #include "Nenuphar/Entity/ComponentBuffer.hpp"
 
-#include <unordered_set>
 
 namespace Nenuphar
 {

@@ -15,7 +15,7 @@ namespace Nenuphar
         std::vector<Mesh> Meshes;
     };
 
-    const auto FloorModelFactory = []() {
+    constexpr auto FloorModelFactory = []() {
 
         const std::vector<Vertex> Vertices{
                 Vertex{Vector3f(-1.0f, 0.0f, 1.0f), Vector3f(1.0f, 1.0f, 1.0f), Vector2f(0.0f, 0.0f)},
@@ -30,7 +30,7 @@ namespace Nenuphar
         return Model({Mesh(std::move(Vertices), std::move(Indices), { })});
     };
 
-    const auto CubeModelFactory = []() {
+    constexpr auto CubeModelFactory = []() {
 
         const std::vector<Vertex> CubeVertices{
                 Vertex(Vector3f(0.5f, 0.5f, 0.5f),    Vector3f(1.0f),  Vector2f(0.0f, 0.0f)),
@@ -58,5 +58,4 @@ namespace Nenuphar
 
         return Model({Mesh(std::move(CubeVertices), std::move(CubeIndices), {})});
     };
-
 }

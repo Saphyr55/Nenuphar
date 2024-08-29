@@ -23,7 +23,7 @@ namespace Nenuphar
         TValue* Add(TId id, TValue&& value);
         TValue* Get(TId id);
         void Remove(TId id);
-
+        
     private:
         void SetDenseIndex(TId id, TIndex index);
 
@@ -60,8 +60,8 @@ namespace Nenuphar
     template<typename TId, typename TValue, std::size_t MaxNumPage>
     auto SparseSet<TId, TValue, MaxNumPage>::GetDenseIndex(TId id) -> TIndex
     {
-        size_t page = id / MaxNumPage;
-        size_t sparseIndex = id % MaxNumPage;
+        std::size_t page = id / MaxNumPage;
+        std::size_t sparseIndex = id % MaxNumPage;
 
         if (page < m_sparses.size())
         {

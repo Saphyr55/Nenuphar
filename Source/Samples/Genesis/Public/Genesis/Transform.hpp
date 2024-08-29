@@ -10,6 +10,7 @@ struct Transform
     Vector3f Scale;
     Quaternion Rotation;
 
-    static Matrix4f Tranformation(const Matrix4f& mat, const Transform& transform);
+    static Matrix4f Tranformation(const Matrix4f& mat,
+                                  const Transform& transform);
     static Matrix4f Tranformation(const Transform& transform);
-};// namespace gnstruct Transform
+};

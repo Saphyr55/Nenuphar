@@ -12,12 +12,18 @@ namespace Nenuphar
 
     Path::Path(std::string_view path)
         : m_path(path)
+        , m_extension(fs::path(path).extension().string())
     {
     }
 
     bool Path::IsExists() const
     {
         return fs::exists(fs::path(m_path));
+    }
+
+    std::string Path::GetExtenstion() const
+    {
+        return m_extension;
     }
 
     std::string Path::GetFilePath() const

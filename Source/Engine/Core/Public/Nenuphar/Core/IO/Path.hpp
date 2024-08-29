@@ -19,13 +19,16 @@ namespace Nenuphar
 
     public:
         
+        std::string GetExtenstion() const;
         bool IsExists() const;
+
         std::string GetFilePath() const;
 
         explicit Path(std::string_view path);
         ~Path() = default;
 
     private:
+        std::string m_extension;
         std::string m_path;
     };
 

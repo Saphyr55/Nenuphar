@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Nenuphar/Asset/AssetRegistry.hpp"
 #include "Nenuphar/Model/Model.hpp"
 #include "Nenuphar/Rendering/Mesh.hpp"
 #include "Nenuphar/Rendering/Shader.hpp"
@@ -9,10 +10,17 @@
 namespace Nenuphar
 {
 
+    struct PersitTextureOption
+    {
+        AssetRegistry& Registry = AssetRegistry::Instance();
+        Bool ReleaseData = true;
+    };
+
     class Renderer
     {
     public:
-        virtual Texture PersistTexture(SharedRef<TextureAsset> asset) const = 0;
+        virtual Texture PersistTexture(SharedRef<TextureAsset> asset,
+                                       const PersitTextureOption& option = {}) const = 0;
 
         virtual ModelId PersistModel(const Model& model) const = 0;
 

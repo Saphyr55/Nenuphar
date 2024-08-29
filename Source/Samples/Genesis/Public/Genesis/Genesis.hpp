@@ -16,7 +16,6 @@
 #include "Nenuphar/Rendering/GraphicContext.hpp"
 #include "Nenuphar/Rendering/Renderer.hpp"
 
-
 namespace Np = Nenuphar;
 
 class GenesisApp
@@ -36,7 +35,7 @@ private:
     Np::Entity EFloor;
     Np::Entity ECube;
     Np::Entity EBunny;
-    Np::Entity EBarrel; 
+    Np::Entity EBarrel;
     UniquePtr<Np::GraphicContext> MainGraphicContext;
     SharedRef<Np::Window> MainWindow;
     SharedRef<RenderData> MainRenderData;

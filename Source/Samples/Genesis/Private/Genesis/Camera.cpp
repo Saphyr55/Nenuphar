@@ -2,15 +2,15 @@
 #include "Nenuphar/InputSystem/InputSystem.hpp"
 #include "Nenuphar/Math/Camera.hpp"
 
-
-static OrbitCamera DefaultCamera((float) Radians(45.0f),
-                                 (float) Radians(45.0f),
+static OrbitCamera DefaultCamera((float)Radians(45.0f),
+                                 (float)Radians(45.0f),
                                  3.0f,
                                  Vector3f(0.0, 0.0, 0.0),
                                  Vector3f(0.0f, 1.0f, 0.0f));
 
-
-void InitCamera(const WindowSignals& signals, Np::OrbitCamera& camera, const Velocity& velocity)
+void InitCamera(const WindowSignals& signals,
+                Np::OrbitCamera& camera,
+                const Velocity& velocity)
 {
     signals.OnKeyPressed().Connect([&](auto&, auto& evt) {
         ResetCameraTarget(evt, camera);
@@ -26,7 +26,6 @@ void InitCamera(const WindowSignals& signals, Np::OrbitCamera& camera, const Vel
     });
 }
 
-
 Void ResetCameraTarget(const Np::KeyEvent& evt, Np::OrbitCamera& camera)
 {
     if (evt.Key == Input::Key::R)
@@ -35,8 +34,9 @@ Void ResetCameraTarget(const Np::KeyEvent& evt, Np::OrbitCamera& camera)
     }
 }
 
-
-Void OnMoveCameraXY(const Np::MouseMoveEvent& evt, Np::OrbitCamera& camera, const Velocity& velocity)
+Void OnMoveCameraXY(const Np::MouseMoveEvent& evt,
+                    Np::OrbitCamera& camera,
+                    const Velocity& velocity)
 {
     if (Np::InputSystem::IsButtonDown(Input::Button::Middle))
     {
@@ -46,8 +46,9 @@ Void OnMoveCameraXY(const Np::MouseMoveEvent& evt, Np::OrbitCamera& camera, cons
     }
 }
 
-
-Void OnRotateCamera(const Np::MouseMoveEvent& evt, Np::OrbitCamera& camera, const Velocity& velocity)
+Void OnRotateCamera(const Np::MouseMoveEvent& evt,
+                    Np::OrbitCamera& camera,
+                    const Velocity& velocity)
 {
     if (Np::InputSystem::IsButtonDown(Input::Button::Left))
     {
@@ -56,8 +57,9 @@ Void OnRotateCamera(const Np::MouseMoveEvent& evt, Np::OrbitCamera& camera, cons
     }
 }
 
-
-Void OnMoveCameraZOnScroll(const Np::MouseWheelEvent& evt, Np::OrbitCamera& camera, const Velocity& velocity)
+Void OnMoveCameraZOnScroll(const Np::MouseWheelEvent& evt,
+                           Np::OrbitCamera& camera,
+                           const Velocity& velocity)
 {
     camera.Radius -= evt.Delta * velocity.Factor;
     if (camera.Radius < 3)

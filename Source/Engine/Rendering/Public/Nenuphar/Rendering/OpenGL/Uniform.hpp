@@ -4,18 +4,19 @@
 #include <type_traits>
 #include <variant>
 
-#include "Nenuphar/Common/Common.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Math/Vector2.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
 #include "Nenuphar/Math/Vector4.hpp"
-#include "Nenuphar/Rendering/OpenGL/OpenGLShader.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLShader.hpp"
+
 
 namespace Nenuphar
 {
 
-	using UniformLocation = UInt;
+    using UniformLocation = UInt;
 
 
     template<typename T>
@@ -27,17 +28,16 @@ namespace Nenuphar
             std::is_same_v<T, Float> or
             std::is_same_v<T, UInt> or
             std::is_same_v<T, Int> or
-            std::is_same_v<T, Bool>
-            ;       
+            std::is_same_v<T, Bool>;
 
     template<IsUniformValue T>
-    class Uniform final
+    class Uniform
     {
 
     public:
-		void Update() const;
-		void UpdateValue(const T& value) const;
-		[[nodiscard]] const T& GetValue() const;
+        void Update() const;
+        void UpdateValue(const T& value) const;
+        [[nodiscard]] const T& GetValue() const;
         [[nodiscard]] UniformLocation GetLocation() const;
 
     public:
@@ -56,11 +56,11 @@ namespace Nenuphar
     using UniformU32 = Uniform<UInt>;
     using UniformFloat = Uniform<Float>;
     using UniformVec4f = Uniform<Vector4f>;
-	using UniformVec3f = Uniform<Vector3f>;
-	using UniformVec2f = Uniform<Vector2f>;
+    using UniformVec3f = Uniform<Vector3f>;
+    using UniformVec2f = Uniform<Vector2f>;
     using UniformMat4f = Uniform<Matrix4f>;
 
-    
+
     using IUniform = std::variant<
             Uniform<Int>,
             Uniform<Bool>,
@@ -71,7 +71,7 @@ namespace Nenuphar
             Uniform<Vector4f>,
             Uniform<Matrix4f>>;
 
-    
+
     class UniformRegistry
     {
     public:
@@ -83,9 +83,15 @@ namespace Nenuphar
         template<IsUniformValue V>
         UniformRegistry& Handle(StringView name, std::function<void(Uniform<V>&)> handle);
 
-        inline OpenGLShader& Owner() { return m_owner; }
+        inline OpenGLShader& Owner()
+        {
+            return m_owner;
+        }
 
-        UniformRegistry(OpenGLShader& s) : m_owner(s) { }
+        UniformRegistry(OpenGLShader& s)
+            : m_owner(s)
+        {
+        }
 
     private:
         OpenGLShader& m_owner;
@@ -108,14 +114,14 @@ namespace Nenuphar
     }
 
     template<IsUniformValue T>
-    const T& Uniform<T>::GetValue() const 
-    { 
+    const T& Uniform<T>::GetValue() const
+    {
         return m_value;
     }
 
     template<IsUniformValue T>
-    UniformLocation Uniform<T>::GetLocation() const 
-    { 
+    UniformLocation Uniform<T>::GetLocation() const
+    {
         return m_location;
     }
 
@@ -148,4 +154,4 @@ namespace Nenuphar
         return *this;
     }
 
-}
+}// namespace Nenuphar

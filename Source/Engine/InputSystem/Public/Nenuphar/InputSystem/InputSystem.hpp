@@ -4,14 +4,12 @@
 
 #include "Nenuphar/InputSystem/Button.hpp"
 
-namespace Nenuphar
-{
+namespace Nenuphar {
 
-    struct InputSystem
-    {
-        static bool IsButtonDown(Input::Button button);
+struct InputSystem {
+  static bool IsButtonDown(Input::Button button);
 
-        static std::unordered_set<Input::Button> DownButtons;
-    };
+  static std::unordered_set<Input::Button> DownButtons;
+};
 
-}
+}  // namespace Nenuphar

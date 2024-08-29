@@ -62,15 +62,15 @@ namespace Nenuphar
     class OpenGLTexture
 	{
     public:
-        
+
 		struct Parameter
     	{
             auto WithParameter(UInt pName, Int param) const
                     -> const Parameter&;
-            
+
             auto WithParameter(UInt pName, Float param) const
                     -> const Parameter&;
-            
+
             auto WithParameter(UInt pName, const Int* param) const
                     -> const Parameter&;
             
@@ -96,7 +96,7 @@ namespace Nenuphar
         {
             return m_identification.Unit;
         }
-        
+
         inline const TextureIdentication& GetTextureIdentication() const
         {
             return m_identification;
