@@ -1,5 +1,5 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLMesh.hpp"
-#include "Nenuphar/Common/Debug/Debug.hpp"
+#include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Rendering/Mesh.hpp"
@@ -45,8 +45,8 @@ namespace Nenuphar
 
     void OpenGLDrawMesh(const MeshId& id)
     {
-        CHECK(OpenGLMeshStorage::GetGlobalStorage().contains(id))
-        CHECK(MeshStorage::GetGlobalStorage().contains(id))
+        NCHECK(OpenGLMeshStorage::GetGlobalStorage().contains(id))
+        NCHECK(MeshStorage::GetGlobalStorage().contains(id))
 
         auto& openGLMesh = OpenGLMeshStorage::GetGlobalStorage().at(id);
         auto& mesh = MeshStorage::GetGlobalStorage().at(id);
@@ -67,7 +67,7 @@ namespace Nenuphar
 
         openGLMesh.VAO->Bind();
 
-        NPOGL_CHECK_CALL(glDrawElements(
+        NP_GL_CHECK_CALL(glDrawElements(
                 GL_TRIANGLES, openGLMesh.Count, GL_UNSIGNED_INT, 0));
 
         openGLMesh.VAO->Unbind();

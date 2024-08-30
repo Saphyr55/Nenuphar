@@ -143,12 +143,30 @@ namespace Nenuphar
         Word Extends();
 
         /**
-         *
-         * @param id
-         * @param layout
+         * @brief Construct a Memory Component Sector instance.
+         * 
+         * @param id 
+         * @param layout 
          */
         MemoryComponentSector(MemorySectorId id, MemoryComponentLayout layout);
 
+        /**
+         * @brief Delete the copy of a new Memory Component Sector instance.
+         * 
+         */
+        MemoryComponentSector(const MemoryComponentSector&) = delete;
+
+        /**
+         * @brief Delete the move of a Memory Component Sector instance.
+         * 
+         */
+        MemoryComponentSector(MemoryComponentSector&&) = delete;
+
+        /**
+         * @brief Default Memory Component Sector destructor.
+         * 
+         */
+        ~MemoryComponentSector() = default;
 
     private:
         // The identifier of this sector.

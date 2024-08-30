@@ -1,12 +1,12 @@
 #include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
 #include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
 
-#include <ranges>
+#if NP_PLATFORM_WINDOWS
 
 namespace Nenuphar
 {
 
-    thread_local WindowsWindowRegistry WindowsApplication::WindowsWindowRegistry = { };
+    thread_local WindowsWindowRegistry WindowsApplication::WindowsWindowRegistry = {};
 
     const TCHAR WindowsApplication::ApplicationClassName[] = TEXT("NenupharApplication");
 
@@ -50,18 +50,18 @@ namespace Nenuphar
     void WindowsApplication::Initialize()
     {
         WNDCLASSEX windowClassEX;
-        windowClassEX.cbSize         = sizeof(WNDCLASSEX);
-        windowClassEX.style          = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-        windowClassEX.lpfnWndProc    = &ProcessMessage;
-        windowClassEX.cbClsExtra     = 0;
-        windowClassEX.cbWndExtra     = 0;
-        windowClassEX.hInstance      = hinstance;
-        windowClassEX.hIcon          = LoadIcon(hinstance, IDI_APPLICATION);
-        windowClassEX.hIconSm        = LoadIcon(hinstance, IDI_APPLICATION);
-        windowClassEX.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-        windowClassEX.hbrBackground  = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
-        windowClassEX.lpszMenuName   = nullptr;
-        windowClassEX.lpszClassName  = ApplicationClassName;
+        windowClassEX.cbSize = sizeof(WNDCLASSEX);
+        windowClassEX.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+        windowClassEX.lpfnWndProc = &ProcessMessage;
+        windowClassEX.cbClsExtra = 0;
+        windowClassEX.cbWndExtra = 0;
+        windowClassEX.hInstance = hinstance;
+        windowClassEX.hIcon = LoadIcon(hinstance, IDI_APPLICATION);
+        windowClassEX.hIconSm = LoadIcon(hinstance, IDI_APPLICATION);
+        windowClassEX.hCursor = LoadCursor(nullptr, IDC_ARROW);
+        windowClassEX.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
+        windowClassEX.lpszMenuName = nullptr;
+        windowClassEX.lpszClassName = ApplicationClassName;
 
         classID = RegisterClassEx(&windowClassEX);
         if (!classID)
@@ -76,11 +76,11 @@ namespace Nenuphar
 
     void WindowsApplication::Destroy() const
     {
-        UnregisterClass
-        (
-            ApplicationClassName,
-            hinstance
-        );
+        UnregisterClass(
+                ApplicationClassName,
+                hinstance);
     }
 
-}
+}// namespace Nenuphar
+
+#endif

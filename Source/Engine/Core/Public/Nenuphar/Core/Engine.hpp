@@ -1,10 +1,6 @@
 #pragma once
 
-#include <concepts>
 #include <functional>
-
-#include "Nenuphar/Common/Instanciate.hpp"
-#include "Nenuphar/Common/Type/Type.hpp"
 
 namespace Nenuphar
 {
@@ -14,8 +10,8 @@ namespace Nenuphar
     public:
         static int LoopRun(const std::function<void()>& runnable);
 
-        static Bool HasStarted;
-        static Bool IsFinish;
+        static bool HasStarted;
+        static bool IsFinish;
     };
 
 

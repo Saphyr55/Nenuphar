@@ -1,7 +1,7 @@
 #include "Nenuphar/Core/Logger/ConsoleColor.hpp"
 #include "Nenuphar/Core/Windows.hpp"
 
-#ifdef NP_PLATFORM_WINDOWS
+#if NP_PLATFORM_WINDOWS
 
 namespace Nenuphar
 {

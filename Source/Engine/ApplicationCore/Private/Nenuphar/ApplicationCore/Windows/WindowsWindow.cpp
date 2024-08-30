@@ -1,8 +1,9 @@
-#include <fmt/format.h>
-
-#include "Nenuphar/Core/Core.hpp"
 #include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
+
+#if NP_PLATFORM_WINDOWS
+
 #include "Nenuphar/InputSystem/InputSystem.hpp"
+#include <fmt/format.h>
 
 namespace Nenuphar
 {
@@ -299,3 +300,5 @@ namespace Nenuphar
     }
 
 }
+
+#endif

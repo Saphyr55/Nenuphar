@@ -1,10 +1,12 @@
 #pragma once
 
+#include "Nenuphar/Core/Windows.hpp"
+
+#if NP_PLATFORM_WINDOWS
+
 #include "Nenuphar/ApplicationCore/WindowBase.hpp"
 #include "Nenuphar/ApplicationCore/WindowSignals.hpp"
 #include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
-#include "Nenuphar/Core/Windows.hpp"
-
 
 namespace Nenuphar
 {
@@ -62,3 +64,5 @@ namespace Nenuphar
     };
 
 }
+
+#endif

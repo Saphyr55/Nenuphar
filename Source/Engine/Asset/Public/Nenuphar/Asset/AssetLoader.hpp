@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Asset.hpp"
 #include "Nenuphar/Asset/Asset.hpp"
-#include "Nenuphar/Common/Debug/Debug.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Core/Core.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
 
 
@@ -40,14 +39,13 @@ namespace Nenuphar
     SharedRef<A> AssetLoader<A, Options>::Load(const Path& path,
                                                const Options& options)
     {
-        CHECK(false)
+        NCHECK(false)
         return nullptr;
     }
 
     template<CIsAsset A, CIsAssetOptions Options>
-    void AssetLoader<A, Options>::Unload(SharedRef<A> asset)
-    {
-        CHECK(asset)
+    void AssetLoader<A, Options>::Unload(SharedRef<A> asset) {
+        NCHECK(asset)
     };
 
     template<CIsAsset A, CIsAssetOptions Options>

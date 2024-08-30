@@ -127,7 +127,7 @@ namespace Nenuphar::Internal
         using T = std::remove_cvref_t<decltype(exp.Value())>;
         using G = std::remove_cv_t<
                 std::invoke_result_t<F, decltype(std::forward<Exp>(exp).Error())>>;
-        
+
         if (!exp.HasValue())
         {
             return Result<T, G>(
@@ -143,6 +143,5 @@ namespace Nenuphar::Internal
         {
             return Result<T, G>(std::in_place, std::forward<Exp>(exp).Value());
         }
-
     }
-}
+}// namespace Nenuphar::Internal

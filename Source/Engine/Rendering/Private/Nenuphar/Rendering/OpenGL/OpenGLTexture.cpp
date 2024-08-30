@@ -1,5 +1,5 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
-#include "Nenuphar/Common/Debug/Debug.hpp"
+#include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
@@ -27,7 +27,7 @@ namespace Nenuphar
             case ImageFormat::RED:
                 return OpenGLFormatPixel::RED;
             default:
-                CCHECK(false)
+                NCHECK(false)
         }
     }
 
@@ -35,7 +35,7 @@ namespace Nenuphar
     void TexImage2D(UInt target, Int level, const TextureInformation& info)
     {
         OpenGLFormatPixel format = OpenGLInternalFormat(info);
-        NPOGL_CHECK_CALL(glTexImage2D(
+        NP_GL_CHECK_CALL(glTexImage2D(
                 target,
                 level,
                 format,
@@ -50,13 +50,13 @@ namespace Nenuphar
     
 	void GenerateMipmap(UInt target) 
 	{
-		NPOGL_CHECK_CALL(glGenerateMipmap(target));
+		NP_GL_CHECK_CALL(glGenerateMipmap(target));
     }
 
     
 	void ActiveTexture(UInt slot)
 	{
-		NPOGL_CHECK_CALL(glActiveTexture(GL_TEXTURE0 + slot));
+		NP_GL_CHECK_CALL(glActiveTexture(GL_TEXTURE0 + slot));
     }
 
     

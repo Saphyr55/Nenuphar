@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Nenuphar/Core/Memory/Storage.hpp"
-#include "Nenuphar/Entity/Entity.hpp"
 #include "Nenuphar/Entity/ComponentTI.hpp"
+#include "Nenuphar/Entity/Entity.hpp"
 
 namespace Nenuphar
 {
@@ -18,20 +18,21 @@ namespace Nenuphar
         class ComponentBufferBase
         {
         public:
-
             /**
              *
              */
             static constexpr Word MaxAmountValue = MaxAmount;
 
         public:
-               
             /**
              * Get the component type index.
              * 
              * @return the component type index.
              */
-            inline ComponentTI CTI() const { return m_cti; };
+            inline ComponentTI CTI() const
+            {
+                return m_cti;
+            };
 
             /**
              * Get the size of the current buffer.
@@ -106,7 +107,8 @@ namespace Nenuphar
                 throw std::exception();
             }
 
-            T(*array)[MaxAmount] = (T(*)[MaxAmount]) m_elements.get();
+            T(*array)
+            [MaxAmount] = (T(*)[MaxAmount])m_elements.get();
             (*array)[index] = component;
             m_count++;
 
@@ -138,11 +140,10 @@ namespace Nenuphar
             , m_elements(new Word8[MaxAmount * m_elementSize])
             , m_cti(cti)
         {
-
         }
 
-    }
+    }// namespace Details
 
     using ComponentBuffer = Details::ComponentBufferBase<10'000>;
 
-}
+}// namespace Nenuphar

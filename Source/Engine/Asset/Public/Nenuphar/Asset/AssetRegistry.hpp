@@ -5,10 +5,11 @@
 #include "Nenuphar/Asset/Asset.hpp"
 #include "Nenuphar/Asset/AssetLoader.hpp"
 #include "Nenuphar/Common/Container/SparseSet.hpp"
-#include "Nenuphar/Common/Debug/Debug.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
+
 
 #include <memory>
 #include <typeindex>
@@ -27,7 +28,7 @@ namespace Nenuphar
         using TAssetStorage = TStorage<SharedRef<Asset>>;
 
         using TTypeLoaderMapping = std::unordered_map<std::type_index,
-              SharedRef<AssertLoader>>;
+                                                      SharedRef<AssertLoader>>;
 
         using THandles = std::unordered_map<std::string, AssetHandle>;
 
@@ -75,12 +76,12 @@ namespace Nenuphar
         m_assets.Remove(handle);
         m_metadataStorage.Remove(handle);
 
-        CHECK(!metadata)
+        NCHECK(!metadata)
 
         m_loaders[typeid(A)]->UnloadAsset(asset);
     }
 
-    
+
     template<CIsAsset A>
     SharedRef<AssetLoader<A>> AssetRegistry::GetLoader()
     {
@@ -103,7 +104,7 @@ namespace Nenuphar
         {
             NP_ERROR(AssetRegistry::Load, "No loader found for type asset '{}'.",
                      typeid(A).raw_name());
-            CHECK(false);
+            NCHECK(false);
             return nullptr;
         }
 
@@ -117,7 +118,7 @@ namespace Nenuphar
             Path path = FromAssets(pathStrView);
             asset = loader->LoadAsset(path, options);
             m_lastHandle++;
-            m_handlersFile.insert({ pathStr, m_lastHandle });
+            m_handlersFile.insert({pathStr, m_lastHandle});
         }
         else
         {
@@ -128,5 +129,5 @@ namespace Nenuphar
         return std::static_pointer_cast<A>(asset);
     }
 
-    
+
 }// namespace Nenuphar

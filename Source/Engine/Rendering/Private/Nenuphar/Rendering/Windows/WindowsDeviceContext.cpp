@@ -1,5 +1,7 @@
 #include "Nenuphar/Rendering/Windows/WindowsDeviceContext.hpp"
 
+#if NP_PLATFORM_WINDOWS
+
 namespace Nenuphar
 {
 
@@ -25,3 +27,5 @@ namespace Nenuphar
 
 
 }
+
+#endif

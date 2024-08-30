@@ -1,7 +1,7 @@
 #include "Genesis/RenderData.hpp"
 #include "Genesis/Transform.hpp"
 #include "Nenuphar/Asset/AssetRegistry.hpp"
-#include "Nenuphar/Common/Debug/Debug.hpp"
+#include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
@@ -85,12 +85,12 @@ Np::SharedRef<RenderData> RenderData::Default()
 
     Np::SharedRef<Np::ModelAsset> bunnyAsset =
             Np::AssetRegistry::Instance().Load<Np::ModelAsset>("/Models/bunny.obj");
-    CHECK(bunnyAsset)
+    NCHECK(bunnyAsset)
     Np::ModelId bunnyModelId = renderer->PersistModel(bunnyAsset->GetModel());
 
     Np::SharedRef<Np::ModelAsset> cubeAsset =
             Np::AssetRegistry::Instance().Load<Np::ModelAsset>("/Models/Cube.obj");
-    CHECK(cubeAsset)
+    NCHECK(cubeAsset)
     Np::ModelId cubeModelId = renderer->PersistModel(cubeAsset->GetModel());
     renderer->TextureModel(cubeModelId, wall);
 
@@ -102,7 +102,7 @@ Np::SharedRef<RenderData> RenderData::Default()
     Np::SharedRef<Np::ModelAsset> barrelAsset =
             Np::AssetRegistry::Instance().Load<Np::ModelAsset, Np::ModelAssetOptions>(
                     path, barrelOptions);
-    CHECK(barrelAsset)
+    NCHECK(barrelAsset)
     Np::ModelId barrelModelId = renderer->PersistModel(barrelAsset->GetModel());
 
     Np::Model floorModel = Np::FloorModelFactory();
@@ -110,11 +110,11 @@ Np::SharedRef<RenderData> RenderData::Default()
 
     Np::Path vertexFilepath = Np::FromAssets("/Shaders/MainVertex.glsl");
     Np::Path::TRes resultVertex = Np::ReadFileContent(vertexFilepath);
-    CHECK(resultVertex.HasValue())
+    NCHECK(resultVertex.HasValue())
 
     Np::Path fragmentFilepath = Np::FromAssets("/Shaders/MainFragment.glsl");
     Np::Path::TRes resultFragment = Np::ReadFileContent(fragmentFilepath);
-    CHECK(resultFragment.HasValue())
+    NCHECK(resultFragment.HasValue())
 
     auto program = MakeUnique<Np::OpenGLShader>(resultVertex.Value(),
                                                 resultFragment.Value());

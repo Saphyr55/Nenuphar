@@ -40,28 +40,28 @@ namespace Nenuphar
 	template<typename T, OpenGLBufferTarget bt>
     OpenGLBuffer<T, bt>::~OpenGLBuffer() 
     { 
-        NPOGL_CHECK_CALL(glDeleteBuffers(1, &m_bufferID));
+        NP_GL_CHECK_CALL(glDeleteBuffers(1, &m_bufferID));
     }
 
 	template<typename T, OpenGLBufferTarget bt>
     OpenGLBuffer<T, bt>::OpenGLBuffer(const std::vector<T>& data, OpenGLBufferUsage usage) 
         : m_usage(usage)
 	{
-		NPOGL_CHECK_CALL(glGenBuffers(1, &m_bufferID));
+		NP_GL_CHECK_CALL(glGenBuffers(1, &m_bufferID));
 		Bind();
-		NPOGL_CHECK_CALL(glBufferData(bt, data.size() * sizeof(T), data.data(), usage));
+		NP_GL_CHECK_CALL(glBufferData(bt, data.size() * sizeof(T), data.data(), usage));
     }
 	  
 	template<typename T, OpenGLBufferTarget bt>
     inline void OpenGLBuffer<T, bt>::Bind() const 
     { 
-        NPOGL_CHECK_CALL(glBindBuffer(bt, m_bufferID));
+        NP_GL_CHECK_CALL(glBindBuffer(bt, m_bufferID));
     }
 
 	template<typename T, OpenGLBufferTarget bt>
     inline void OpenGLBuffer<T, bt>::Unbind() const 
     { 
-        NPOGL_CHECK_CALL(glBindBuffer(bt, 0));
+        NP_GL_CHECK_CALL(glBindBuffer(bt, 0));
     }
 
 	template<typename T, OpenGLBufferTarget bt>

@@ -38,10 +38,6 @@ add_compile_definitions(NP_PROJECT_DIR="${CMAKE_SOURCE_DIR}")
 # Configure properties.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-if(WIN32)
-    add_compile_definitions(NP_PLATFORM_WINDOWS)
-endif()
-
 
 # ===================================================================================================
 # BuildTool.

@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Nenuphar/Core/Core.hpp"
+
+#if NP_PLATFORM_WINDOWS
+
 #include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
 
 namespace Nenuphar
@@ -21,3 +25,5 @@ namespace Nenuphar
     };
 
 }
+
+#endif

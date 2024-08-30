@@ -1,32 +1,29 @@
 #include "Nenuphar/ApplicationCore/WindowBase.hpp"
-#include "Nenuphar/ApplicationCore/PlatformApplication.hpp"
+#include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 
 #ifdef NP_PLATFORM_WINDOWS
-
-#include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
 
 namespace Nenuphar
 {
 
     SharedRef<WindowBase> WindowBase::Create(const WindowDefinition& definition)
     {
-        auto& windowsApplication = reinterpret_cast<WindowsApplication&>(PlatformApplication::GetPlatformApplication());
-        auto window = MakeSharedRef<WindowsWindow>(windowsApplication, definition);;
-        return std::move(window);
+        auto& application = PlatformApplication::GetPlatformApplication();
+        auto& windowsApplication = reinterpret_cast<WindowsApplication&>(application);
+        return MakeSharedRef<WindowsWindow>(windowsApplication, definition);
     }
 
-}
+}// namespace Nenuphar
 
 #else
 
 namespace Nenuphar
 {
-    SharedRef<WindowBase> WindowBase::Create(WindowDefinition definition)
+    SharedRef<WindowBase> WindowBase::Create(const WindowDefinition& definition)
     {
         return nullptr;
     }
-}
+}// namespace Nenuphar
 
 #endif
-

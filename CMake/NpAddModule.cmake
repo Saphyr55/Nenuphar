@@ -27,6 +27,12 @@ endfunction()
 
 function(add_library_module module_name kind module_location)
 
+    if (${kind} STREQUAL SHARED)
+        add_compile_definitions(NSHARED)
+    else()
+        add_compile_definitions(NLIB)
+    endif()
+
     add_library(${module_name} ${kind})
     add_module(${module_name} ${module_location})
 

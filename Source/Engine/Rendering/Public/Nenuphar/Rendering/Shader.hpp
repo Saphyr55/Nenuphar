@@ -10,6 +10,7 @@ namespace Nenuphar
     class Shader
     {
     public:
+
         virtual void Use() const = 0;
 
         virtual ShaderProgramId Id() const = 0;

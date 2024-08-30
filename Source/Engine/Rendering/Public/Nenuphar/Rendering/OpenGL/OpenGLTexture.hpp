@@ -41,7 +41,7 @@ namespace Nenuphar
     template<OpenGLTextureTarget target>
     void OpenGLBindTexture(const TextureIdentication& identication)
     {
-        NPOGL_CHECK_CALL(glBindTexture(target, identication.Handle));
+        NP_GL_CHECK_CALL(glBindTexture(target, identication.Handle));
     }
 
     
@@ -51,7 +51,7 @@ namespace Nenuphar
     template<OpenGLTextureTarget target>
     void OpenGLUnbindTexture()
     {
-        NPOGL_CHECK_CALL(glBindTexture(target, 0));
+        NP_GL_CHECK_CALL(glBindTexture(target, 0));
     }
 
     
@@ -177,7 +177,7 @@ namespace Nenuphar
     OpenGLTexture<target>::OpenGLTexture(TextureUnit unit)
     {
         m_identification.Unit = unit;
-        NPOGL_CHECK_CALL(glGenTextures(1, &m_identification.Handle));
+        NP_GL_CHECK_CALL(glGenTextures(1, &m_identification.Handle));
         Bind();
     }
 
@@ -219,7 +219,7 @@ namespace Nenuphar
     auto OpenGLTexture<target>::Parameter::WithParameter(UInt pName, Int param)
             const -> const Parameter&
     {
-        NPOGL_CHECK_CALL(glTexParameteri(target, pName, param));
+        NP_GL_CHECK_CALL(glTexParameteri(target, pName, param));
         return *this;
     }
 
@@ -231,7 +231,7 @@ namespace Nenuphar
     auto OpenGLTexture<target>::Parameter::WithParameter(UInt pName, Float param)
             const -> const Parameter&
     {
-		NPOGL_CHECK_CALL(glTexParameterf(target, pName, param));
+		NP_GL_CHECK_CALL(glTexParameterf(target, pName, param));
 		return *this;
     }
 
@@ -243,7 +243,7 @@ namespace Nenuphar
     auto OpenGLTexture<target>::Parameter::WithParameter(UInt pName, const Int* param)
             const -> const Parameter&
     {
-		NPOGL_CHECK_CALL(glTexParameteriv(target, pName, param));
+		NP_GL_CHECK_CALL(glTexParameteriv(target, pName, param));
 		return *this;
     }
 
@@ -255,7 +255,7 @@ namespace Nenuphar
     auto OpenGLTexture<target>::Parameter::WithParameter(UInt pName, const Float* param)
             const -> const Parameter&
     {
-		NPOGL_CHECK_CALL(glTexParameterfv(target, pName, param));
+		NP_GL_CHECK_CALL(glTexParameterfv(target, pName, param));
 		return *this;
     }
 

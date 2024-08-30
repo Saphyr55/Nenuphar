@@ -1,8 +1,7 @@
 #include "Nenuphar/ApplicationCore/PlatformApplication.hpp"
+#include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
 
 #ifdef NP_PLATFORM_WINDOWS
-
-#include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
 
 namespace Nenuphar
 {

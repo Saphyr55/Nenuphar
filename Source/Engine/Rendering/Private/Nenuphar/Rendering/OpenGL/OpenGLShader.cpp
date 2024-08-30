@@ -10,7 +10,7 @@ namespace Nenuphar
 
 	OpenGLShaderPart::OpenGLShaderPart(OpenGLShaderType shaderType) 
 		: m_shaderType(shaderType)
-        , m_shaderID(NPOGL_CHECK_RCALL(glCreateShader(m_shaderType)))
+        , m_shaderID(NP_GL_CHECK_RCALL(glCreateShader(m_shaderType)))
 	{
     }
 
@@ -21,7 +21,7 @@ namespace Nenuphar
 
 	void OpenGLShaderPart::Source(const char* source) const
 	{
-        NPOGL_CHECK_CALL(glShaderSource(m_shaderID, 1, &source, nullptr));
+        NP_GL_CHECK_CALL(glShaderSource(m_shaderID, 1, &source, nullptr));
     }
 
 	void OpenGLShaderPart::Compile() const
@@ -42,12 +42,12 @@ namespace Nenuphar
 
 	void OpenGLShader::Use() const
 	{
-        NPOGL_CHECK_CALL(glUseProgram(m_programID));
+        NP_GL_CHECK_CALL(glUseProgram(m_programID));
     }
 
 	void OpenGLShader::Link() const
 	{
-		NPOGL_CHECK_CALL(glLinkProgram(m_programID));
+		NP_GL_CHECK_CALL(glLinkProgram(m_programID));
 		m_parts.clear();
 		CheckInfo(GL_LINK_STATUS);
     }
@@ -61,7 +61,7 @@ namespace Nenuphar
 		shader->Source(source.data());
 		shader->Compile();
 
-		NPOGL_CHECK_CALL(glAttachShader(m_programID, shader->Id()));
+		NP_GL_CHECK_CALL(glAttachShader(m_programID, shader->Id()));
 
 		m_parts.push_back(std::move(shader));
         
@@ -73,11 +73,11 @@ namespace Nenuphar
 		const UInt16 size = 512;
 		Int success;
 		char infoLog[size];
-		NPOGL_CHECK_CALL(glGetShaderiv(m_shaderID, status, &success));
+		NP_GL_CHECK_CALL(glGetShaderiv(m_shaderID, status, &success));
 
 		if (!success) 
         {
-			NPOGL_CHECK_CALL(glGetShaderInfoLog(m_shaderID, size, nullptr, infoLog));
+			NP_GL_CHECK_CALL(glGetShaderInfoLog(m_shaderID, size, nullptr, infoLog));
             NP_ERROR(OpenGLShaderPart::CheckInfo, "OpenGL Shader : {}", infoLog);
 			throw std::exception();
         }
@@ -88,11 +88,11 @@ namespace Nenuphar
 		const UInt16 size = 512;
 		Int success;
 		char infoLog[size];
-		NPOGL_CHECK_CALL(glGetProgramiv(m_programID, status, &success));
+		NP_GL_CHECK_CALL(glGetProgramiv(m_programID, status, &success));
 
 		if (!success) 
         {
-			NPOGL_CHECK_CALL(glGetProgramInfoLog(m_programID, size, nullptr, infoLog));
+			NP_GL_CHECK_CALL(glGetProgramInfoLog(m_programID, size, nullptr, infoLog));
             NP_ERROR(OpenGLShader::CheckInfo, "OpenGL Program : {}", infoLog);
 			throw std::exception();
         }

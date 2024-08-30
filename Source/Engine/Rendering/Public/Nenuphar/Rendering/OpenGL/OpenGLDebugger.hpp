@@ -1,6 +1,9 @@
 #pragma once
 
-#include "glad/glad.h"
+#include "Nenuphar/Core/Core.hpp"
+
+#include <glad/glad.h>
+
 #include <string_view>
 
 namespace Nenuphar
@@ -33,32 +36,32 @@ namespace Nenuphar
 
 } // namespace Nenuphar
 
-#define NPGL_CHECKER
+#define NP_GL_CHECKER
 
-#ifdef NPGL_CHECKER
-#define NPOGL_CHECK CHECK(::Nenuphar::OpenGLCheckError(__FUNCTION__, __FILE__, __LINE__) == GL_NO_ERROR)
+#ifdef NP_GL_CHECKER
+#define NP_GL_CHECK NCHECK(::Nenuphar::OpenGLCheckError(__FUNCTION__, __FILE__, __LINE__) == GL_NO_ERROR)
 #else
-#define NPOGL_CHECK
+#define NP_GL_CHECK
 #endif
 
-#ifdef NPGL_CHECKER
+#ifdef NP_GL_CHECKER
 
-#define NPOGL_CHECK_CALL(TOCALL)    \
+#define NP_GL_CHECK_CALL(TOCALL)    \
     ::Nenuphar::OpenGLClearError(); \
     TOCALL;                         \
-    NPOGL_CHECK
+    NP_GL_CHECK
 
-#define NPOGL_CHECK_RCALL(TOCALL)       \
+#define NP_GL_CHECK_RCALL(TOCALL)       \
     [&] {                               \
         ::Nenuphar::OpenGLClearError(); \
         auto res = TOCALL;              \
-        NPOGL_CHECK                     \
+        NP_GL_CHECK                     \
         return res;                     \
     }()
 
 #else
 
-#define NPOGL_CHECK_CALL(TOCALL) TOCALL
-#define NPOGL_CHECK_RCALL(TOCALL) TOCALL
+#define NP_GL_CHECK_CALL(TOCALL) TOCALL;
+#define NP_GL_CHECK_RCALL(TOCALL) TOCALL
 
 #endif

@@ -10,18 +10,16 @@ namespace Nenuphar
     public:
 
         /**
-         * Platform application singleton.
-         *
-         * \brief
-         * \return Platform application single instance.
+         * @brief Get the Platform Application singleton instance.
+         * 
+         * @return PlatformApplication& 
          */
         static PlatformApplication& GetPlatformApplication();
 
         /**
-         * Application singleton.
-         *
-         * \brief
-         * \return Application single instance.
+         * @brief Get the Application singleton instance.
+         * 
+         * @return Application& 
          */
         static Application& GetApplication();
 

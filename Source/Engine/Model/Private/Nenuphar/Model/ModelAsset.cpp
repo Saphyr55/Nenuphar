@@ -1,6 +1,6 @@
 #include "Nenuphar/Model/ModelAsset.hpp"
 
-#include "Nenuphar/Common/Debug/Debug.hpp"
+#include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
 #include "Nenuphar/Model/ModelLoader.hpp"
@@ -29,7 +29,7 @@ namespace Nenuphar
         {
             NP_ERROR(ModelAssetLoader::Load,
                      "No loader found for this format : '{}'.", path.GetExtenstion());
-            CHECK(loader)
+            NCHECK(loader)
         }
 
         ModelLoader::TRes res = loader->Load(path, options.MtlPathDir);

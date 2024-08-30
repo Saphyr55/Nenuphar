@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Math/Vector4.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLRenderer.hpp"
 #include "Nenuphar/Rendering/RenderService.hpp"
 

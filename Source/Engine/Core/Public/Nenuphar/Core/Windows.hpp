@@ -1,6 +1,8 @@
 #pragma once
 
-#ifdef NP_PLATFORM_WINDOWS
+#include "Nenuphar/Core/Core.hpp"
+
+#if NP_PLATFORM_WINDOWS
     #include <Windows.h>
     #include <WindowsX.h>
 #endif

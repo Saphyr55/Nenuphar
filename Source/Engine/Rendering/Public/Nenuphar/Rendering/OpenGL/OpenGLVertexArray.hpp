@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLBuffer.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
 
 namespace Nenuphar
 {
@@ -35,14 +37,14 @@ namespace Nenuphar
         buffer.Bind();
         for (const auto& lb : layouts)
         {
-            NPOGL_CHECK_CALL(glVertexAttribPointer(
+            NP_GL_CHECK_CALL(glVertexAttribPointer(
                     lb.Index,
                     lb.Size,
                     lb.Type,
                     lb.Normalized,
                     lb.Stride,
                     lb.Offset));
-            NPOGL_CHECK_CALL(glEnableVertexAttribArray(lb.Index));
+            NP_GL_CHECK_CALL(glEnableVertexAttribArray(lb.Index));
         }
         buffer.Unbind();
     }

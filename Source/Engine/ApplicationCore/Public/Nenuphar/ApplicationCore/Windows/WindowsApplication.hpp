@@ -1,8 +1,11 @@
 #pragma once
 
-#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Windows.hpp"
+
+#if NP_PLATFORM_WINDOWS
+
 #include "Nenuphar/ApplicationCore/PlatformApplication.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
 
 namespace Nenuphar
 {
@@ -24,7 +27,10 @@ namespace Nenuphar
 
         void Destroy() const override;
 
-        inline ApplicationId Id() const override { return classID; }
+        inline ApplicationId Id() const override
+        {
+            return classID;
+        }
 
         static LRESULT CALLBACK ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam);
 
@@ -39,4 +45,6 @@ namespace Nenuphar
     };
 
 
-}
+}// namespace Nenuphar
+
+#endif

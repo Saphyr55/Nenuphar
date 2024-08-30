@@ -4,8 +4,8 @@
 
 namespace Nenuphar
 {
-    Bool Engine::HasStarted = false;
-    Bool Engine::IsFinish = false;
+    bool Engine::HasStarted = false;
+    bool Engine::IsFinish = false;
 
     int Engine::LoopRun(const std::function<void()>& runnable)
     {
@@ -31,4 +31,4 @@ namespace Nenuphar
         return EXIT_SUCCESS;
     }
 
-}
+}// namespace Nenuphar

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Math/Vector2.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
 
@@ -14,7 +15,7 @@ namespace Nenuphar
         Vector3f Pos;
         Vector3f Normal;
         Vector2f UV;
-
+    
         bool operator==(const Vertex& other) const
         {
             return Pos == other.Pos && Normal == other.Normal && UV == other.UV;

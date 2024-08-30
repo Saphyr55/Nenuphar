@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Nenuphar/ApplicationCore/Window.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
 
 namespace Nenuphar
 {
