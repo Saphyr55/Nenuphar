@@ -6,14 +6,14 @@ project(Engine.Asset)
 set(LOCATION        .)
 set(TARGET          Engine.Asset)
 set(GROUP           Engine)
-set(DEPS            fmt::fmt
-                    Engine.Common
-                    Engine.Math
+set(DEPS            Engine.Common
                     Engine.Core
-                    Engine.EventSystem
                     )
 
+
 add_library_module(${TARGET} STATIC ${LOCATION})
+add_dependencies(${TARGET} ${TARGET}.Generated)
+
 target_link_libraries(${TARGET} PRIVATE ${DEPS} INTERFACE ${DEPS})
 
 set_target_properties(${TARGET} PROPERTIES FOLDER ${GROUP})

@@ -15,7 +15,8 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
 
 # Include cmake module for Nénuphar Module.
-include(NpAddModule)
+include(NPModule)
+include(NPBuild)
 
 if(NENUPHAR_TEST_ENABLE)
     include(CTest)

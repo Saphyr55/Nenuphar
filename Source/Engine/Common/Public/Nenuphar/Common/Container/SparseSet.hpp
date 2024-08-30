@@ -5,8 +5,7 @@
 namespace Nenuphar
 {
 
-    
-    
+
     template<typename TId,
              typename TValue,
              std::size_t MaxNumPage = 100>
@@ -23,7 +22,7 @@ namespace Nenuphar
         TValue* Add(TId id, TValue&& value);
         TValue* Get(TId id);
         void Remove(TId id);
-        
+
     private:
         void SetDenseIndex(TId id, TIndex index);
 
@@ -122,4 +121,4 @@ namespace Nenuphar
     }
 
 
-} // namespace Nenuphar
+}// namespace Nenuphar

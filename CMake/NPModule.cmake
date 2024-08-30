@@ -1,8 +1,26 @@
 
+function(generate module_name)
+
+    set(GENERATED_FILENAME ${module_name}.Generated.hpp)
+    set(GENERATE_FILE ${CMAKE_BINARY_DIR}/Generated/${module_name}/${GENERATED_FILENAME})
+
+    add_custom_target(${module_name}.Generated
+        DEPENDS NPBuild
+        COMMAND NPBuild ${GENERATE_FILE}
+        COMMENT "NPBuild processing."
+        VERBATIM
+    )
+
+endfunction()
+
 function(add_module module_name module_location)
     
     cmake_path(APPEND PUBLIC_FOLDER ${module_location} Public)
     cmake_path(APPEND PRIVATE_FOLDER ${module_location} Private)
+
+    set(GENERATED_FOLDER ${CMAKE_BINARY_DIR}/Generated/${module_name})
+    set(GENERATED_FILENAME ${module_name}.Generated.hpp)
+    set(GENERATE_FILE ${GENERATED_FOLDER}/${GENERATED_FILENAME})
 
     file(GLOB_RECURSE MODULE_SOURCES
             ${PUBLIC_FOLDER}/**.hpp
@@ -11,10 +29,12 @@ function(add_module module_name module_location)
             ${PRIVATE_FOLDER}/**.hpp
             ${PRIVATE_FOLDER}/**.cpp
             ${PRIVATE_FOLDER}/**.inl
+            ${GENERATE_FILE}
     )
 
     target_include_directories(${module_name} 
             PUBLIC
+                ${GENERATED_FOLDER}
                 ${PUBLIC_FOLDER}
             PRIVATE
                 ${PRIVATE_FOLDER}
@@ -27,19 +47,23 @@ endfunction()
 
 function(add_library_module module_name kind module_location)
 
-    if (${kind} STREQUAL SHARED)
-        add_compile_definitions(NSHARED)
-    else()
-        add_compile_definitions(NLIB)
-    endif()
+    generate(${module_name})
 
     add_library(${module_name} ${kind})
     add_module(${module_name} ${module_location})
+
+    if (${kind} STREQUAL SHARED)
+        target_compile_definitions(${module_name} PRIVATE NSHARED)
+    elseif(${kind} STREQUAL STATIC)
+        target_compile_definitions(${module_name} PRIVATE NLIB)
+    endif()
 
 endfunction()
 
 
 function(add_executable_module module_name module_location)
+
+    generate(${module_name})
 
     add_executable(${module_name})
     add_module(${module_name} ${module_location})

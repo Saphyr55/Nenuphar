@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Asset.hpp"
-#include "AssetLoader.hpp"
 #include "Nenuphar/Asset/Asset.hpp"
 #include "Nenuphar/Asset/AssetLoader.hpp"
 #include "Nenuphar/Common/Container/SparseSet.hpp"
@@ -9,7 +7,6 @@
 #include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
-
 
 #include <memory>
 #include <typeindex>

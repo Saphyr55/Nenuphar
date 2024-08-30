@@ -2,6 +2,8 @@
 
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
+#include "Nenuphar/Core/Core.hpp"
+#include "Engine.Asset.Generated.hpp"
 
 #include <type_traits>
 
