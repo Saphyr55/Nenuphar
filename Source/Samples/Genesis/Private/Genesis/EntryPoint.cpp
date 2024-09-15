@@ -26,6 +26,6 @@ int main(int argc, const char* argv[])
     app.OnInit();
 
     return Np::Engine::LoopRun([&app] {
-        app.OnUpdate();
+        app.OnTick();
     });
 }

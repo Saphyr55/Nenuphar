@@ -5,6 +5,7 @@
 #include <variant>
 
 #include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Math/Vector2.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
 #include "Nenuphar/Math/Vector4.hpp"
@@ -142,6 +143,7 @@ namespace Nenuphar
     template<IsUniformValue V>
     auto UniformRegistry::Get(StringView name) -> Uniform<V>&
     {
+        NCHECK(m_registry.contains(name.data()))
         IUniform& uniform = m_registry.at(name.data());
         return std::get<Uniform<V>>(uniform);
     }

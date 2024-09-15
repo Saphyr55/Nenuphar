@@ -2,15 +2,19 @@
 #include "Nenuphar/Asset/AssetRegistry.hpp"
 #include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Result.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
 #include "Nenuphar/Model/ModelAsset.hpp"
+#include "Nenuphar/Rendering/Material.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
 #include "Nenuphar/Rendering/TextureAsset.hpp"
 #include "Nenuphar/Rendering/Vertex.hpp"
 #include <algorithm>
+#include <unordered_map>
+#include <unordered_set>
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #define TINYOBJLOADER_USE_MAPBOX_EARCUT
@@ -28,8 +32,9 @@ namespace Nenuphar
     {
         using TRes = ModelLoader::TRes;
         AssetRegistry& assetRegistry = AssetRegistry::Instance();
+        bool isPersit = options.PersistTexture && options.Renderer;
 
-        NP_INFO(TOLModelLoader::Load, "Load the model from '{}'", path.GetFilePath());
+        NP_INFO(TOLModelLoader::Load, "Loading the obj file '{}'", path.GetFilePath());
 
         if (!path.IsExists())
         {
@@ -56,42 +61,76 @@ namespace Nenuphar
 
         if (!warn.empty())
         {
-            NP_WARN(TOLModelLoader::Load, "On load obj file '{}', info:{}", path.GetFilePath(), warn);
+            NP_WARN(TOLModelLoader::Load, "When loading the obj file '{}', info:{}", path.GetFilePath(), warn);
         }
 
         if (!err.empty())
         {
-            NP_ERROR(TOLModelLoader::Load, "On load obj file '{}'", path.GetFilePath());
+            NP_ERROR(TOLModelLoader::Load, "When loading the obj file '{}'", path.GetFilePath());
             NP_ERROR(TOLModelLoader::Load, "TOL message : {}", err);
         }
 
         if (!ret)
         {
-            NP_ERROR(TOLModelLoader::Load, "Impossible to parse the model from '{}'", path.GetFilePath());
+            NP_ERROR(TOLModelLoader::Load, "Unable to parse the obj file '{}'", path.GetFilePath());
 
             return TRes(TRes::kErrTag, ModelLoaderError::MalFormat);
         }
 
         std::vector<Mesh> meshes;
-        std::map<std::string, Texture> texturesMapping;
+        std::unordered_map<std::string, Texture> texturesMapping;
+        std::vector<Material> inMaterials;
 
-        for (const tinyobj::material_t& material: materials)
+        AssetOptions texAssetOptions;
+        texAssetOptions.IsFromAsset = false;
+
+        for (const tinyobj::material_t& m: materials)
         {
-            if (material.diffuse_texname.length() > 0)
-            {
-                std::string pathTexture = mtlPathDir->GetFilePath() + material.diffuse_texname;
+            Material material;
+            material.Diffuse = Vector3f(m.diffuse[0], m.diffuse[1], m.diffuse[2]);
+            material.Specular = Vector3f(m.specular[0], m.specular[1], m.specular[2]);
+            material.Shininess = m.shininess;
 
-                if (!texturesMapping.contains(pathTexture) && options.PersistTexture && options.Renderer)
+            if (m.diffuse_texname.length() > 0)
+            {
+                std::string pathTexture = mtlPathDir->GetFilePath() + m.diffuse_texname;
+
+                if (!texturesMapping.contains(pathTexture) && isPersit)
                 {
-                    AssetOptions texAssetOptions;
-                    texAssetOptions.IsFromAsset = false;
+                    SharedRef<TextureAsset> textureAsset = assetRegistry.Load<TextureAsset>(pathTexture, texAssetOptions);
+                    NCHECK(textureAsset)
+                    Texture texture = options.Renderer->PersistTexture(textureAsset);
+                    texturesMapping.insert({pathTexture, texture});
+                }
+
+                if (isPersit)
+                {
+                    material.DiffuseTexture = texturesMapping.at(pathTexture);
+                }
+
+            }
+
+            if (m.specular_texname.length() > 0)
+            {
+                std::string pathTexture = mtlPathDir->GetFilePath() + m.specular_texname;
+                
+                if (!texturesMapping.contains(pathTexture) && isPersit)
+                {
                     SharedRef<TextureAsset> textureAsset = assetRegistry.Load<TextureAsset>(pathTexture, texAssetOptions);
                     NCHECK(textureAsset)
 
                     Texture texture = options.Renderer->PersistTexture(textureAsset);
                     texturesMapping.insert({pathTexture, texture});
                 }
+
+                if (isPersit)
+                {
+                    material.SpecularTexture = texturesMapping.at(pathTexture);
+                }
+                
             }
+            
+            inMaterials.push_back(material);
         }
 
         // Loop over shapes
@@ -101,7 +140,8 @@ namespace Nenuphar
 
             std::vector<Vertex> vertices;
             std::vector<VIndice> indices;
-            std::vector<Texture> textures;
+            std::unordered_set<UInt> mat_ids;
+            std::vector<Material> mats;
 
             // Loop over faces(polygon)
             std::size_t index_offset = 0;
@@ -156,21 +196,20 @@ namespace Nenuphar
                 }
 
                 tinyobj::material_t& material = materials.at(m);
-                std::string pathTexture = mtlPathDir->GetFilePath() + material.diffuse_texname;
-                if (texturesMapping.contains(pathTexture))
+                
+                Material inMaterial = inMaterials.at(m);
+                inMaterial.Id = UInt(m);
+                if (!mat_ids.contains(inMaterial.Id))
                 {
-                    if (std::find(textures.begin(), textures.end(), texturesMapping.at(pathTexture)) == textures.end())
-                    {
-                        textures.push_back(texturesMapping.at(pathTexture));
-                    }
+                    mat_ids.emplace(inMaterial.Id);
+                    mats.push_back(inMaterial);
                 }
-
             }
 
             meshes.push_back(Mesh(
                     std::move(vertices),
                     std::move(indices),
-                    std::move(textures)));
+                    std::move(mats)));
         }
 
 

@@ -1,10 +1,12 @@
 #pragma once
 
 
+#include "Material.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
 #include "Nenuphar/Rendering/Vertex.hpp"
 
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace Nenuphar
@@ -17,7 +19,7 @@ namespace Nenuphar
     {   
         std::vector<Vertex> Vertices;
         std::vector<VIndice> Indices;
-        std::vector<Texture> Textures;
+        std::vector<Material> Materials;
     };
 
 

@@ -2,6 +2,7 @@
 #include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Debug.hpp"
+#include "Nenuphar/Math/Vector3.hpp"
 #include "Nenuphar/Rendering/Mesh.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLBuffer.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
@@ -19,6 +20,19 @@
 
 namespace Nenuphar
 {
+
+    enum class TextureTypeModel
+    {
+        Specular,
+        Diffuse
+    };
+
+    struct TextureExtraInfo
+    {
+        Texture Texture;
+        TextureTypeModel TTM;
+    };
+
     OpenGLMeshStorage OpenGLMeshStorage::s_mainStorage;
 
     OpenGLMeshStorage::TStorage& OpenGLMeshStorage::GetGlobalStorage()
@@ -47,30 +61,58 @@ namespace Nenuphar
 
     void OpenGLDrawMesh(UniformRegistry& registry, const MeshId& id)
     {
-
         NCHECK(OpenGLMeshStorage::GetGlobalStorage().contains(id))
         NCHECK(MeshStorage::GetGlobalStorage().contains(id))
 
+        auto storage = OpenGLTextureStorage::GetGlobalStorageTexture2D();
         auto& glMesh = OpenGLMeshStorage::GetGlobalStorage().at(id);
         auto& mesh = MeshStorage::GetGlobalStorage().at(id);
 
-        registry.Get<Bool>("UIsTextured").UpdateValue(true);
+        std::vector<TextureExtraInfo> textures;
 
-        for (UInt32 i = 0; i < mesh.Textures.size(); i++)
+        for (auto& material: mesh.Materials)
         {
-            Texture& texture = mesh.Textures.at(i); 
-            if (OpenGLTextureStorage::GetGlobalStorageTexture2D()
-                        .contains(texture))
+            TextureExtraInfo diffuseTexture;
+            diffuseTexture.Texture = material.DiffuseTexture;
+            diffuseTexture.TTM = TextureTypeModel::Diffuse;
+
+            TextureExtraInfo specularTexture;
+            specularTexture.Texture = material.DiffuseTexture;
+            specularTexture.TTM = TextureTypeModel::Diffuse;
+
+            textures.push_back(diffuseTexture);
+            textures.push_back(specularTexture);
+
+            registry.Get<Vector3f>("UMaterial.Diffuse").UpdateValue(material.Diffuse);
+            registry.Get<Vector3f>("UMaterial.Specular").UpdateValue(material.Specular);
+        }
+
+        for (auto i = 0; i < textures.size(); i++)
+        {
+            TextureExtraInfo& textureExtraInfo = textures.at(i);
+
+            if (storage.contains(textureExtraInfo.Texture))
             {
-                
-                SharedRef<OpenGLTexture2D> openGLTexture =
-                        OpenGLTextureStorage::GetGlobalStorageTexture2D()
-                                .at(texture);
+                SharedRef<OpenGLTexture2D> openGLTexture = storage.at(textureExtraInfo.Texture);
 
                 ActiveTexture(i);
-                registry.Get<Int>("UTex").UpdateValue((Int) i);
+
+                switch (textureExtraInfo.TTM)
+                {
+                    case TextureTypeModel::Diffuse: {
+                        registry.Get<Int>("UTexture").UpdateValue((Int)i);
+                        registry.Get<Int>("UMaterial.DiffuseTexture").UpdateValue((Int)i);
+                    }
+                    break;
+                    case TextureTypeModel::Specular: {
+                        registry.Get<Int>("UMaterial.SpecularTexture").UpdateValue((Int)i);
+                    }
+                    break;
+                }
+
                 openGLTexture->Bind();
             }
+
         }
 
         glMesh.VAO->Bind();

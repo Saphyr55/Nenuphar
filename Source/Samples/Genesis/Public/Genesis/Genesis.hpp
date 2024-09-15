@@ -14,7 +14,7 @@ class GenesisApp
 {
 public:
     void OnInit();
-    void OnUpdate();
+    void OnTick();
 
 public:
     GenesisApp();
@@ -24,7 +24,7 @@ private:
     Np::EntityRegistry Registry;
     Np::Entity ECamera;
     Np::Entity EFloor;
-    Np::Entity ECube;
+    Np::Entity EBarrel;
     Np::Entity ESponza;
     UniquePtr<Np::GraphicContext> MainGraphicContext;
     SharedRef<Np::Window> MainWindow;

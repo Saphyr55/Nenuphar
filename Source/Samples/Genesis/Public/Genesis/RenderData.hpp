@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Nenuphar/Common/Type/Type.hpp"
-#include "Nenuphar/Entity/Entity.hpp"
 #include "Nenuphar/Entity/EntityRegistry.hpp"
 #include "Nenuphar/Math/Vector4.hpp"
 #include "Nenuphar/Model/Model.hpp"
@@ -24,7 +23,7 @@ struct Colorable
 
 struct RenderModels
 {
-    Np::ModelId CubeModelId;
+    Np::ModelId BarrelModelId;
     Np::ModelId SponzaModelId;
     Np::ModelId FloorModelId;
 };
@@ -41,15 +40,12 @@ struct RenderTextures
 
 struct RenderData
 {
-    using TRDefault = std::tuple<
-        Np::SharedRef<RenderData>, 
-        RenderModels, 
-        RenderTextures>; 
+    using TRDefault = std::tuple<Np::SharedRef<RenderData>, RenderModels>; 
 
     static TRDefault Default();
 
-    Np::UniquePtr<Np::Shader> Shader;
-    Np::UniformRegistry Registry;
+    Np::UniquePtr<Np::Shader> MaterialShader;
+    Np::UniformRegistry MaterialRegistry;
     Np::SharedRef<Np::Renderer> Renderer;
 };
 

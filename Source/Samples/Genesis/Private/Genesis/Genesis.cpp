@@ -10,8 +10,10 @@
 #include "Nenuphar/Math/Camera.hpp"
 #include "Nenuphar/Math/Matrix4.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
+#include "Nenuphar/RenderLight/RenderTypes.hpp"
 #include "Nenuphar/Rendering/GraphicContext.hpp"
 #include "Nenuphar/Rendering/RenderService.hpp"
+#include "Nenuphar/Rendering/Material.hpp"
 
 #include <glad/glad.h>
 
@@ -19,20 +21,19 @@ namespace Np = Nenuphar;
 
 GenesisApp::GenesisApp()
 {
-    Vector3f normalPosition(0.0f, 1.0f, 0.0f);
+    Vector3f normalPosition(0.0f, 0.0f, 0.0f);
     Np::WindowDefinition definition("Genesis Sample Application", 1080, 720);
     MainWindow = Np::WindowBase::Create(definition);
     MainGraphicContext = Np::GraphicContext::Create(*MainWindow);
-    auto [data, rModels, rTextures] = RenderData::Default();
+    auto [data, rModels] = RenderData::Default();
     MainRenderData = data;
-
 
     // Camera entity.
     ECamera = Registry.Create();
     Registry.AddComponent<OrbitCamera>(ECamera, DefaultOrbitCameraFactory());
     Registry.AddComponent<Velocity>(ECamera, Velocity(0.005f));
 
-    /*
+/*
     // Floor entity.
     Colorable rFloorColorable;
     Vector4f floorColor(GDefaultColor);
@@ -51,24 +52,19 @@ GenesisApp::GenesisApp()
     Registry.AddComponent<RenderableModel>(EFloor, rFloorModel);
     Registry.AddComponent<Colorable>(EFloor, rFloorColorable);
 
+    // Barrel entity.
+    RenderableModel rBarrelModel;
+    rBarrelModel.Model = rModels.BarrelModelId;
 
-    // Cube entity.
-    RenderableModel rCubeModel;
-    rCubeModel.Model = rModels.CubeModelId;
+    Transform barrelTransform;
+    barrelTransform.Scale = Vector3f(3.0f);
+    barrelTransform.Translation = normalPosition;
 
-    RenderableTexture rCubeTexture;
-    rCubeTexture.Texture = rTextures.WallTexture;
-
-    Transform cubeTransform;
-    cubeTransform.Scale = Vector3f(1.0f);
-    cubeTransform.Translation = normalPosition;
-
-    ECube = Registry.Create();
-    Registry.AddComponent<Transform>(ECube, cubeTransform);
-    Registry.AddComponent<RenderableModel>(ECube, rCubeModel);
-    Registry.AddComponent<RenderableTexture>(ECube, rCubeTexture);
+    EBarrel = Registry.Create();
+    Registry.AddComponent<Transform>(EBarrel, barrelTransform);
+    Registry.AddComponent<RenderableModel>(EBarrel, rBarrelModel);
 */
-
+    
     // Sponza entity.
     RenderableModel rSponzaModel;
     rSponzaModel.Model = rModels.SponzaModelId;
@@ -80,7 +76,7 @@ GenesisApp::GenesisApp()
     ESponza = Registry.Create();
     Registry.AddComponent<Transform>(ESponza, sponzaTransform);
     Registry.AddComponent<RenderableModel>(ESponza, rSponzaModel);
-
+    
 }
 
 void GenesisApp::OnInit()
@@ -98,16 +94,16 @@ void GenesisApp::OnInit()
     });
 
     windowSignals.OnResize().ConnectHandler([&](const ResizeEvent& e) {
-        glViewport(0, 0, (Int) e.Width, (Int) e.Height);
-        MainGraphicContext->SwapBuffers();
+        OnTick();
     });
 
     MainWindow->Show();
 }
 
-void GenesisApp::OnUpdate()
+void GenesisApp::OnTick()
 {
     Np::OrbitCamera& camera = Registry.GetComponent<OrbitCamera>(ECamera);
+    Vector3f cameraPosition = camera.Position();
 
     Float width = MainWindow->GetWindowDefinition().Width;
     Float height = MainWindow->GetWindowDefinition().Height;
@@ -117,12 +113,33 @@ void GenesisApp::OnUpdate()
     Matrix4f proj = Matrix4f::Perspective(Np::Radians(45), width / height, 0.1f, 10000.0f);
 
     // We obtain the view in function of the camera.
-    Matrix4f view = Matrix4f::LookAt(camera.Position(), camera.Target, camera.Up);
+    Matrix4f view = Matrix4f::LookAt(cameraPosition, camera.Target, camera.Up);
 
-    MainRenderData->Registry.Get<Matrix4f>("proj").UpdateValue(proj);
-    MainRenderData->Registry.Get<Matrix4f>("view").UpdateValue(view);
+    MainRenderData->MaterialRegistry.Get<Matrix4f>("proj").UpdateValue(proj);
+    MainRenderData->MaterialRegistry.Get<Matrix4f>("view").UpdateValue(view);
+    MainRenderData->MaterialRegistry.Get<Vector3f>("UCameraPosition").UpdateValue(cameraPosition);
 
-    Vector4f backgroundColor(0.58, 0.69, 0.8, 0.78);
+    Np::Material material;
+    material.Diffuse = Vector3f(0.5f);
+    material.Specular = Vector3f(0.5f);
+    material.Shininess = 2.0f;
+
+    MainRenderData->MaterialRegistry.Get<Vector3f>("UMaterial.Diffuse").UpdateValue(material.Diffuse);
+    MainRenderData->MaterialRegistry.Get<Vector3f>("UMaterial.Specular").UpdateValue(material.Specular);
+    MainRenderData->MaterialRegistry.Get<Float>("UMaterial.Shininess").UpdateValue(material.Shininess);
+
+    Np::DirectionalLight light;
+    light.Position = Vector3f(1.0f, 1.0f, 1.0f);
+    light.Ambient = Vector3f(0.5f, 0.5f, 0.5f);
+    light.Diffuse = Vector3f(0.5f, 0.5f, 0.5f);
+    light.Specular = Vector3f(1.0f, 1.0f, 1.0f);
+
+    MainRenderData->MaterialRegistry.Get<Vector3f>("UDirectionalLight.Position").UpdateValue(light.Position);
+    MainRenderData->MaterialRegistry.Get<Vector3f>("UDirectionalLight.Ambient").UpdateValue(light.Ambient);
+    MainRenderData->MaterialRegistry.Get<Vector3f>("UDirectionalLight.Diffuse").UpdateValue(light.Diffuse);
+    MainRenderData->MaterialRegistry.Get<Vector3f>("UDirectionalLight.Specular").UpdateValue(light.Specular);
+
+    Vector4f backgroundColor(0.1f, 0.1f, 0.1f, 1.0f);
     Np::RenderService::Instance()->Clear(backgroundColor);
 
     OnRenderData(*MainRenderData, Registry);

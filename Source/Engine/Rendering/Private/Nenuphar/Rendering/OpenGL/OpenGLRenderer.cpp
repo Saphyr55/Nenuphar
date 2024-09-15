@@ -65,7 +65,9 @@ namespace Nenuphar
     void OpenGLRenderer::TextureMesh(const MeshId& meshId, const Texture& texture) const
     {
         Mesh& mesh = MeshStorage::GetGlobalStorage().at(meshId);
-        mesh.Textures.push_back(texture);
+        Material mat;
+        mat.DiffuseTexture = texture;
+        mesh.Materials.push_back(mat);
     }
 
 

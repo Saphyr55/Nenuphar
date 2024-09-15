@@ -60,7 +60,7 @@ namespace Nenuphar
     }
 
     
-    void DefaultParameterTexture(const TextureInformation& dataImage,
+    void DefaultParameterTexture(const TextureInformation& information,
                                  OpenGLTexture<Texture2D>::Parameter parameter)
 	{
         parameter
@@ -69,7 +69,7 @@ namespace Nenuphar
                 .WithParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR)
                 .WithParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        TexImage2D(GL_TEXTURE_2D, 0, dataImage);
+        TexImage2D(GL_TEXTURE_2D, 0, information);
         GenerateMipmap(GL_TEXTURE_2D);
     }
 

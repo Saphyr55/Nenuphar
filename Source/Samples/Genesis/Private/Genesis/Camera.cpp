@@ -61,7 +61,7 @@ Void OnMoveCameraZOnScroll(const Np::MouseWheelEvent& evt,
                            Np::OrbitCamera& camera,
                            const Velocity& velocity)
 {
-    camera.Radius -= evt.Delta * velocity.Factor * 100.0f;
+    camera.Radius -= evt.Delta * velocity.Factor;
     if (camera.Radius < 3)
     {
         camera.Radius = 3;

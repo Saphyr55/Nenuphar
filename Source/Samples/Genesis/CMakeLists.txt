@@ -15,6 +15,7 @@ set(MODULES     Engine.Core
                 Engine.EventSystem
                 Engine.InputSystem
                 Engine.Rendering
+                Engine.RenderLight
                 Engine.Model
                 Engine.Asset)
 
