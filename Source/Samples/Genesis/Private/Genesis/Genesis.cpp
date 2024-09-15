@@ -10,6 +10,7 @@
 #include "Nenuphar/Math/Camera.hpp"
 #include "Nenuphar/Math/Matrix4.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
+#include "Nenuphar/Model/Model.hpp"
 #include "Nenuphar/RenderLight/RenderTypes.hpp"
 #include "Nenuphar/Rendering/GraphicContext.hpp"
 #include "Nenuphar/Rendering/RenderService.hpp"
@@ -76,7 +77,28 @@ GenesisApp::GenesisApp()
     ESponza = Registry.Create();
     Registry.AddComponent<Transform>(ESponza, sponzaTransform);
     Registry.AddComponent<RenderableModel>(ESponza, rSponzaModel);
-    
+
+    Model cubeModel = CubeModelFactory();
+    ModelId cubeModelId = data->Renderer->PersistModel(cubeModel);
+
+    // Light source
+    RenderableModel rLightModel;
+    rLightModel.Model = cubeModelId;
+
+    Transform lightTransform;
+    lightTransform.Scale = Vector3f(1.0f);
+    lightTransform.Translation = Vector3f(0.0f, 355.0f, 0.0f);
+
+    Np::Light light;
+    light.Position = Vector3f(-1.0f, 1.0f, -1.0f);
+    light.Ambient = Vector3f(0.2f, 0.2f, 0.2f);
+    light.Diffuse = Vector3f(0.9f, 0.9f, 0.9f);
+    light.Specular = Vector3f(0.0f, 0.0f, 0.0f);
+
+    auto ELight = Registry.Create();
+    Registry.AddComponent<Transform>(ELight, lightTransform);
+    Registry.AddComponent<Np::Light>(ELight, light);
+    Registry.AddComponent<RenderableModel>(ELight, rLightModel);
 }
 
 void GenesisApp::OnInit()
@@ -119,27 +141,7 @@ void GenesisApp::OnTick()
     MainRenderData->MaterialRegistry.Get<Matrix4f>("view").UpdateValue(view);
     MainRenderData->MaterialRegistry.Get<Vector3f>("UCameraPosition").UpdateValue(cameraPosition);
 
-    Np::Material material;
-    material.Diffuse = Vector3f(0.5f);
-    material.Specular = Vector3f(0.5f);
-    material.Shininess = 2.0f;
-
-    MainRenderData->MaterialRegistry.Get<Vector3f>("UMaterial.Diffuse").UpdateValue(material.Diffuse);
-    MainRenderData->MaterialRegistry.Get<Vector3f>("UMaterial.Specular").UpdateValue(material.Specular);
-    MainRenderData->MaterialRegistry.Get<Float>("UMaterial.Shininess").UpdateValue(material.Shininess);
-
-    Np::DirectionalLight light;
-    light.Position = Vector3f(1.0f, 1.0f, 1.0f);
-    light.Ambient = Vector3f(0.5f, 0.5f, 0.5f);
-    light.Diffuse = Vector3f(0.5f, 0.5f, 0.5f);
-    light.Specular = Vector3f(1.0f, 1.0f, 1.0f);
-
-    MainRenderData->MaterialRegistry.Get<Vector3f>("UDirectionalLight.Position").UpdateValue(light.Position);
-    MainRenderData->MaterialRegistry.Get<Vector3f>("UDirectionalLight.Ambient").UpdateValue(light.Ambient);
-    MainRenderData->MaterialRegistry.Get<Vector3f>("UDirectionalLight.Diffuse").UpdateValue(light.Diffuse);
-    MainRenderData->MaterialRegistry.Get<Vector3f>("UDirectionalLight.Specular").UpdateValue(light.Specular);
-
-    Vector4f backgroundColor(0.1f, 0.1f, 0.1f, 1.0f);
+    Vector4f backgroundColor(1.0f / 255, 10.0f / 255, 33.0f / 255, 255.0f / 255);
     Np::RenderService::Instance()->Clear(backgroundColor);
 
     OnRenderData(*MainRenderData, Registry);

@@ -5,7 +5,7 @@
 namespace Nenuphar 
 {
 
-    struct DirectionalLight
+    struct Light
     {
 		Vector3f Position;
 

@@ -28,7 +28,21 @@ void OnRenderData(RenderData& data, Np::EntityRegistry& registry)
 
         data.MaterialRegistry.Get<Matrix4f>("model").UpdateValue(matrixModel);
         data.Renderer->DrawModel(*data.MaterialShader, data.MaterialRegistry, rModel.Model);
+    }    
+    
+    for (auto& [e, light, transform, rModel]: registry.View<Np::Light, Transform, RenderableModel>())
+    {
+        Matrix4f matrixModel = Transform::Tranformation(transform);
+
+        data.MaterialRegistry.Get<Vector3f>("ULight.Position").UpdateValue(light.Position);
+        data.MaterialRegistry.Get<Vector3f>("ULight.Ambient").UpdateValue(light.Ambient);
+        data.MaterialRegistry.Get<Vector3f>("ULight.Diffuse").UpdateValue(light.Diffuse);
+        data.MaterialRegistry.Get<Vector3f>("ULight.Specular").UpdateValue(light.Specular);
+        data.MaterialRegistry.Get<Matrix4f>("model").UpdateValue(matrixModel);
+
+        data.Renderer->DrawModel(*data.MaterialShader, data.MaterialRegistry, rModel.Model);
     }
+
 }
 
 RenderData::TRDefault RenderData::Default()
@@ -66,17 +80,17 @@ RenderData::TRDefault RenderData::Default()
     Np::ModelId floorModelId = renderer->PersistModel(floorModel);
 
     // Load the material vertex shader.
-    Np::Path materialVertexFilepath = Np::FromAssets("/Shaders/MaterialVertex.glsl");
-    Np::Path::TRes resultMaterialVertex = Np::ReadFileContent(materialVertexFilepath);
-    NCHECK(resultMaterialVertex.HasValue())
+    Np::Path mainVertexFilepath = Np::FromAssets("/Shaders/Main.Vertex.glsl");
+    Np::Path::TRes resultMainVertex = Np::ReadFileContent(mainVertexFilepath);
+    NCHECK(resultMainVertex.HasValue())
 
     // Load the material fragment shader.
-    Np::Path materialFragmentFilepath = Np::FromAssets("/Shaders/MaterialFragment.glsl");
+    Np::Path materialFragmentFilepath = Np::FromAssets("/Shaders/Material.Fragment.glsl");
     Np::Path::TRes resultMaterialFragment = Np::ReadFileContent(materialFragmentFilepath);
     NCHECK(resultMaterialFragment.HasValue())
 
     // Create the main OpenGL shader.
-    auto materialProgram = MakeUnique<Np::OpenGLShader>(resultMaterialVertex.Value(), resultMaterialFragment.Value());
+    auto materialProgram = MakeUnique<Np::OpenGLShader>(resultMainVertex.Value(), resultMaterialFragment.Value());
 
     // TODO: Replace to an uniform buffer.
     Np::UniformRegistry materialRegistry(*materialProgram);
@@ -85,14 +99,14 @@ RenderData::TRDefault RenderData::Default()
 
             .Register("UCameraPosition", Vector3f(0.0f))
 
-            .Register("UDirectionalLight.Position", Vector3f(1.0f))
-            .Register("UDirectionalLight.Ambient", Vector3f(0.8f))
-            .Register("UDirectionalLight.Diffuse", Vector3f(0.5f))
-            .Register("UDirectionalLight.Specular", Vector3f(1.0f))
+            .Register("ULight.Position", Vector3f(1.0f))
+            .Register("ULight.Ambient", Vector3f(0.8f))
+            .Register("ULight.Diffuse", Vector3f(0.5f))
+            .Register("ULight.Specular", Vector3f(1.0f))
 
             .Register("UMaterial.Diffuse", Vector3f(0.5f))
             .Register("UMaterial.Specular", Vector3f(1.0f))
-            .Register("UMaterial.Shininess", 2.0f)
+            .Register("UMaterial.Shininess", 1.0f)
             .Register("UMaterial.SpecularTexture", Int(0))
             .Register("UMaterial.DiffuseTexture", Int(0))
 

@@ -19,7 +19,7 @@ namespace Nenuphar
     void OpenGLRenderService::Enable() const
     {
         NP_GL_CHECK_CALL(glEnable(GL_DEPTH_TEST));
-        NP_GL_CHECK_CALL(glEnable(GL_BLEND));
+        NP_GL_CHECK_CALL(glEnable(GL_BLEND)); 
         NP_GL_CHECK_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     }
 

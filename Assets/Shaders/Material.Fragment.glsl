@@ -2,9 +2,12 @@
 
 out vec4 FragColor;
 
-in vec3 Position;
-in vec3 Normal;
-in vec2 UV;
+in VertexData
+{
+	vec3 Position;
+	vec3 Normal;
+	vec2 UV;
+} In;
 
 struct Material 
 {
@@ -16,7 +19,7 @@ struct Material
     float Shininess;
 };
 
-struct DirectionalLight
+struct Light
 {
     vec3 Position;
     vec3 Ambient;
@@ -24,7 +27,7 @@ struct DirectionalLight
     vec3 Specular;
 };
 
-uniform DirectionalLight UDirectionalLight;
+uniform Light ULight;
 uniform sampler2D UTexture;
 uniform vec3 UCameraPosition;
 uniform Material UMaterial;
@@ -32,22 +35,22 @@ uniform Material UMaterial;
 
 void main()
 {       
-    vec3 MaterialDiffuse = vec3(texture2D(UMaterial.DiffuseTexture, UV));
-    vec3 MaterialSpecular = vec3(texture2D(UMaterial.SpecularTexture, UV));
+    vec3 MaterialDiffuse = vec3(texture2D(UMaterial.DiffuseTexture, In.UV)) * UMaterial.Diffuse;
+    vec3 MaterialSpecular = vec3(texture2D(UMaterial.SpecularTexture, In.UV)) * UMaterial.Specular;
 
-    vec3 Normal = normalize(Normal);
-    vec3 LightDirection = normalize(UDirectionalLight.Position - Position);
+    vec3 Normal = normalize(In.Normal);
+    vec3 LightDirection = normalize(ULight.Position);
 
     vec3 Ambient =
-          UDirectionalLight.Ambient 
+          ULight.Ambient 
         * MaterialDiffuse
         ;
 
     float DiffuseFactor = dot(Normal, LightDirection);
     DiffuseFactor = max(DiffuseFactor, 0.0);
-    vec3 Diffuse = DiffuseFactor * MaterialDiffuse * UDirectionalLight.Diffuse;
+    vec3 Diffuse = DiffuseFactor * MaterialDiffuse * ULight.Diffuse;
 
-    vec3 ViewDirection = normalize(UCameraPosition - Position);
+    vec3 ViewDirection = normalize(UCameraPosition - In.Position);
     vec3 ReflectDirection = reflect(-LightDirection, Normal);  
     float SpecularFactor = dot(ViewDirection, ReflectDirection);
     SpecularFactor = max(SpecularFactor, 0.0);
@@ -56,7 +59,7 @@ void main()
     vec3 Specular =
         MaterialSpecular * 
         SpecularFactor * 
-        UDirectionalLight.Specular 
+        ULight.Specular 
         ;  
 
     vec3 Result = 

@@ -85,6 +85,7 @@ namespace Nenuphar
 
             registry.Get<Vector3f>("UMaterial.Diffuse").UpdateValue(material.Diffuse);
             registry.Get<Vector3f>("UMaterial.Specular").UpdateValue(material.Specular);
+            registry.Get<Float>("UMaterial.Shininess").UpdateValue(material.Shininess);
         }
 
         for (auto i = 0; i < textures.size(); i++)
