@@ -1,9 +1,9 @@
 #pragma once
 
-#include <algorithm>
 #include "Nenuphar/Common/Common.hpp"
 #include "Nenuphar/Math/Math.hpp"
 
+#include <algorithm>
 
 namespace Nenuphar
 {
@@ -50,12 +50,14 @@ namespace Nenuphar
         ~OrbitCamera() = default;
     };
 
-    OrbitCamera OrbitCamera::RotateTheta(const OrbitCamera& camera, const Real auto& radians)
+    OrbitCamera OrbitCamera::RotateTheta(const OrbitCamera& camera,
+                                         const Real auto& radians)
     {
         OrbitCamera newCamera(camera);
         newCamera.Theta += radians;
 
-        // Keep azimuth angle within range <0..2PI) - it's not necessary, just to have it nicely output
+        // Keep azimuth angle within range ]0..2PI], 
+        // it's not necessary, just to have it nicely output
         newCamera.Theta = std::fmod(newCamera.Theta, FullCircle);
         if (newCamera.Theta < 0.0f)
         {
@@ -65,7 +67,8 @@ namespace Nenuphar
         return newCamera;
     }
 
-    OrbitCamera OrbitCamera::RotatePhi(const OrbitCamera& camera, const Real auto& radians)
+    OrbitCamera OrbitCamera::RotatePhi(const OrbitCamera& camera,
+                                       const Real auto& radians)
     {
         OrbitCamera newCamera(camera);
 
@@ -75,7 +78,9 @@ namespace Nenuphar
         return newCamera;
     }
 
-    OrbitCamera OrbitCamera::PanOrbitCamera(const OrbitCamera& camera, const Real auto& dx, const Real auto& dy)
+    OrbitCamera OrbitCamera::PanOrbitCamera(const OrbitCamera& camera,
+                                            const Real auto& dx,
+                                            const Real auto& dy)
     {
 
         OrbitCamera newCamera(camera);

@@ -40,6 +40,7 @@ namespace Nenuphar
 
     class WindowSignals
     {
+    public:
         NP_DEFINE_SIGNAL(const CloseEvent&, OnClose)
         NP_DEFINE_SIGNAL(const ResizeEvent&, OnResize)
         NP_DEFINE_SIGNAL(const MouseWheelEvent&, OnMouseWheel)

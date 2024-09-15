@@ -5,7 +5,7 @@
 namespace Nenuphar
 {
 
-    class Engine final
+    class Engine
     {
     public:
         static int LoopRun(const std::function<void()>& runnable);

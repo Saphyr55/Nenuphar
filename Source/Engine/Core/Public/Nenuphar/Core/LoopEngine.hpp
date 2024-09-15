@@ -1,5 +1,6 @@
 #pragma once
 
+
 namespace Nenuphar
 {
 
@@ -7,8 +8,6 @@ namespace Nenuphar
     {
     public:
         virtual ~LoopEngine() = default;
-
-
 
     };
 

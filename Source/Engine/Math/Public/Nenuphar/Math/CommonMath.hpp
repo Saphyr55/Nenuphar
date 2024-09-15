@@ -1,14 +1,9 @@
 #pragma once
 
-#include "Nenuphar/Common/Common.hpp"
-
 #include <cfloat>
 #include <cmath>
 
-
-#define D_PI 3.14159265358979323846264338327950288
-
-#define D_OPERATIONS(Type, R)                                                      \
+#define NOPERATIONS(Type, R)                                                      \
     auto operator*(const Real auto&) const auto operator+(const Real auto&) const; \
     auto operator-(const Real auto&) const;                                        \
     auto operator*(const Type<R>&) const;                                          \
@@ -21,15 +16,16 @@ concept Real = std::is_floating_point_v<R> || std::is_integral_v<R>;
 
 namespace Nenuphar
 {
-    constexpr Float FullCircle = 2 * D_PI;
-    constexpr Float PolarCap = D_PI - FLT_EPSILON;
+    constexpr float Pi = float(3.14159265358979323846264338327950288);
+    constexpr float FullCircle = 2 * Pi;
+    constexpr float PolarCap = Pi - FLT_EPSILON;
 
-    auto Radians(const Real auto& angle)
+    inline auto Radians(const Real auto& angle)
     {
-        return angle * (D_PI / 180);
+        return angle * (Pi / 180);
     }
 
-    auto Signum(const Real auto& r)
+    inline auto Signum(const Real auto& r)
     {
         return r == 0 ? 0 : std::abs(r) / r;
     }

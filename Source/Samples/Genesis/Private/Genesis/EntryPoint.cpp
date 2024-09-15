@@ -13,15 +13,11 @@ namespace Np = Nenuphar;
 
 int main(int argc, const char* argv[])
 {
-    SharedRef<Np::TextureAssetLoader> textureAssetLoader =
-            MakeSharedRef<Np::TextureAssetLoader>();
-    SharedRef<Np::ModelAssetLoader> modelAssetLoader =
-            MakeSharedRef<Np::ModelAssetLoader>();
+    auto textureAssetLoader = MakeSharedRef<Np::TextureAssetLoader>();
+    auto modelAssetLoader = MakeSharedRef<Np::ModelAssetLoader>();
 
-    Np::AssetRegistry::Instance()
-            .AddLoader<Np::ModelAsset, Np::ModelAssetOptions>(modelAssetLoader);
-    Np::AssetRegistry::Instance().AddLoader<Np::TextureAsset, Np::AssetOptions>(
-            textureAssetLoader);
+    Np::AssetRegistry::Instance().AddLoader<Np::ModelAsset, Np::ModelAssetOptions>(modelAssetLoader);
+    Np::AssetRegistry::Instance().AddLoader<Np::TextureAsset, Np::AssetOptions>(textureAssetLoader);
 
     GenesisApp app;
 
@@ -31,6 +27,5 @@ int main(int argc, const char* argv[])
 
     return Np::Engine::LoopRun([&app] {
         app.OnUpdate();
-        app.OnRender();
     });
 }

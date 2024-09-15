@@ -1,27 +1,50 @@
 #pragma once
 
+#include "Nenuphar/Common/Type/Type.hpp"
+#include <utility>
 #include <vector>
+
 
 namespace Nenuphar
 {
+    template<typename TId>
+    class Container
+    {
+    public:
+        
+        using TIndex = std::size_t;
 
+        static constexpr std::size_t MaxTIndex =
+                std::numeric_limits<TIndex>::max();
+
+    public:
+        virtual void Remove(TId id) = 0;
+
+    public:
+        virtual ~Container() = default;
+
+    };
 
     template<typename TId,
              typename TValue,
              std::size_t MaxNumPage = 100>
-    class SparseSet
+    class SparseSet : public Container<TId>
     {
-        using TIndex = std::size_t;
-
+        using TSuper = Container<TId>;
+        using TIndex = TSuper::TIndex;
         using Sparse = std::vector<TIndex>;
 
-        static constexpr size_t MaxTIndex =
-                std::numeric_limits<TIndex>::max();
+    public:
+        TValue* Add(TId id, const TValue& value);
+        TValue* Get(TId id);
+        virtual void Remove(TId id) override;
+
+        inline const std::vector<TValue>& Values();
+        inline bool IsEmpty();
 
     public:
-        TValue* Add(TId id, TValue&& value);
-        TValue* Get(TId id);
-        void Remove(TId id);
+		SparseSet() { m_denseValue.reserve(100); }
+        virtual ~SparseSet() override = default;
 
     private:
         void SetDenseIndex(TId id, TIndex index);
@@ -33,6 +56,12 @@ namespace Nenuphar
         std::vector<TValue> m_denseValue;
         std::vector<TId> m_denseIdentification;
     };
+
+    template<typename TId, typename TValue, std::size_t MaxNumPage>
+    inline const std::vector<TValue>& SparseSet<TId, TValue, MaxNumPage>::Values()
+    {
+        return m_denseValue;
+    }
 
 
     template<typename TId, typename TValue, std::size_t MaxNumPage>
@@ -49,7 +78,7 @@ namespace Nenuphar
         Sparse& sparse = m_sparses[page];
         if (sparseIndex >= sparse.size())
         {
-            sparse.resize(sparseIndex + 1, MaxTIndex);
+            sparse.resize(sparseIndex + 1, TSuper::MaxTIndex);
         }
 
         sparse[sparseIndex] = index;
@@ -71,15 +100,15 @@ namespace Nenuphar
             }
         }
 
-        return MaxTIndex;
+        return TSuper::MaxTIndex;
     }
 
 
     template<typename TId, typename TValue, std::size_t MaxNumPage>
-    TValue* SparseSet<TId, TValue, MaxNumPage>::Add(TId id, TValue&& value)
+    TValue* SparseSet<TId, TValue, MaxNumPage>::Add(TId id, const TValue& value)
     {
         size_t index = GetDenseIndex(id);
-        if (index != MaxTIndex)
+        if (index != TSuper::MaxTIndex)
         {
             m_denseValue[index] = value;
             m_denseIdentification[index] = id;
@@ -100,7 +129,7 @@ namespace Nenuphar
     TValue* SparseSet<TId, TValue, MaxNumPage>::Get(TId id)
     {
         TIndex index = GetDenseIndex(id);
-        return (index != MaxTIndex) ? &m_denseValue[index] : nullptr;
+        return (index != TSuper::MaxTIndex) ? &m_denseValue[index] : nullptr;
     }
 
 
@@ -108,17 +137,26 @@ namespace Nenuphar
     void SparseSet<TId, TValue, MaxNumPage>::Remove(TId id)
     {
         TIndex deletedIndex = GetDenseIndex(id);
-        CHECK(deletedIndex != MaxTIndex && !m_denseValue.empty());
+        NCHECK(deletedIndex != TSuper::MaxTIndex && !m_denseValue.empty());
 
         SetDenseIndex(m_denseIdentification.back(), deletedIndex);
-        SetDenseIndex(id, MaxTIndex);
+        SetDenseIndex(id, TSuper::MaxTIndex);
 
-        std::swap(m_denseValue.back(), m_denseValue[deletedIndex]);
+        auto tmp = std::move(m_denseValue.back());
+        auto left = std::move(m_denseValue[deletedIndex]);
+        auto right = std::move(tmp);
+
+        // std::swap(m_denseValue.back(), m_denseValue[deletedIndex] );
         std::swap(m_denseIdentification.back(), m_denseIdentification[deletedIndex]);
 
         m_denseValue.pop_back();
         m_denseIdentification.pop_back();
     }
 
+    template<typename TId, typename TValue, std::size_t MaxNumPage>
+    inline bool SparseSet<TId, TValue, MaxNumPage>::IsEmpty()
+    {
+        return m_denseValue.empty();
+    }
 
 }// namespace Nenuphar

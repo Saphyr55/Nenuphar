@@ -1,15 +1,15 @@
 
 function(generate module_name)
 
-    set(GENERATED_FILENAME ${module_name}.Generated.hpp)
-    set(GENERATE_FILE ${CMAKE_BINARY_DIR}/Generated/${module_name}/${GENERATED_FILENAME})
-
-    add_custom_target(${module_name}.Generated
-        DEPENDS NPBuild
-        COMMAND NPBuild ${GENERATE_FILE}
-        COMMENT "NPBuild processing."
-        VERBATIM
-    )
+    #set(GENERATED_FILENAME ${module_name}.Generated.hpp)
+    # set(GENERATE_FILE ${CMAKE_BINARY_DIR}/Generated/${module_name}/${GENERATED_FILENAME})
+    
+    #add_custom_target(${module_name}.Generated
+    #    DEPENDS NPBuild
+    #    COMMAND NPBuild ${GENERATE_FILE}
+    #    COMMENT "NPBuild processing."
+    #    VERBATIM
+    #)
 
 endfunction()
 
@@ -29,7 +29,6 @@ function(add_module module_name module_location)
             ${PRIVATE_FOLDER}/**.hpp
             ${PRIVATE_FOLDER}/**.cpp
             ${PRIVATE_FOLDER}/**.inl
-            ${GENERATE_FILE}
     )
 
     target_include_directories(${module_name} 
@@ -47,7 +46,7 @@ endfunction()
 
 function(add_library_module module_name kind module_location)
 
-    generate(${module_name})
+    # generate(${module_name})
 
     add_library(${module_name} ${kind})
     add_module(${module_name} ${module_location})
@@ -58,15 +57,19 @@ function(add_library_module module_name kind module_location)
         target_compile_definitions(${module_name} PRIVATE NLIB)
     endif()
 
+    # add_dependencies(${module_name} ${module_name}.Generated)
+
 endfunction()
 
 
 function(add_executable_module module_name module_location)
 
-    generate(${module_name})
+    # generate(${module_name})
 
     add_executable(${module_name})
     add_module(${module_name} ${module_location})
+
+    # add_dependencies(${module_name} ${module_name}.Generated)
 
 endfunction()
 

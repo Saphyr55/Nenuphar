@@ -1,18 +1,18 @@
 #pragma once
 
 #include "Nenuphar/Core/IO/Path.hpp"
+#include "Nenuphar/Model/ModelAsset.hpp"
 #include "Nenuphar/Model/ModelLoader.hpp"
 
 
 namespace Nenuphar
 {
 
-    class TOLModelLoader : public ModelLoader
+    class TOLModelLoader
     {
     public:
-        virtual ModelLoader::TRes Load(const Path& path,
-                                       std::optional<Path> mtlPathDir = std::nullopt
-                                               ) const override;
+        ModelLoader::TRes Load(const Path& path,
+                               const TOLModelAssetOptions& options) const;
     };
-    
-}
+
+}// namespace Nenuphar

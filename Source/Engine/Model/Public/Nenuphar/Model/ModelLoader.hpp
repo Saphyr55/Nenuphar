@@ -5,6 +5,7 @@
 #include "Nenuphar/Common/Type/Result.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
 #include "Nenuphar/Model/Model.hpp"
+#include "Nenuphar/Model/ModelAsset.hpp"
 
 
 #include <optional>
@@ -18,16 +19,14 @@ namespace Nenuphar
         MalFormat
     };
 
-    
+
     class ModelLoader
     {
     public:
         using TRes = Result<Model, ModelLoaderError>;
 
-    public:
-
         virtual TRes Load(const Path& path,
-                          std::optional<Path> pathDir = std::nullopt) const = 0;
+                          const ModelAssetOptions& options) const;
     };
 
 }// namespace Nenuphar

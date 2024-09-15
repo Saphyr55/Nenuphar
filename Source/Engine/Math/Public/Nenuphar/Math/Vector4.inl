@@ -1,19 +1,19 @@
 #include "Nenuphar/Math/Vector4.hpp"
 
 template<Real R>
-Vector4<R>::Vector4(Vector3<R> vec, R w)
+constexpr Vector4<R>::Vector4(Vector3<R> vec, R w)
     : Vector4(vec.x, vec.y, vec.z, w)
 {
 }
 
 template<Real R>
-Vector4<R>::Vector4(R x, R y, R z, R w)
+constexpr Vector4<R>::Vector4(R x, R y, R z, R w)
     : x(x), y(y), z(z), w(w)
 {
 }
 
 template<Real R>
-Vector4<R>::Vector4(R r)
+constexpr Vector4<R>::Vector4(R r)
     : Vector4(r, r, r, r)
 {
 }

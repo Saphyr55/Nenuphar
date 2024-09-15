@@ -3,6 +3,7 @@
 #include "Nenuphar/Asset/AssetRegistry.hpp"
 #include "Nenuphar/Model/Model.hpp"
 #include "Nenuphar/Rendering/Mesh.hpp"
+#include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
 #include "Nenuphar/Rendering/Shader.hpp"
 #include "Nenuphar/Rendering/TextureAsset.hpp"
 
@@ -33,9 +34,11 @@ namespace Nenuphar
                                  const Texture& texture) const = 0;
 
         virtual void DrawModel(const Shader& shader,
+                               UniformRegistry& registry, // TODO: Remove this.
                                const ModelId& model) const = 0;
 
         virtual void DrawMesh(const Shader& shader,
+                              UniformRegistry& registry, // TODO: Remove this.
                               const MeshId& mesh) const = 0;
 
     };  

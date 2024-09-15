@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 
+#include "Engine.Core.Generated.hpp"
 
 namespace Nenuphar::Details
 {

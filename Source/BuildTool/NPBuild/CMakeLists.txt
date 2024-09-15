@@ -4,7 +4,6 @@ set(LOCATION    .)
 set(TARGET      NPBuild)
 set(GROUP       BuildTool)
 set(DEPS        fmt::fmt
-                Engine.Core
                 Engine.Common
     )
 

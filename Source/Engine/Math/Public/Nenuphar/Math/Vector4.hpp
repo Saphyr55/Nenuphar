@@ -10,10 +10,10 @@ struct Vector4
     R z = 0;
     R w = 0;
 
-    Vector4() = default;
-    explicit Vector4(R r);
-    explicit Vector4(Vector3<R> vec, R w = 1);
-    Vector4(R x, R y, R z, R w);
+    constexpr Vector4() = default;
+    constexpr explicit Vector4(R r);
+    constexpr explicit Vector4(Vector3<R> vec, R w = 1);
+    constexpr Vector4(R x, R y, R z, R w);
 
     auto Dot(const Vector4& vec) const;
     R& operator[](std::size_t i);

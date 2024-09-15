@@ -1,5 +1,5 @@
 # ========================================================
-# Setup Engine Rendering Module.
+# Setup Engine Entity Module.
 # ========================================================
 project(Engine.Entity)
 
@@ -13,12 +13,11 @@ set(DEPS            fmt::fmt
 
 add_library_module(${TARGET} STATIC ${LOCATION})
 target_link_libraries(${TARGET} PRIVATE ${DEPS} INTERFACE ${DEPS})
-
 set_target_properties(${TARGET} PROPERTIES FOLDER ${GROUP})
 
 
 # ========================================================
-# Setup Engine Rendering Test.
+# Setup Engine Entity Test.
 # ========================================================
 if(NENUPHAR_TEST_ENABLE)
 

@@ -6,7 +6,7 @@
 using namespace Nenuphar;
 
 template<Real R>
-struct Vector2 final
+struct Vector2
 {
     using Vec = Vector2;
 

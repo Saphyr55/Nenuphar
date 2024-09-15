@@ -1,33 +1,50 @@
 #pragma once
 
+#include "ComponentTI.hpp"
+#include "Nenuphar/Common/Container/SparseSet.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Core.hpp"
-#include "Nenuphar/Entity/Entity.hpp"
 #include "Nenuphar/Entity/ComponentTI.hpp"
-#include "Nenuphar/Entity/MemoryComponentSector.hpp"
+#include "Nenuphar/Entity/Entity.hpp"
 #include "Nenuphar/Entity/EntityBinding.hpp"
+#include "Nenuphar/Entity/MemoryComponentSector.hpp"
+#include "Nenuphar/Common/Instanciate.hpp"
 
-#include <typeindex>
-#include <unordered_set>
+#include <bitset>
 #include <map>
 #include <memory>
+#include <unordered_set>
 
 
 namespace Nenuphar
 {
 
+    template<typename TValue>
+    using EntitySparseSet = SparseSet<Entity, TValue>;
 
     /**
      *
      */
     class EntityRegistry
     {
-    public:
 
+        static constexpr Entity NULL_ENTITY =
+                std::numeric_limits<Entity>::max();
+
+        static constexpr std::size_t MAX_ENTITIES = NULL_ENTITY - 1;
+
+        static constexpr std::size_t MAX_COMPONENTS = 64;
+
+        using ComponentMask = std::bitset<MAX_COMPONENTS>;
+
+        using TName = const char*;
+
+    public:
         /**
          *
          * @return
          */
-        Entity Create();
+        Entity Create(std::string_view name = "");
 
         /**
          *
@@ -42,7 +59,7 @@ namespace Nenuphar
          * @param component
          */
         template<typename C>
-        void AddComponent(Entity entity, const C& component);
+        C& AddComponent(Entity entity, const C& component);
 
         /**
          *
@@ -63,6 +80,16 @@ namespace Nenuphar
         bool HasComponent(Entity entity);
 
         /**
+        * @brief 
+        * 
+        * @param entity 
+        * @return true 
+        * @return false 
+        */
+        template<typename... C>
+        bool HasComponents(Entity entity);
+
+        /**
          *
          * @tparam C
          * @param entity
@@ -72,157 +99,231 @@ namespace Nenuphar
         C& GetComponent(Entity entity);
 
         /**
-         *
-         * @tparam T
-         * @return
+        * @brief 
+        * 
+        * @tparam C 
+        * @return std::vector<std::tuple<Entity, C&...>> 
+        */
+        template<typename... C>
+        std::vector<std::tuple<Entity, C&...>> View();
+
+
+        /**
+         * @brief Get the Entities that have the corresponding components.
+         * 
+         * @tparam C 
+         * @return std::vector<Entity> 
          */
-        template<typename ...T>
-        MemoryComponentSector& RegisterSector();
+        template<typename... C>
+        std::vector<Entity> GetEntities();
 
-    private:
 
-        MemoryComponentSector& RootSector();
+        /**
+         * @brief Get the Entity Name.
+         * 
+         * @param entity 
+         * @return std::string 
+         */
+        std::string GetEntityName(Entity entity);
 
-        MemoryComponentSector& GetSector(MemorySectorId id);
-
-        MemoryComponentSector& AddNode(MemoryComponentLayout layout);
 
     public:
-        EntityRegistry();
+        EntityRegistry() = default;
+        EntityRegistry(const EntityRegistry&) = delete;
+        EntityRegistry(EntityRegistry&&) = delete;
         ~EntityRegistry() = default;
 
     private:
-        using MemorySectorMap = std::unordered_map<MemorySectorId, ComponentTIBinding>;
+        template<typename C>
+        std::size_t GetComponentBitPosition();
 
-        std::unordered_set<Entity> m_entities;
+        template<typename T>
+        EntitySparseSet<T>& GetContainer(bool registerIfNotFound = false);
 
-        EntityBinding m_entityBinding;
+        template<typename Component>
+        void SetComponentBit(ComponentMask& mask, bool val);
 
-        std::unordered_map<MemorySectorId, Ptr<MemoryComponentSector>> m_sectors;
+        template<typename Component>
+        ComponentMask::reference GetComponentBit(ComponentMask& mask);
 
-        std::map<MemoryComponentLayout, MemoryComponentSector&> m_layoutOfSector;
-        std::unordered_map<ComponentTI, MemorySectorMap> m_sectorByComponent;
-        std::unordered_map<ComponentTI, Word> m_componentSizeIndex;
+        ComponentMask& GetEntityMask(Entity entity);
+
+        template<typename... Components>
+        ComponentMask GetMask();
+
+        void RemoveFromGroup(ComponentMask& mask, Entity entity);
+
+        void AssignToGroup(ComponentMask& mask, Entity entity);
+
+        EntitySparseSet<Entity>& GetGroupedEntities(ComponentMask& mask);
+
+    private:
+        std::vector<Entity> m_entities{};
+        std::vector<UniquePtr<Container<Entity>>> m_componentPools{};
+
+        SparseSet<Entity, ComponentMask> m_entityMasks{};
+        std::unordered_map<ComponentMask, EntitySparseSet<Entity>> m_groupings{};
+        std::unordered_map<Entity, std::string> m_entityNames{};
+        std::unordered_map<TName, std::size_t> m_componentBitPosition{};
+
+        Entity m_maxEntityID = 0;
     };
 
-    template<typename ...T>
-    MemoryComponentSector& EntityRegistry::RegisterSector()
+    template<typename C>
+    C& EntityRegistry::GetComponent(Entity entity)
     {
-        MemorySectorId id = m_sectors.size();
-        auto layout = MakeMemoryComponentLayout<T...>();
-        auto sector = MakeUnique<MemoryComponentSector>(id, layout);
+        EntitySparseSet<C>& container = GetContainer<C>();
 
-        m_sectors.insert({ id, std::move(sector) });
-        return GetSector(id);
+        C* component = container.Get(entity);
+        NCHECK(component);
+
+        return *component;
+    }
+
+    template<typename C>
+    C& EntityRegistry::AddComponent(Entity entity, const C& component)
+    {
+        TName name = GetComponentTI<C>().name();
+
+        if (!m_componentBitPosition.contains(name))
+        {
+            m_componentBitPosition.emplace(name, m_componentPools.size());
+            m_componentPools.push_back(MakeUnique<EntitySparseSet<C>>());
+        }
+
+        EntitySparseSet<C>& container = GetContainer<C>(true);
+        NCHECK(!container.Get(entity))
+        ComponentMask& mask = GetEntityMask(entity);
+
+        RemoveFromGroup(mask, entity);
+        SetComponentBit<C>(mask, 1);
+        AssignToGroup(mask, entity);
+
+        return *container.Add(entity, component);
     }
 
     template<typename C>
     void EntityRegistry::RemoveComponent(Entity entity, const C& component)
     {
+        EntitySparseSet<C>& container = GetContainer<C>(true);
+        NCHECK(!container.Get(entity))
+        ComponentMask& mask = GetEntityMask(entity);
 
+        RemoveFromGroup(mask, entity);
+        SetComponentBit<C>(mask, 0);
+        AssignToGroup(mask, entity);
+
+        container.Remove(entity);
     }
 
-    template<typename C>
-    void EntityRegistry::AddComponent(Entity entity, const C& component)
+    template<typename... C>
+    bool EntityRegistry::HasComponents(Entity entity)
     {
-        ComponentTI componentTI = GetComponentTI<C>();
-        auto& entityBinding = m_entityBinding.SectorOfEntity(entity);
-        auto& sector = GetSector(entityBinding.SectorId);
-
-        if (!m_componentSizeIndex.contains(componentTI))
-        {
-            m_componentSizeIndex[componentTI] = sizeof(C);
-            m_sectorByComponent[componentTI] = { };
-        }
-
-        if (!sector.Edges().contains(componentTI))
-        {
-            // TODO: Better Id.
-            auto nextSectorId = MemorySectorId(m_sectors.size());
-
-            MemoryComponentLayout nextLayout(sector.Layout());
-            nextLayout.push_back(componentTI);
-    
-            auto nextSector = MakeUnique<MemoryComponentSector>(nextSectorId, nextLayout);
-
-            for (const auto& buffer : sector.ComponentStorages())
-            {
-                auto cti = buffer.CTI();
-                nextSector->AddBuffer(cti, m_componentSizeIndex[cti]);
-
-                auto index = nextSector->IndexOf(cti);
-                m_sectorByComponent[cti][nextSectorId] = { index };
-            }
-
-            nextSector->AddBuffer(componentTI, m_componentSizeIndex[componentTI]);
-
-            m_sectorByComponent[componentTI][nextSectorId] = { nextSector->IndexOf(componentTI) };
-            
-            m_sectors.emplace(nextSectorId, std::move(nextSector));
-
-            sector.Edge(componentTI).Add = nextSectorId;
-        }
-
-        auto& sectorsBinding = m_sectorByComponent[componentTI];
-        MemorySectorId& nextSectorId = sector.Edge(componentTI).Add;
-        MemoryComponentSector& nextSector = GetSector(nextSectorId);
-        ComponentTIBinding& componentBinding = sectorsBinding[nextSectorId];
-        Word row = componentBinding.Row;
-        Word column = entity;
-
-        entityBinding.SectorId = nextSector.Id();
-        // TODO: Must be indexed.
-        entityBinding.Column = column;
-
-        ComponentBuffer& buffer = nextSector.BufferAt(row);
-
-        int index = 0;
-        for (auto& item: sector.ComponentStorages())
-        { 
-            ComponentBuffer& buf = nextSector.BufferAt(index);
-            void* data = item.DataAt(column);
-            buf.Insert(column, data);
-            item.DeleteAt(column);
-            index++;
-        }
-
-        buffer.Insert<C>(column, component);
+        return (HasComponent<C>(entity) && ...);
     }
 
     template<typename C>
     bool EntityRegistry::HasComponent(Entity entity)
     {
-        ComponentTI componentTI = GetComponentTI<C>();
-        auto& [sectorId, _] = m_entityBinding.SectorOfEntity(entity);
-        MemorySectorMap& sectors = m_sectorByComponent[componentTI];
+        auto& container = GetContainer<C>();
+        return container.Get(entity) ? true : false;
+    }
 
-        return sectors.contains(sectorId);
+    template<typename... C>
+    std::vector<Entity> EntityRegistry::GetEntities()
+    {
+        std::vector<Entity> result;
+        ComponentMask targetMask = GetMask<C...>();
+
+        for (auto& [mask, ids]: m_groupings)
+        {
+            if ((mask & targetMask) == targetMask)
+            {
+                result.insert(result.end(), ids.Values().begin(), ids.Values().end());
+            }
+        }
+
+        return result;
+    }
+
+    template<typename... C>
+    std::vector<std::tuple<Entity, C&...>> EntityRegistry::View()
+    {
+        std::vector<std::tuple<Entity, C&...>> result;
+        ComponentMask targetMask = GetMask<C...>();
+
+        for (auto& [mask, ids]: m_groupings)
+        {
+            if (mask == targetMask)
+            {
+                for (const Entity& id : ids.Values())
+                {
+                    result.emplace_back(id, GetComponent<C>(id)...);
+                }
+            }
+        }
+
+        return result;
     }
 
     template<typename C>
-    C& EntityRegistry::GetComponent(Entity entity)
+    std::size_t EntityRegistry::GetComponentBitPosition()
     {
-        ComponentTI componentTI = GetComponentTI<C>();
-        auto& [sectorId, column] = m_entityBinding.SectorOfEntity(entity);
-        MemorySectorMap& sectors = m_sectorByComponent[componentTI];
-
-        if (!sectors.contains(sectorId))
+        TName name = GetComponentTI<C>().name();
+        auto it = m_componentBitPosition.find(name);
+        if (it == m_componentBitPosition.end())
         {
-            NP_ERROR(EntityRegistry::GetComponent, "The entity:{} haven't the component:{}",
-                     entity, componentTI.name());
-            throw std::exception();
+            return Container<Entity>::MaxTIndex;
         }
 
-        auto& [row] = sectors[sectorId];
-        auto& sector = GetSector(sectorId);
+        return it->second;
+    }
 
-        ComponentBuffer& buffer = sector.BufferAt(row);
+    template<typename C>
+    EntitySparseSet<C>& EntityRegistry::GetContainer(bool registerIfNotFound)
+    {
+        std::size_t bitPos = GetComponentBitPosition<C>();
 
-        void* data = buffer.DataAt(column);
-        return *(static_cast<C*>(data));
+        if (bitPos == Container<Entity>::MaxTIndex)
+        {
+            TName name = GetComponentTI<C>().name();
+            m_componentBitPosition.emplace(name, m_componentPools.size());
+            m_componentPools.push_back(MakeUnique<EntitySparseSet<C>>());
+            bitPos = GetComponentBitPosition<C>();
+        }
+
+        NCHECK(bitPos < m_componentPools.size() && bitPos >= 0);
+
+        Container<Entity>& container = *m_componentPools[bitPos];
+        EntitySparseSet<C>& pool = static_cast<EntitySparseSet<C>&>(container);
+
+        return pool;
+    }
+
+    template<typename C>
+    void EntityRegistry::SetComponentBit(ComponentMask& mask, bool val)
+    {
+        std::size_t bitPos = GetComponentBitPosition<C>();
+        NCHECK(bitPos != Container<Entity>::MaxTIndex);
+        mask[bitPos] = val;
+    }
+
+    template<typename C>
+    EntityRegistry::ComponentMask::reference EntityRegistry::GetComponentBit(
+            ComponentMask& mask)
+    {
+        std::size_t bitPos = GetComponentBitPosition<C>();
+        NCHECK(bitPos != Container<Entity>::MaxTIndex);
+        return mask[bitPos];
+    }
+
+    template<typename... C>
+    EntityRegistry::ComponentMask EntityRegistry::GetMask()
+    {
+        ComponentMask mask;
+        (SetComponentBit<C>(mask, 1), ...);
+        return mask;
     }
 
 
-
-}
-
+}// namespace Nenuphar

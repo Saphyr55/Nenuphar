@@ -8,9 +8,8 @@ set(TARGET          Engine.Common)
 set(GROUP           Engine)
 set(DEPS            fmt::fmt)
 
-add_library_module(${TARGET} SHARED ${LOCATION})
+add_library_module(${TARGET} STATIC ${LOCATION})
 target_link_libraries(${TARGET} PRIVATE ${DEPS} INTERFACE ${DEPS})
-
 set_target_properties(${TARGET} PROPERTIES FOLDER ${GROUP})
 
 

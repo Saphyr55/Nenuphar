@@ -1,11 +1,16 @@
 #include "Nenuphar/Model/TOL/TOLMeshLoader.hpp"
+#include "Nenuphar/Asset/AssetRegistry.hpp"
 #include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Result.hpp"
+#include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
+#include "Nenuphar/Model/ModelAsset.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
+#include "Nenuphar/Rendering/TextureAsset.hpp"
 #include "Nenuphar/Rendering/Vertex.hpp"
+#include <algorithm>
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #define TINYOBJLOADER_USE_MAPBOX_EARCUT
@@ -14,13 +19,15 @@
 #include <optional>
 #include <vector>
 
+
 namespace Nenuphar
 {
 
     ModelLoader::TRes TOLModelLoader::Load(const Path& path,
-                                           std::optional<Path> mtlPathDir) const
+                                           const TOLModelAssetOptions& options) const
     {
         using TRes = ModelLoader::TRes;
+        AssetRegistry& assetRegistry = AssetRegistry::Instance();
 
         NP_INFO(TOLModelLoader::Load, "Load the model from '{}'", path.GetFilePath());
 
@@ -28,6 +35,8 @@ namespace Nenuphar
         {
             return TRes(TRes::kErrTag, ModelLoaderError::PathNotExist);
         }
+
+        auto mtlPathDir = options.MtlPathDir;
 
         tinyobj::attrib_t attrib;
         std::vector<tinyobj::shape_t> shapes;
@@ -42,7 +51,8 @@ namespace Nenuphar
                                     &err,
                                     path.GetFilePath().c_str(),
                                     mtlPathDir.has_value()
-                                    ? mtlPathDir->GetFilePath().c_str() : nullptr);
+                                            ? mtlPathDir->GetFilePath().c_str()
+                                            : nullptr);
 
         if (!warn.empty())
         {
@@ -63,14 +73,29 @@ namespace Nenuphar
         }
 
         std::vector<Mesh> meshes;
+        std::map<std::string, Texture> texturesMapping;
 
         for (const tinyobj::material_t& material: materials)
         {
-            
+            if (material.diffuse_texname.length() > 0)
+            {
+                std::string pathTexture = mtlPathDir->GetFilePath() + material.diffuse_texname;
+
+                if (!texturesMapping.contains(pathTexture) && options.PersistTexture && options.Renderer)
+                {
+                    AssetOptions texAssetOptions;
+                    texAssetOptions.IsFromAsset = false;
+                    SharedRef<TextureAsset> textureAsset = assetRegistry.Load<TextureAsset>(pathTexture, texAssetOptions);
+                    NCHECK(textureAsset)
+
+                    Texture texture = options.Renderer->PersistTexture(textureAsset);
+                    texturesMapping.insert({pathTexture, texture});
+                }
+            }
         }
 
         // Loop over shapes
-        for (const tinyobj::shape_t& shape : shapes)
+        for (const tinyobj::shape_t& shape: shapes)
         {
             const tinyobj::mesh_t& mesh = shape.mesh;
 
@@ -124,7 +149,22 @@ namespace Nenuphar
                 index_offset += fv;
 
                 // per-face material
-                // int m = shapes[s].mesh.material_ids[f];
+                int m = mesh.material_ids.at(f);
+                if (m < 0)
+                {
+                    continue;
+                }
+
+                tinyobj::material_t& material = materials.at(m);
+                std::string pathTexture = mtlPathDir->GetFilePath() + material.diffuse_texname;
+                if (texturesMapping.contains(pathTexture))
+                {
+                    if (std::find(textures.begin(), textures.end(), texturesMapping.at(pathTexture)) == textures.end())
+                    {
+                        textures.push_back(texturesMapping.at(pathTexture));
+                    }
+                }
+
             }
 
             meshes.push_back(Mesh(
@@ -138,5 +178,4 @@ namespace Nenuphar
 
         return TRes(TRes::kValTag, Model(meshes));
     }
-    
-}
+}// namespace Nenuphar

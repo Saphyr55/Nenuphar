@@ -1,5 +1,4 @@
 #include "Nenuphar/Core/IO/Path.hpp"
-#include "Nenuphar/Common/Type/Result.hpp"
 
 #include <filesystem>
 #include <fstream>
@@ -13,7 +12,10 @@ namespace Nenuphar
     Path::Path(std::string_view path)
         : m_path(path)
         , m_extension(fs::path(path).extension().string())
-    {
+    {    
+        // fs::path canonicalPath = fs::weakly_canonical(path);
+        // std::string npath = canonicalPath.make_preferred().string();
+        // m_path = npath;
     }
 
     bool Path::IsExists() const

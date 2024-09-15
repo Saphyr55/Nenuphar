@@ -3,8 +3,8 @@
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
 #include "Nenuphar/Core/Core.hpp"
-#include "Engine.Asset.Generated.hpp"
 
+#include <string>
 #include <type_traits>
 
 namespace Nenuphar
@@ -36,9 +36,11 @@ namespace Nenuphar
     };
 
     
-    class AssetOptions
+    struct AssetOptions
     {
     public:
+        bool IsFromAsset = true;
+
         AssetOptions() = default;
         virtual ~AssetOptions() = default;
     };

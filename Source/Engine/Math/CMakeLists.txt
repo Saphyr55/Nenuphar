@@ -1,5 +1,5 @@
 # ========================================================
-# Setup Math Lib for the engine.
+# Setup Math Module for the engine.
 # ========================================================
 project(Engine.Math)
 

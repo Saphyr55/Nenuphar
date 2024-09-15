@@ -1,14 +1,21 @@
 #include "Nenuphar/Model/ModelAsset.hpp"
 
+#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
 #include "Nenuphar/Model/ModelLoader.hpp"
+#include "Nenuphar/Model/TOL/TOLMeshLoader.hpp"
 
 
 namespace Nenuphar
 {
 
+    ModelAssetLoader::ModelAssetLoader() 
+        : m_objLoader(MakeSharedRef<TOLModelLoader>())
+    {
+
+    }
 
 
     ModelAsset::ModelAsset(Model&& model)
@@ -20,26 +27,30 @@ namespace Nenuphar
     SharedRef<ModelAsset> ModelAssetLoader::Load(const Path& path,
                                                  const ModelAssetOptions& options)
     {
-        ModelLoader* loader = nullptr;
+        const ModelAssetOptions* optionsPtr = &options;
         if (path.GetExtenstion() == ".obj")
         {
-            loader = &m_objLoader;
+            // FIXME: Better way to get the options.
+            const TOLModelAssetOptions* tolOptions = 
+                static_cast<const TOLModelAssetOptions*>(optionsPtr);
+                
+            ModelLoader::TRes res = m_objLoader->Load(path, *tolOptions);
+            
+            if (!res.HasValue())
+            {
+                return nullptr;
+            }
+
+            return MakeSharedRef<ModelAsset>(std::move(res.Value()));
         }
         else
         {
             NP_ERROR(ModelAssetLoader::Load,
                      "No loader found for this format : '{}'.", path.GetExtenstion());
-            NCHECK(loader)
+            NCHECK(false)
         }
 
-        ModelLoader::TRes res = loader->Load(path, options.MtlPathDir);
-
-        if (!res.HasValue())
-        {
-            return nullptr;
-        }
-
-        return MakeSharedRef<ModelAsset>(std::move(res.Value()));
+        return nullptr;
     }
 
 

@@ -5,7 +5,7 @@
 #include "Nenuphar/Math/Vector2.hpp"
 
 template<Real R>
-struct Vector3 final
+struct Vector3
 {
     using Vec = Vector3;
 

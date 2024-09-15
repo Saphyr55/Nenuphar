@@ -4,7 +4,7 @@ namespace Nenuphar
 {
 
     ModelLoader::TRes ObjModelLoader::Load(const Path& path,
-                                           std::optional<Path> mtlPathDir) const
+                                           const ModelAssetOptions& options) const
     {
         using Res = ModelLoader::TRes;
         return Res(Res::kErrTag, ModelLoaderError::MalFormat);

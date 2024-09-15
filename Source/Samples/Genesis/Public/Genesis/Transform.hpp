@@ -12,5 +12,6 @@ struct Transform
 
     static Matrix4f Tranformation(const Matrix4f& mat,
                                   const Transform& transform);
+                                  
     static Matrix4f Tranformation(const Transform& transform);
 };

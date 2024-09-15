@@ -2,6 +2,7 @@
 
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Rendering/Mesh.hpp"
+#include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
 #include "Nenuphar/Rendering/Renderer.hpp"
 
 namespace Nenuphar
@@ -26,9 +27,11 @@ namespace Nenuphar
                                  const Texture& texture) const override;
 
         virtual void DrawModel(const Shader& shader,
+                               UniformRegistry& registry,
                                const ModelId& model) const override;
 
         virtual void DrawMesh(const Shader& shader,
+                              UniformRegistry& registry,
                               const MeshId& mesh) const override;
     };
 

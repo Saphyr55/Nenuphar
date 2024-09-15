@@ -3,6 +3,7 @@
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Entity/Entity.hpp"
 #include "Nenuphar/Entity/EntityRegistry.hpp"
+#include "Nenuphar/Math/Vector4.hpp"
 #include "Nenuphar/Model/Model.hpp"
 #include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
 #include "Nenuphar/Rendering/Renderer.hpp"
@@ -11,23 +12,52 @@
 
 namespace Np = Nenuphar;
 
+struct RenderableModel
+{
+    Np::ModelId Model;
+};
+
+struct Colorable
+{
+    Vector4f Color;
+};
+
+struct RenderModels
+{
+    Np::ModelId CubeModelId;
+    Np::ModelId SponzaModelId;
+    Np::ModelId FloorModelId;
+};
+
+struct RenderableTexture
+{
+    Np::Texture Texture;
+};
+
+struct RenderTextures
+{
+    Np::Texture WallTexture;
+};
+
 struct RenderData
 {
-    static SharedRef<RenderData> Default();
+    using TRDefault = std::tuple<
+        Np::SharedRef<RenderData>, 
+        RenderModels, 
+        RenderTextures>; 
 
-    Np::ModelId BunnyModelId;
-    Np::ModelId FloorModelId;
-    Np::ModelId CubeModelId;
-    Np::ModelId BarrelModelId;
-    Np::Texture WallTexture;
+    static TRDefault Default();
+
     Np::UniquePtr<Np::Shader> Shader;
     Np::UniformRegistry Registry;
     Np::SharedRef<Np::Renderer> Renderer;
 };
 
-void OnRenderData(RenderData& data,
-                  Np::EntityRegistry& registry,
-                  Np::Entity floor,
-                  Np::Entity bunny,
-                  Np::Entity cube,
-                  Np::Entity barrel);
+void OnRenderData(RenderData& data, Np::EntityRegistry& registry);
+
+static constexpr Vector4f GDefaultColor =
+        Vector4f(
+            36.0f / 255.0f, 
+            36.0f / 255.0f, 
+            36.0f / 255.0f, 
+            255.0f / 255.0f);

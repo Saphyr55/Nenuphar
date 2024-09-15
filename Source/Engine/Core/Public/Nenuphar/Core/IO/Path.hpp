@@ -18,12 +18,12 @@ namespace Nenuphar
         using TRes = Result<std::string, ErrorReadFileContent>;
 
     public:
-        
         std::string GetExtenstion() const;
         bool IsExists() const;
 
         std::string GetFilePath() const;
-
+        
+    public:
         explicit Path(std::string_view path);
         ~Path() = default;
 
@@ -33,4 +33,5 @@ namespace Nenuphar
     };
 
     Path::TRes ReadFileContent(const Path& path);
-}
+
+} // namespace Nenuphar

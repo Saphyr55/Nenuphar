@@ -15,5 +15,6 @@ uniform mat4 model;
 void main()
 {
 	UV = aUV;
+	Normal = aNormal;
 	gl_Position = proj * view * model * vec4(aPos, 1.0);
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Model/ModelAsset.hpp"
 #include "Nenuphar/Model/ModelLoader.hpp"
 
 #include <optional>
@@ -8,11 +9,11 @@
 namespace Nenuphar
 {
 
-    class ObjModelLoader : public ModelLoader
+    class ObjModelLoader
     {
     public:
-        virtual TRes Load(const Path& path,
-                          std::optional<Path> mtlPathDir = std::nullopt) const override;
+        virtual ModelLoader::TRes Load(const Path& path,
+                                       const ModelAssetOptions& options) const;
 
         static UniquePtr<ObjModelLoader> Create();
 

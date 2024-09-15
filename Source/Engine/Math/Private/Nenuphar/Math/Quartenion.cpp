@@ -2,6 +2,13 @@
 #include "Nenuphar/Math/Quaternion.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
 
+
+constexpr Quaternion::Quaternion(float x, float y, float z, float w)
+    : X(x), Y(y), Z(z), W(w)
+{
+
+}
+
 Matrix4f Quaternion::ToMat4f(const Quaternion& q)
 {
     Matrix4f Result = Matrix4f::Identity();

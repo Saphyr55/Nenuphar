@@ -40,7 +40,7 @@ namespace Nenuphar
 
         template<CIsAsset A, CIsAssetOptions Options = AssetOptions>
         SharedRef<A> Load(std::string_view vpath,
-                          const Options& options = Options());
+                          const Options& options = AssetOptions());
 
         template<CIsAsset A>
         void Unload(SharedRef<A> asset);
@@ -112,7 +112,12 @@ namespace Nenuphar
 
         if (!m_handlersFile.contains(pathStr))
         {
-            Path path = FromAssets(pathStrView);
+            Path path(pathStrView);
+            if (options.IsFromAsset)
+            {
+                path = FromAssets(pathStrView);
+            }
+
             asset = loader->LoadAsset(path, options);
             m_lastHandle++;
             m_handlersFile.insert({pathStr, m_lastHandle});
@@ -120,7 +125,12 @@ namespace Nenuphar
         else
         {
             AssetHandle& handle = m_handlersFile.at(pathStr);
-            asset = *m_assets.Get(handle);
+            auto assetPtr = m_assets.Get(handle);
+            if (!assetPtr)
+            {
+                return nullptr;
+            }
+            asset = *assetPtr;
         }
 
         return std::static_pointer_cast<A>(asset);

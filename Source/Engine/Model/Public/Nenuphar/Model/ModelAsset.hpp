@@ -1,9 +1,12 @@
 #pragma once
 
-#include "Nenuphar/Model/TOL/TOLMeshLoader.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Rendering/Renderer.hpp"
+#include <cstddef>
 
 namespace Nenuphar
 {
+    class TOLModelLoader;
 
     class ModelAsset : public Asset
     {
@@ -20,9 +23,15 @@ namespace Nenuphar
 
 
     // TODO: Change to a more concrete specification model file.
-    struct ModelAssetOptions : public AssetOptions 
+    struct ModelAssetOptions : AssetOptions 
     {
-        // TODO: MtlPathDir must not be here. 
+        bool PersistTexture = false;
+        SharedRef<Renderer> Renderer = nullptr;
+    };
+
+
+    struct TOLModelAssetOptions : ModelAssetOptions
+    {
         std::optional<Path> MtlPathDir = std::nullopt;
     };
 
@@ -30,13 +39,15 @@ namespace Nenuphar
     class ModelAssetLoader : public AssetLoader<ModelAsset, ModelAssetOptions>
     {
     public:
+        ModelAssetLoader();
+
         virtual SharedRef<ModelAsset> Load(
                 const Path& path, const ModelAssetOptions& options) override;
 
         virtual void Unload(SharedRef<ModelAsset> asset) override;
 
     private:
-        TOLModelLoader m_objLoader;
+        SharedRef<TOLModelLoader> m_objLoader;
     };
 
     inline Model& ModelAsset::GetModel()

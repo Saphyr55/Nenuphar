@@ -3,7 +3,7 @@
 #include "Nenuphar/Entity/Entity.hpp"
 #include "Nenuphar/Entity/MemoryComponentSector.hpp"
 
-#include <map>
+#include <unordered_map>
 
 namespace Nenuphar
 {

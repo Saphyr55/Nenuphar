@@ -12,7 +12,7 @@ namespace Nenuphar
 
 	OpenGLVertexArray::~OpenGLVertexArray()
 	{
-		NP_GL_CHECK_CALL(glDeleteVertexArrays(1, &m_vertexArrayId));
+		// NP_GL_CHECK_CALL(glDeleteVertexArrays(1, &m_vertexArrayId));
     }
 
     void OpenGLVertexArray::Bind() const

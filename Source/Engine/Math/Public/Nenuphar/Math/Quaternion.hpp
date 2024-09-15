@@ -4,8 +4,15 @@
 #include "Nenuphar/Math/Matrix4.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
 
-class Quaternion
+struct Quaternion
 {
+public:
+
+    float X;
+    float Y;
+    float Z;
+    float W;
+
 public:
     /**
 	 * Compute the euclidean norm.
@@ -26,8 +33,8 @@ public:
     Quaternion operator*(const Vector3f& vec) const;
 
 public:
-    float X;
-    float Y;
-    float Z;
-    float W;
+    constexpr Quaternion() = default;
+    constexpr Quaternion(float x, float y, float z, float w);
+    ~Quaternion() = default;
+
 };

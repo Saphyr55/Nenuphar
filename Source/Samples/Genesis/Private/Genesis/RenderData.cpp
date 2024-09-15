@@ -5,7 +5,6 @@
 #include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
-#include "Nenuphar/Entity/Entity.hpp"
 #include "Nenuphar/Entity/EntityRegistry.hpp"
 #include "Nenuphar/Math/Vector4.hpp"
 #include "Nenuphar/Model/Model.hpp"
@@ -13,112 +12,99 @@
 #include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
 #include "Nenuphar/Rendering/RenderService.hpp"
 #include "Nenuphar/Rendering/Renderer.hpp"
+#include "Nenuphar/Rendering/Texture.hpp"
 #include "Nenuphar/Rendering/TextureAsset.hpp"
 
 #include <optional>
+#include <tuple>
 
-static Vector4f GDefaultColor =
-        Vector4f(36.0f / 255.0f, 36.0f / 255.0f, 36.0f / 255.0f, 255.0f / 255.0f);
 
-void OnRenderData(RenderData& data,
-                  Np::EntityRegistry& registry,
-                  Np::Entity floor,
-                  Np::Entity bunny,
-                  Np::Entity cube,
-                  Np::Entity barrel)
+void OnRenderData(RenderData& data, Np::EntityRegistry& registry)
 {
-    // We create the world model.
-    Transform& transform = registry.GetComponent<Transform>(floor);
-    Matrix4f floorModel = Transform::Tranformation(transform);
 
-    Transform& cubeTransform = registry.GetComponent<Transform>(cube);
-    Matrix4f cubeModel = Transform::Tranformation(cubeTransform);
+    for (auto& [e, transform, rModel] : registry.View<Transform, RenderableModel>())
+    {
+        Matrix4f matrixModel = Transform::Tranformation(transform);
+        
+        data.Registry.Get<Matrix4f>("model").UpdateValue(matrixModel);
 
-    Transform& bunnyTransform = registry.GetComponent<Transform>(bunny);
-    Matrix4f bunnyModel = Transform::Tranformation(bunnyTransform);
+        data.Renderer->DrawModel(*data.Shader, data.Registry, rModel.Model);
+    }
+    /*
+    for (auto& [e, transform, rModel, rTexture] : registry.View<Transform, RenderableModel, RenderableTexture>())
+    {
+        Matrix4f matrixModel = Transform::Tranformation(transform);
 
-    Transform& barrelTransform = registry.GetComponent<Transform>(barrel);
-    Matrix4f barrelModel = Transform::Tranformation(barrelTransform);
+        data.Registry.Get<Matrix4f>("model").UpdateValue(matrixModel);
+        data.Registry.Get<Bool>("UIsTextured").UpdateValue(true);
 
-    Vector4f bunnyColor(0.95, 0.95, 0.95, 1);
+        data.Renderer->DrawModel(*data.Shader, rModel.Model);
+    }
+    
+    for (auto& [e, transform, rModel, colorable] : registry.View<Transform, RenderableModel, Colorable>())
+    {
+        Matrix4f matrixModel = Transform::Tranformation(transform);
 
-    Vector4f floorColor(GDefaultColor);
-    floorColor.w = GDefaultColor.x * 2;
+        data.Registry.Get<Bool>("UIsTextured").UpdateValue(false);
+        data.Registry.Get<Vector4f>("UColor").UpdateValue(colorable.Color);
+        data.Registry.Get<Matrix4f>("model").UpdateValue(matrixModel);
 
-    // We obtain uniforms from the register and indicate their respective values.
-    // We draw the non textured models.
-    // We draw the Bunny.
-    data.Registry.Get<Bool>("UIsTextured").UpdateValue(false);
-    data.Registry.Get<Vector4f>("UColor").UpdateValue(bunnyColor);
-    data.Registry.Get<Matrix4f>("model").UpdateValue(bunnyModel);
-    data.Renderer->DrawModel(*data.Shader, data.BunnyModelId);
-
-    // We draw the Cube.
-    data.Registry.Get<Matrix4f>("model").UpdateValue(cubeModel);
-    data.Registry.Get<Bool>("UIsTextured").UpdateValue(true);
-    data.Renderer->DrawModel(*data.Shader, data.CubeModelId);
-
-    // We draw the Barrel.
-    data.Registry.Get<Matrix4f>("model").UpdateValue(barrelModel);
-    data.Registry.Get<Bool>("UIsTextured").UpdateValue(true);
-    data.Renderer->DrawModel(*data.Shader, data.BarrelModelId);
-
-    // We draw the Floor.
-    data.Registry.Get<Bool>("UIsTextured").UpdateValue(false);
-    data.Registry.Get<Matrix4f>("model").UpdateValue(floorModel);
-    data.Registry.Get<Vector4f>("UColor").UpdateValue(floorColor);
-    data.Renderer->DrawModel(*data.Shader, data.FloorModelId);
+        data.Renderer->DrawModel(*data.Shader, rModel.Model);
+    }
+    */
 }
 
-Np::SharedRef<RenderData> RenderData::Default()
+RenderData::TRDefault RenderData::Default()
 {
     // Use render singleton render service to get the main renderer,
     // and enable somes default graphics options.
     Np::RenderService::Instance()->Enable();
+    
     Np::SharedRef<Np::Renderer> renderer =
             Np::RenderService::Instance()->GetRenderer();
 
-    Np::SharedRef<Np::TextureAsset> assetWall =
-            Np::AssetRegistry::Instance().Load<Np::TextureAsset>(
-                    "/Textures/Wall.jpg");
+    // Load a simple wall texture.
+    Np::SharedRef<Np::TextureAsset> assetWall = Np::AssetRegistry::Instance()
+            .Load<Np::TextureAsset>("/Textures/Wall.jpg");
     Np::Texture wall = renderer->PersistTexture(assetWall);
 
-    Np::SharedRef<Np::ModelAsset> bunnyAsset =
-            Np::AssetRegistry::Instance().Load<Np::ModelAsset>("/Models/bunny.obj");
-    NCHECK(bunnyAsset)
-    Np::ModelId bunnyModelId = renderer->PersistModel(bunnyAsset->GetModel());
-
-    Np::SharedRef<Np::ModelAsset> cubeAsset =
-            Np::AssetRegistry::Instance().Load<Np::ModelAsset>("/Models/Cube.obj");
+    // Load a simple cube as an obj model.
+    Np::SharedRef<Np::ModelAsset> cubeAsset =Np::AssetRegistry::Instance()
+            .Load<Np::ModelAsset>("/Models/Cube.obj");
     NCHECK(cubeAsset)
     Np::ModelId cubeModelId = renderer->PersistModel(cubeAsset->GetModel());
     renderer->TextureModel(cubeModelId, wall);
 
-    // TODO: ModelAssetOptions to ObjModelAssetOptions that derive of
-    // ModelAssetOptions.
-    Np::ModelAssetOptions barrelOptions;
-    barrelOptions.MtlPathDir = Np::FromAssets("/Models/wine_barrel/");
-    std::string path = "/Models/wine_barrel/wine_barrel_01_4k.obj";
-    Np::SharedRef<Np::ModelAsset> barrelAsset =
-            Np::AssetRegistry::Instance().Load<Np::ModelAsset, Np::ModelAssetOptions>(
-                    path, barrelOptions);
-    NCHECK(barrelAsset)
-    Np::ModelId barrelModelId = renderer->PersistModel(barrelAsset->GetModel());
+    // Load sponza obj model.
+    Np::TOLModelAssetOptions sponzaOptions;
+    sponzaOptions.PersistTexture = true;
+    sponzaOptions.Renderer = renderer;
+    sponzaOptions.MtlPathDir = Np::FromAssets("/sponza/");
+    std::string path = "/sponza/sponza.obj";
+    Np::SharedRef<Np::ModelAsset> sponzaAsset = Np::AssetRegistry::Instance()
+            .Load<Np::ModelAsset, Np::ModelAssetOptions>(path, sponzaOptions);
+    NCHECK(sponzaAsset)
+    Np::ModelId sponzaModelId = renderer->PersistModel(sponzaAsset->GetModel());
 
+    // Create floor model.
     Np::Model floorModel = Np::FloorModelFactory();
     Np::ModelId floorModelId = renderer->PersistModel(floorModel);
 
+    // Load the vertex shader.
     Np::Path vertexFilepath = Np::FromAssets("/Shaders/MainVertex.glsl");
     Np::Path::TRes resultVertex = Np::ReadFileContent(vertexFilepath);
     NCHECK(resultVertex.HasValue())
 
+    // Load the fragment shader.
     Np::Path fragmentFilepath = Np::FromAssets("/Shaders/MainFragment.glsl");
     Np::Path::TRes resultFragment = Np::ReadFileContent(fragmentFilepath);
     NCHECK(resultFragment.HasValue())
 
+    // Create the main OpenGL shader.
     auto program = MakeUnique<Np::OpenGLShader>(resultVertex.Value(),
                                                 resultFragment.Value());
 
+    // TODO: Replace to an uniform buffer.
     Np::UniformRegistry registry(*program);
     registry.Register("UTex", 0)
             .Register("UColor", GDefaultColor)
@@ -127,7 +113,11 @@ Np::SharedRef<RenderData> RenderData::Default()
             .Register("view", Matrix4f(1))
             .Register("model", Matrix4f(1));
 
-    return MakeSharedRef<RenderData>(bunnyModelId, floorModelId, cubeModelId,
-                                     barrelModelId, wall, std::move(program),
-                                     std::move(registry), renderer);
+    auto data = MakeSharedRef<RenderData>(std::move(program),
+                                     std::move(registry), 
+                                     renderer);
+
+    return std::make_tuple(data, 
+        RenderModels(cubeModelId, sponzaModelId, floorModelId), 
+        RenderTextures(wall));
 }

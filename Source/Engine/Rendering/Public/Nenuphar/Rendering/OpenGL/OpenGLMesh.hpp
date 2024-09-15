@@ -6,13 +6,14 @@
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Rendering/Mesh.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLVertexArray.hpp"
+#include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
 
 
 namespace Nenuphar
 {
 
     struct OpenGLMesh
-    {   
+    {
         MeshId Id;
         UniquePtr<OpenGLVertexArray> VAO;
         Int Count;
@@ -33,6 +34,6 @@ namespace Nenuphar
 
     void OpenGLPersistMesh(const MeshId& mesh);
 
-    void OpenGLDrawMesh(const MeshId& id);
+    void OpenGLDrawMesh(UniformRegistry& registry, const MeshId& id);
 
-}
+}// namespace Nenuphar
