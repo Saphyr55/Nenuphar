@@ -17,7 +17,7 @@ namespace Nenuphar
     using MemoryComponentLayout = std::vector<ComponentTI>;
 
     template<typename ...T>
-    NAPI inline MemoryComponentLayout MakeMemoryComponentLayout()
+    inline MemoryComponentLayout MakeMemoryComponentLayout()
     {
         return { GetComponentTI<T>()... };
     }

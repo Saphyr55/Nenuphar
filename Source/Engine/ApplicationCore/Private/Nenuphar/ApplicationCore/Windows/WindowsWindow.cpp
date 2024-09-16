@@ -5,7 +5,6 @@
 
 #if NP_PLATFORM_WINDOWS
 
-#include "Engine.ApplicationCore.Generated.hpp"
 #include <fmt/format.h>
 
 namespace Nenuphar

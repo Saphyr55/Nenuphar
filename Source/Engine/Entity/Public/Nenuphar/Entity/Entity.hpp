@@ -2,7 +2,6 @@
 
 #include "Nenuphar/Common/Type/Type.hpp"
 
-#include "Engine.Entity.Generated.hpp"
 
 namespace Nenuphar
 {

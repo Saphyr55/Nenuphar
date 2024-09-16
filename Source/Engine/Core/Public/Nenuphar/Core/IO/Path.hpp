@@ -3,6 +3,7 @@
 #include "Nenuphar/Common/Type/Result.hpp"
 
 #include <string_view>
+#include <string>
 
 namespace Nenuphar
 {

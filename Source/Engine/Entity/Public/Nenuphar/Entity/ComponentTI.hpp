@@ -4,8 +4,6 @@
 
 #include "Nenuphar/Core/Core.hpp"
 
-#include "Engine.Entity.Generated.hpp"
-
 namespace Nenuphar
 {
 
