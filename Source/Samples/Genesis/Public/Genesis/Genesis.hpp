@@ -2,6 +2,7 @@
 
 #include "Genesis/RenderData.hpp"
 
+#include "Nenuphar/ApplicationCore/Application.hpp"
 #include "Nenuphar/ApplicationCore/Window.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Entity/Entity.hpp"
@@ -10,17 +11,24 @@
 
 namespace Np = Nenuphar;
 
-class GenesisApp
+
+class GenesisApp : public Np::AppDelegate
 {
 public:
-    void OnInit();
-    void OnTick();
+    virtual Np::AppContext* ProvideAppContext() override;
+
+    virtual void OnInitialize() override;
+
+    virtual void OnTick(Double deltaTime) override;
+
+    virtual void OnClose() override;
 
 public:
     GenesisApp();
     ~GenesisApp() = default;
 
 private:
+    Np::AppContext Context;
     Np::EntityRegistry Registry;
     Np::Entity ECamera;
     Np::Entity EFloor;

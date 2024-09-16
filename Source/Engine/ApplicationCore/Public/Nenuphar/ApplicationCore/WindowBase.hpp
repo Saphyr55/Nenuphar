@@ -1,7 +1,9 @@
 #pragma once
 
-#include "Nenuphar/ApplicationCore/WindowSignals.hpp"
 #include "Nenuphar/ApplicationCore/Window.hpp"
+#include "Nenuphar/ApplicationCore/WindowSignals.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
+
 
 namespace Nenuphar
 {
@@ -11,6 +13,8 @@ namespace Nenuphar
     class WindowBase : public Window
     {
     public:
+
+        // TODO: Better way to create window.
         static SharedRef<WindowBase> Create(const WindowDefinition& definition);
 
         virtual const WindowSignals& GetWindowSignals() const override = 0;
@@ -23,7 +27,7 @@ namespace Nenuphar
 
         virtual Bool IsVisible() const override = 0;
 
-        virtual VoidPtr GetOSWindowHandle() const override = 0;
+        virtual void* GetOSWindowHandle() const override = 0;
 
         virtual void PoolEvent() const override = 0;
 
@@ -44,5 +48,4 @@ namespace Nenuphar
         ~WindowBase() override = default;
     };
 
-}
-
+}// namespace Nenuphar

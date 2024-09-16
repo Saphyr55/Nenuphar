@@ -10,7 +10,7 @@
 
 namespace Nenuphar
 {
-
+    
     class WindowsWindow : public WindowBase
     {
         friend WindowsApplication;

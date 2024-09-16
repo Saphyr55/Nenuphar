@@ -1,4 +1,6 @@
 #include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
+#include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
+#include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/InputSystem/Event.hpp"
 #include "Nenuphar/InputSystem/Button.hpp"
 #include "Nenuphar/InputSystem/InputSystem.hpp"
@@ -54,16 +56,19 @@ namespace Nenuphar
 
     bool WindowsWindow::IsWindowMaximized() const
     {
+        // TODO: IsWindowMaximized
         return false;
     }
 
     bool WindowsWindow::IsWindowMinimized() const
     {
+        // TODO: IsWindowMinimized
         return false;
     }
 
     bool WindowsWindow::IsVisible() const
     {
+        // TODO: IsVisible
         return false;
     }
 
@@ -103,11 +108,12 @@ namespace Nenuphar
 
     void WindowsWindow::ReshapeWindow(Int width, Int height)
     {
+        // TODO: Reshape window.
     }
 
     void WindowsWindow::SetTitle(StringView title)
     {
-        
+        // TODO: SetTitle window.    
     }
 
     WindowsWindow::WindowsWindow(WindowsApplication& inApplication,

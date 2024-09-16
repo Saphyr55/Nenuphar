@@ -33,28 +33,23 @@ namespace Nenuphar
 
         HINSTANCE GetHInstance() const;
 
-        void Initialize();
-
     public:
+        virtual void Initialize() override;
+
         virtual Double GetAbsoluteTime() const override;
 
-        virtual void Destroy() const override;
-
-        virtual inline ApplicationId Id() const override
-        {
-            return classID;
-        }
+        virtual void Destroy() override;
 
     private:
         static LRESULT CALLBACK ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam);
         
     public:
-        explicit WindowsApplication(HINSTANCE hinstance = GetModuleHandle(nullptr));
+        explicit WindowsApplication(HINSTANCE hinstance);
         ~WindowsApplication() override;
 
     private:
-        ApplicationId classID;
-        HINSTANCE hinstance{};
+        UInt16 m_classID;
+        HINSTANCE m_hinstance{};
     };
 
 

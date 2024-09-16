@@ -1,34 +1,40 @@
 #pragma once
 
-#include "Application.hpp"
+#include "Nenuphar/ApplicationCore/Application.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
+
 
 namespace Nenuphar
 {
 
-    class PlatformApplication : public Application
+    class PlatformApplication
     {
     public:
 
         /**
-         * @brief Get the Platform Application singleton instance.
+         * @brief 
          * 
-         * @return PlatformApplication& 
          */
-        static PlatformApplication& GetPlatformApplication();
+        virtual void Initialize() = 0;
 
         /**
-         * @brief Get the Application singleton instance.
+         * @brief Get the absolute time.
          * 
-         * @return Application& 
+         * @return Double 
          */
-        static Application& GetApplication();
+        virtual Double GetAbsoluteTime() const = 0;
 
-    private:
         /**
-         * Singleton
+         * @brief 
+         * 
          */
-        static SharedRef<PlatformApplication> Application;
+        virtual void Destroy() = 0;
+        
+    public:
+        virtual ~PlatformApplication() = default;
 
     };
+
+    SharedRef<PlatformApplication> PlatformAppCreate();
 
 }

@@ -5,12 +5,14 @@
 
 #include "Nenuphar/ApplicationCore/WindowBase.hpp"
 #include "Nenuphar/ApplicationCore/WindowSignals.hpp"
+#include "Nenuphar/Asset/AssetRegistry.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Entity/EntityRegistry.hpp"
 #include "Nenuphar/Math/Camera.hpp"
 #include "Nenuphar/Math/Matrix4.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
 #include "Nenuphar/Model/Model.hpp"
+#include "Nenuphar/Model/ModelAsset.hpp"
 #include "Nenuphar/RenderLight/RenderTypes.hpp"
 #include "Nenuphar/Rendering/GraphicContext.hpp"
 #include "Nenuphar/Rendering/RenderService.hpp"
@@ -19,9 +21,25 @@
 
 namespace Np = Nenuphar;
 
+static Vector3f GDefaultPosition(0.0f, 0.0f, 0.0f);
+
 GenesisApp::GenesisApp()
 {
-    Vector3f normalPosition(0.0f, 0.0f, 0.0f);
+}
+
+Np::AppContext* GenesisApp::ProvideAppContext()
+{
+    return &Context;
+}
+
+void GenesisApp::OnInitialize()
+{
+    Np::AssetRegistry& assets = Np::AssetRegistry::Instance();
+    auto textureAssetLoader = Np::MakeSharedRef<Np::TextureAssetLoader>();
+    auto modelAssetLoader = Np::MakeSharedRef<Np::ModelAssetLoader>();
+    assets.AddLoader<Np::ModelAsset, Np::ModelAssetOptions>(modelAssetLoader);
+    assets.AddLoader<Np::TextureAsset, Np::AssetOptions>(textureAssetLoader);
+
     Np::WindowDefinition definition("Genesis Sample Application", 1080, 720);
     MainWindow = Np::WindowBase::Create(definition);
     MainGraphicContext = Np::GraphicContext::Create(*MainWindow);
@@ -33,45 +51,13 @@ GenesisApp::GenesisApp()
     Registry.AddComponent<OrbitCamera>(ECamera, DefaultOrbitCameraFactory());
     Registry.AddComponent<Velocity>(ECamera, Velocity(0.005f));
 
-/*
-    // Floor entity.
-    Colorable rFloorColorable;
-    Vector4f floorColor(GDefaultColor);
-    floorColor.w = floorColor.w / 2;
-    rFloorColorable.Color = floorColor;
-
-    RenderableModel rFloorModel;
-    rFloorModel.Model = rModels.FloorModelId;
-
-    Transform floorTransform;
-    floorTransform.Scale = Vector3f(1000.0f);
-    floorTransform.Translation = Vector3f(0.0f, 0.0f, 0.0f);;
-
-    EFloor = Registry.Create();
-    Registry.AddComponent<Transform>(EFloor, floorTransform);
-    Registry.AddComponent<RenderableModel>(EFloor, rFloorModel);
-    Registry.AddComponent<Colorable>(EFloor, rFloorColorable);
-
-    // Barrel entity.
-    RenderableModel rBarrelModel;
-    rBarrelModel.Model = rModels.BarrelModelId;
-
-    Transform barrelTransform;
-    barrelTransform.Scale = Vector3f(3.0f);
-    barrelTransform.Translation = normalPosition;
-
-    EBarrel = Registry.Create();
-    Registry.AddComponent<Transform>(EBarrel, barrelTransform);
-    Registry.AddComponent<RenderableModel>(EBarrel, rBarrelModel);
-*/
-    
     // Sponza entity.
     RenderableModel rSponzaModel;
     rSponzaModel.Model = rModels.SponzaModelId;
 
     Transform sponzaTransform;
     sponzaTransform.Scale = Vector3f(0.1f);
-    sponzaTransform.Translation = normalPosition;
+    sponzaTransform.Translation = GDefaultPosition;
 
     ESponza = Registry.Create();
     Registry.AddComponent<Transform>(ESponza, sponzaTransform);
@@ -98,10 +84,7 @@ GenesisApp::GenesisApp()
     Registry.AddComponent<Transform>(ELight, lightTransform);
     Registry.AddComponent<Np::Light>(ELight, light);
     Registry.AddComponent<RenderableModel>(ELight, rLightModel);
-}
 
-void GenesisApp::OnInit()
-{
     auto& windowSignals = MainWindow->GetWindowSignals();
 
     auto& orbitCameraComponent = Registry.GetComponent<OrbitCamera>(ECamera);
@@ -115,13 +98,13 @@ void GenesisApp::OnInit()
     });
 
     windowSignals.OnResize().ConnectHandler([&](const ResizeEvent& e) {
-        OnTick();
+        OnTick(0.0);
     });
 
     MainWindow->Show();
 }
 
-void GenesisApp::OnTick()
+void GenesisApp::OnTick(Double deltaTime)
 {
     Np::OrbitCamera& camera = Registry.GetComponent<OrbitCamera>(ECamera);
     Vector3f cameraPosition = camera.Position();
@@ -145,8 +128,13 @@ void GenesisApp::OnTick()
 
     OnRenderData(*MainRenderData, Registry);
 
-    glViewport(0, 0, (Int) width, (Int) height);
+    glViewport(0, 0, (Int)width, (Int)height);
 
     MainWindow->PoolEvent();
     MainGraphicContext->SwapBuffers();
+}
+
+void GenesisApp::OnClose()
+{
+    
 }

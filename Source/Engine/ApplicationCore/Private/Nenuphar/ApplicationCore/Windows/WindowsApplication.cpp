@@ -21,9 +21,14 @@ namespace Nenuphar
         GWindowsWindowRegistry.emplace(handle, windowsWindow);
     }
 
+    SharedRef<PlatformApplication> PlatformAppCreate()
+    {
+        return MakeSharedRef<WindowsApplication>(GetModuleHandle(nullptr));
+    }
+
     WindowsApplication::WindowsApplication(HINSTANCE hinstance)
-        : hinstance(hinstance)
-        , classID(0)
+        : m_hinstance(hinstance)
+        , m_classID(0)
     {
         Initialize();
     }
@@ -35,7 +40,7 @@ namespace Nenuphar
 
     HINSTANCE WindowsApplication::GetHInstance() const
     {
-        return hinstance;
+        return m_hinstance;
     }
 
     LRESULT CALLBACK WindowsApplication::ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
@@ -66,16 +71,16 @@ namespace Nenuphar
         windowClassEX.lpfnWndProc = &ProcessMessage;
         windowClassEX.cbClsExtra = 0;
         windowClassEX.cbWndExtra = 0;
-        windowClassEX.hInstance = hinstance;
-        windowClassEX.hIcon = LoadIcon(hinstance, IDI_APPLICATION);
-        windowClassEX.hIconSm = LoadIcon(hinstance, IDI_APPLICATION);
+        windowClassEX.hInstance = m_hinstance;
+        windowClassEX.hIcon = LoadIcon(m_hinstance, IDI_APPLICATION);
+        windowClassEX.hIconSm = LoadIcon(m_hinstance, IDI_APPLICATION);
         windowClassEX.hCursor = LoadCursor(nullptr, IDC_ARROW);
         windowClassEX.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
         windowClassEX.lpszMenuName = nullptr;
         windowClassEX.lpszClassName = ApplicationClassName;
 
-        classID = RegisterClassEx(&windowClassEX);
-        if (!classID)
+        m_classID = RegisterClassEx(&windowClassEX);
+        if (!m_classID)
         {
             NP_ERROR(WindowsWindow, "Call to RegisterClassEx failed!");
             return;
@@ -98,11 +103,9 @@ namespace Nenuphar
         return (Double) now.QuadPart * GClockFrequency;
     }
 
-    void WindowsApplication::Destroy() const
+    void WindowsApplication::Destroy()
     {
-        UnregisterClass(
-                ApplicationClassName,
-                hinstance);
+        UnregisterClass(ApplicationClassName, m_hinstance);
     }
 
 }// namespace Nenuphar

@@ -33,14 +33,11 @@ namespace Nenuphar
     class Window
     {
     public:
-
         virtual const WindowDefinition& GetWindowDefinition() const = 0;
 
         virtual const WindowSignals& GetWindowSignals() const = 0;
 
         virtual WindowID GetID() const = 0;
-
-        virtual Void PoolEvent() const = 0;
 
         virtual Bool IsWindowMaximized() const = 0;
 
@@ -48,21 +45,23 @@ namespace Nenuphar
 
         virtual Bool IsVisible() const = 0;
 
-        virtual Void* GetOSWindowHandle() const = 0;
+        virtual void* GetOSWindowHandle() const = 0;
 
-        virtual Void Hide() = 0;
+        virtual void PoolEvent() const = 0;
 
-        virtual Void Show() = 0;
+        virtual void Hide() = 0;
 
-        virtual Void Restore() = 0;
+        virtual void Show() = 0;
 
-        virtual Void Maximize() = 0;
+        virtual void Restore() = 0;
 
-        virtual Void Destroy() = 0;
+        virtual void Maximize() = 0;
 
-        virtual Void ReshapeWindow(Int width, Int height) = 0;
+        virtual void Destroy() = 0;
 
-        virtual Void SetTitle(StringView title) = 0;
+        virtual void ReshapeWindow(Int width, Int height) = 0;
+
+        virtual void SetTitle(StringView title) = 0;
 
         virtual ~Window() = default;
 
