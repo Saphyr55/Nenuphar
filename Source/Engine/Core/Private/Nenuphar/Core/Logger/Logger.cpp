@@ -1,5 +1,7 @@
 #include "Nenuphar/Core/Logger/Logger.hpp"
-#include "Nenuphar/Core/Logger/ConsoleColor.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Core/Debug.hpp"
+#include "Nenuphar/Core/IO/ConsoleColor.hpp"
 
 #include <chrono>
 #include <iomanip>
@@ -8,11 +10,18 @@
 namespace Nenuphar
 {
 
-    Ptr<Logger> Logger::Instance = std::make_unique<Logger>("Nenuphar.Engine");
-
-    Logger& Logger::GetLogger()
+    SharedRef<Logger> GInstance;
+    
+    void DefineLogger(SharedRef<Logger> logger)
     {
-        return *Instance;
+        NCHECK(logger)
+        GInstance = logger;
+    }
+
+    SharedRef<Logger> GetMainLogger()
+    {
+        NCHECK(GInstance)
+        return GInstance;
     }
 
     String Logger::LevelString(const Level& level)

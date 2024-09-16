@@ -26,7 +26,7 @@ void OnRenderData(RenderData& data, Np::EntityRegistry& registry)
     {
         Matrix4f matrixModel = Transform::Tranformation(transform);
 
-        data.MaterialRegistry.Get<Matrix4f>("model").UpdateValue(matrixModel);
+        data.MaterialRegistry.Get<Matrix4f>("UModel").UpdateValue(matrixModel);
         data.Renderer->DrawModel(*data.MaterialShader, data.MaterialRegistry, rModel.Model);
     }    
     
@@ -38,7 +38,7 @@ void OnRenderData(RenderData& data, Np::EntityRegistry& registry)
         data.MaterialRegistry.Get<Vector3f>("ULight.Ambient").UpdateValue(light.Ambient);
         data.MaterialRegistry.Get<Vector3f>("ULight.Diffuse").UpdateValue(light.Diffuse);
         data.MaterialRegistry.Get<Vector3f>("ULight.Specular").UpdateValue(light.Specular);
-        data.MaterialRegistry.Get<Matrix4f>("model").UpdateValue(matrixModel);
+        data.MaterialRegistry.Get<Matrix4f>("UModel").UpdateValue(matrixModel);
 
         data.Renderer->DrawModel(*data.MaterialShader, data.MaterialRegistry, rModel.Model);
     }
@@ -110,9 +110,9 @@ RenderData::TRDefault RenderData::Default()
             .Register("UMaterial.SpecularTexture", Int(0))
             .Register("UMaterial.DiffuseTexture", Int(0))
 
-            .Register("proj", Matrix4f(1))
-            .Register("view", Matrix4f(1))
-            .Register("model", Matrix4f(1));
+            .Register("UProjection", Matrix4f(1))
+            .Register("UView", Matrix4f(1))
+            .Register("UModel", Matrix4f(1));
 
     auto data = MakeSharedRef<RenderData>(
             std::move(materialProgram),

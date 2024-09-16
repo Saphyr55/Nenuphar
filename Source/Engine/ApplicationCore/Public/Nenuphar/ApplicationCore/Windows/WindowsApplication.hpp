@@ -11,9 +11,19 @@ namespace Nenuphar
 {
 
     class WindowsWindow;
+    
+    /**
+     * @brief 
+     * 
+     * @param handle 
+     * @param windowsWindow 
+     */
+    void RegisterWindowsWindow(HWND handle, WindowsWindow* windowsWindow);
 
-    using WindowsWindowRegistry = std::unordered_map<HWND, WindowsWindow*>;
-
+    /**
+     * @brief 
+     * 
+     */
     class WindowsApplication final : public PlatformApplication
     {
         friend WindowsWindow;
@@ -25,23 +35,26 @@ namespace Nenuphar
 
         void Initialize();
 
-        void Destroy() const override;
+    public:
+        virtual Double GetAbsoluteTime() const override;
 
-        inline ApplicationId Id() const override
+        virtual void Destroy() const override;
+
+        virtual inline ApplicationId Id() const override
         {
             return classID;
         }
 
+    private:
         static LRESULT CALLBACK ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam);
-
+        
+    public:
         explicit WindowsApplication(HINSTANCE hinstance = GetModuleHandle(nullptr));
-
         ~WindowsApplication() override;
 
     private:
         ApplicationId classID;
         HINSTANCE hinstance{};
-        static thread_local WindowsWindowRegistry WindowsWindowRegistry;
     };
 
 

@@ -14,7 +14,6 @@
 #include "Nenuphar/RenderLight/RenderTypes.hpp"
 #include "Nenuphar/Rendering/GraphicContext.hpp"
 #include "Nenuphar/Rendering/RenderService.hpp"
-#include "Nenuphar/Rendering/Material.hpp"
 
 #include <glad/glad.h>
 
@@ -137,8 +136,8 @@ void GenesisApp::OnTick()
     // We obtain the view in function of the camera.
     Matrix4f view = Matrix4f::LookAt(cameraPosition, camera.Target, camera.Up);
 
-    MainRenderData->MaterialRegistry.Get<Matrix4f>("proj").UpdateValue(proj);
-    MainRenderData->MaterialRegistry.Get<Matrix4f>("view").UpdateValue(view);
+    MainRenderData->MaterialRegistry.Get<Matrix4f>("UProjection").UpdateValue(proj);
+    MainRenderData->MaterialRegistry.Get<Matrix4f>("UView").UpdateValue(view);
     MainRenderData->MaterialRegistry.Get<Vector3f>("UCameraPosition").UpdateValue(cameraPosition);
 
     Vector4f backgroundColor(1.0f / 255, 10.0f / 255, 33.0f / 255, 255.0f / 255);

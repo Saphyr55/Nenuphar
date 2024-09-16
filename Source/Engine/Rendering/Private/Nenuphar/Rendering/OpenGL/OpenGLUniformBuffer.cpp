@@ -1,9 +1,7 @@
-#pragma once
-
 #include "Nenuphar/Rendering/OpenGL/OpenGLUniformBuffer.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
-#include "glad/glad.h"
+
 
 namespace Nenuphar
 {
@@ -18,7 +16,9 @@ namespace Nenuphar
         NP_GL_CHECK_CALL(glDeleteBuffers(1, &m_uniformBufferBlock));
     }
 
-    void OpenGLUniformBuffer::BufferSubData(std::size_t offset, std::size_t size, const void* value)
+    void OpenGLUniformBuffer::BufferSubData(std::size_t offset,
+                                            std::size_t size,
+                                            const void* value)
     {
         Bind();
         NP_GL_CHECK_CALL(glBufferSubData(GL_UNIFORM_BUFFER, offset, size, value));
@@ -42,11 +42,15 @@ namespace Nenuphar
 
     void OpenGLUniformBuffer::Bind()
     {
+        if (m_isBinded) return;
+        m_isBinded = true;
         NP_GL_CHECK_CALL(glBindBuffer(GL_UNIFORM_BUFFER, m_uniformBufferBlock));
     }
 
     void OpenGLUniformBuffer::Unbind()
     {
+        if (!m_isBinded) return;
+        m_isBinded = false;
         NP_GL_CHECK_CALL(glBindBuffer(GL_UNIFORM_BUFFER, 0));
     }
 

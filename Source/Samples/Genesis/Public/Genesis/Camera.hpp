@@ -12,11 +12,11 @@ struct Velocity
 };
 
 constexpr auto DefaultOrbitCameraFactory = [] {
-    Float theta = Radians(45.0f);
-    Float phi = Radians(45.0f);
-    Float radius = 3.0f;
-    Vector3f target(0.0, 0.0, 0.0);
-    Vector3f up(0.0f, 1.0f, 0.0f);
+    constexpr Float theta = Np::Radians(45.0f);
+    constexpr Float phi = Np::Radians(45.0f);
+    constexpr Float radius = 3.0f;
+    constexpr Vector3f target(0.0, 10.0, 0.0);
+    constexpr Vector3f up(0.0f, 1.0f, 0.0f);
     return OrbitCamera(theta, phi, radius, target, up);
 };
 

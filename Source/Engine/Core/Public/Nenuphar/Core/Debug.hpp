@@ -1,7 +1,7 @@
 #pragma once
 
 
-#define NP_SASSERT(exp) static_assert(exp)
+#define NP_STATIC_ASSERT(expr) static_assert(expr)
 
 
 #if defined(_DEBUG) || defined(DEBUG)
@@ -17,11 +17,11 @@
 
 
 #ifdef NDEBUG
-    #define NCHECK(exp)      \
-        if (!(exp))          \
+    #define NCHECK(expr)      \
+        if (!(expr))          \
         {                    \
             NP_DEBUGBREAK(); \
         }
 #else
-    #define CHECK(exp)
+    #define NCHECK(expr)
 #endif

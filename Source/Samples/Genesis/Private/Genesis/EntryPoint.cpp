@@ -13,8 +13,12 @@ namespace Np = Nenuphar;
 
 int main(int argc, const char* argv[])
 {
-    auto textureAssetLoader = MakeSharedRef<Np::TextureAssetLoader>();
-    auto modelAssetLoader = MakeSharedRef<Np::ModelAssetLoader>();
+
+    Np::SharedRef<Np::Logger> logger = Np::MakeSharedRef<Np::Logger>("Genesis");
+    Np::DefineLogger(logger);
+
+    auto textureAssetLoader = Np::MakeSharedRef<Np::TextureAssetLoader>();
+    auto modelAssetLoader = Np::MakeSharedRef<Np::ModelAssetLoader>();
 
     Np::AssetRegistry::Instance().AddLoader<Np::ModelAsset, Np::ModelAssetOptions>(modelAssetLoader);
     Np::AssetRegistry::Instance().AddLoader<Np::TextureAsset, Np::AssetOptions>(textureAssetLoader);

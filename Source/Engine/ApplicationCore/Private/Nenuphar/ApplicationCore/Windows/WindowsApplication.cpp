@@ -1,14 +1,25 @@
 #include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
 #include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
+#include <profileapi.h>
+#include <winnt.h>
 
 #if NP_PLATFORM_WINDOWS
 
 namespace Nenuphar
 {
+    using WindowsWindowRegistry = std::unordered_map<HWND, WindowsWindow*>;
 
-    thread_local WindowsWindowRegistry WindowsApplication::WindowsWindowRegistry = {};
+    static Double GClockFrequency;
+    static LARGE_INTEGER GStartTime;
+
+    static WindowsWindowRegistry GWindowsWindowRegistry;
 
     const TCHAR WindowsApplication::ApplicationClassName[] = TEXT("NenupharApplication");
+    
+    void RegisterWindowsWindow(HWND handle, WindowsWindow* windowsWindow)
+    {
+        GWindowsWindowRegistry.emplace(handle, windowsWindow);
+    }
 
     WindowsApplication::WindowsApplication(HINSTANCE hinstance)
         : hinstance(hinstance)
@@ -30,12 +41,12 @@ namespace Nenuphar
     LRESULT CALLBACK WindowsApplication::ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
     {
 
-        if (!WindowsWindowRegistry.contains(hwnd))
+        if (!GWindowsWindowRegistry.contains(hwnd))
         {
             return DefWindowProc(hwnd, msg, wParam, lParam);
         }
 
-        WindowsWindow* window = WindowsWindowRegistry[hwnd];
+        WindowsWindow* window = GWindowsWindowRegistry[hwnd];
 
         MSG message{};
         message.hwnd = hwnd;
@@ -72,6 +83,19 @@ namespace Nenuphar
 
         NP_INFO(WindowsWindow, "Windows Application Instance has been registered.");
         NP_INFO(WindowsWindow, "Nenuphar Application was started with a windows instance.");
+
+        LARGE_INTEGER frequency;
+        QueryPerformanceFrequency(&frequency);
+        GClockFrequency = 1.0 / (Double) frequency.QuadPart;
+        QueryPerformanceCounter(&GStartTime);
+    }
+
+    Double WindowsApplication::GetAbsoluteTime() const
+    {
+        LARGE_INTEGER now;
+        QueryPerformanceCounter(&now);
+        
+        return (Double) now.QuadPart * GClockFrequency;
     }
 
     void WindowsApplication::Destroy() const

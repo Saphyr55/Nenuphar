@@ -18,7 +18,7 @@ namespace Nenuphar
         return m_edges[componentTi];
     }
 
-    ComponentBuffer& MemoryComponentSector::operator[](Word index)
+    ComponentBuffer& MemoryComponentSector::operator[](std::size_t index)
     {
         if (index >= m_buffers.size())
         {
@@ -29,7 +29,7 @@ namespace Nenuphar
         return m_buffers[index];
     }
 
-    Word MemoryComponentSector::IndexOf(ComponentTI cti) const
+    std::size_t MemoryComponentSector::IndexOf(ComponentTI cti) const
     {
         auto result = std::find(m_layout.begin(), m_layout.end(), cti);
         if (result == m_layout.end())
@@ -44,18 +44,18 @@ namespace Nenuphar
         return std::distance(m_layout.begin(), result);
     }
 
-    void MemoryComponentSector::AddBuffer(ComponentTI cti, Word bufferElementSize)
+    void MemoryComponentSector::AddBuffer(ComponentTI cti, std::size_t bufferElementSize)
     {
         m_buffers.emplace_back(cti, bufferElementSize);
     }
 
-    Word MemoryComponentSector::Extends()
+    std::size_t MemoryComponentSector::Extends()
     {
         m_count++;
         return m_count - 1;
     }
 
-    ComponentBuffer& MemoryComponentSector::BufferAt(Word index)
+    ComponentBuffer& MemoryComponentSector::BufferAt(std::size_t index)
     {
         if (index >= m_buffers.size())
         {

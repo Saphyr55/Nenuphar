@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Memory/Storage.hpp"
 #include "Nenuphar/Entity/ComponentTI.hpp"
 #include "Nenuphar/Entity/Entity.hpp"
@@ -14,14 +15,14 @@ namespace Nenuphar
          *
          * @tparam MaxAmount
          */
-        template<Word MaxAmount>
+        template<std::size_t MaxAmount>
         class ComponentBufferBase
         {
         public:
             /**
              *
              */
-            static constexpr Word MaxAmountValue = MaxAmount;
+            static constexpr std::size_t MaxAmountValue = MaxAmount;
 
         public:
             /**
@@ -39,14 +40,14 @@ namespace Nenuphar
              *
              * @return the size.
              */
-            [[nodiscard]] Word Size() const;
+            [[nodiscard]] std::size_t Size() const;
 
             /**
              *
              * @param index
              * @return
              */
-            void* DataAt(Word index);
+            void* DataAt(std::size_t index);
 
             /**
              *
@@ -56,7 +57,7 @@ namespace Nenuphar
              * @return
              */
             template<typename T>
-            Word Insert(Word index, T component);
+            std::size_t Insert(std::size_t index, T component);
 
             /**
              *
@@ -64,39 +65,39 @@ namespace Nenuphar
              * @param index
              * @return
              */
-            Word Insert(Word index, void* component);
+            std::size_t Insert(std::size_t index, void* component);
 
             /**
              *
              * @param index
              */
-            void DeleteAt(Word index);
+            void DeleteAt(std::size_t index);
 
             /**
              *
              * @param cti
              * @param elementSize
              */
-            ComponentBufferBase(ComponentTI cti, Word elementSize);
+            ComponentBufferBase(ComponentTI cti, std::size_t elementSize);
 
         private:
-            Word m_elementSize;
-            Word m_count;
+            std::size_t m_elementSize;
+            std::size_t m_count;
             std::unique_ptr<Buffer> m_elements;
             ComponentTI m_cti;
         };
 
-        template<Word MaxAmount>
-        Word ComponentBufferBase<MaxAmount>::Insert(Word index, void* component)
+        template<std::size_t MaxAmount>
+        std::size_t ComponentBufferBase<MaxAmount>::Insert(std::size_t index, void* component)
         {
             std::memcpy(DataAt(index), component, m_elementSize);
             m_count++;
             return m_count - 1;
         }
 
-        template<Word MaxAmount>
+        template<std::size_t MaxAmount>
         template<typename T>
-        Word ComponentBufferBase<MaxAmount>::Insert(Word index, T component)
+        std::size_t ComponentBufferBase<MaxAmount>::Insert(std::size_t index, T component)
         {
             // We check if the buffer has exceeded the authorized component amount.
             // We raise an exception if this is the case.
@@ -115,29 +116,29 @@ namespace Nenuphar
             return m_count - 1;
         }
 
-        template<Word MaxAmount>
-        void* ComponentBufferBase<MaxAmount>::DataAt(Word index)
+        template<std::size_t MaxAmount>
+        void* ComponentBufferBase<MaxAmount>::DataAt(std::size_t index)
         {
             return &m_elements[index * m_elementSize];
         }
 
-        template<Word MaxAmount>
-        Word ComponentBufferBase<MaxAmount>::Size() const
+        template<std::size_t MaxAmount>
+        std::size_t ComponentBufferBase<MaxAmount>::Size() const
         {
             return m_count;
         }
 
-        template<Word MaxAmount>
-        void ComponentBufferBase<MaxAmount>::DeleteAt(Word index)
+        template<std::size_t MaxAmount>
+        void ComponentBufferBase<MaxAmount>::DeleteAt(std::size_t index)
         {
             m_elements.get()[index * m_elementSize] = 0;
         }
 
-        template<Word MaxAmount>
-        ComponentBufferBase<MaxAmount>::ComponentBufferBase(ComponentTI cti, Word elementSize)
+        template<std::size_t MaxAmount>
+        ComponentBufferBase<MaxAmount>::ComponentBufferBase(ComponentTI cti, std::size_t elementSize)
             : m_elementSize(elementSize)
             , m_count(0)
-            , m_elements(new Word8[MaxAmount * m_elementSize])
+            , m_elements(new Word[MaxAmount * m_elementSize])
             , m_cti(cti)
         {
         }

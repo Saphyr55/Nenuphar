@@ -5,11 +5,30 @@
 
 #include <fmt/core.h>
 
-#include "Nenuphar/Core/Logger/ConsoleColor.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Core/IO/ConsoleColor.hpp"
 #include "Nenuphar/Common/Common.hpp"
+
 
 namespace Nenuphar
 {
+    class Logger;
+
+    /**
+     * @brief Define the main which should be use by the system.
+     * 
+     * @param logger The logger to use. 
+     */
+    void DefineLogger(SharedRef<Logger> logger);
+
+
+    /**
+     * @brief Return the main defined by the method DefineLogger.
+     * 
+     * @return The main logger.
+     */
+    SharedRef<Logger> GetMainLogger();
+
 
     /**
      * @brief 
@@ -59,13 +78,6 @@ namespace Nenuphar
             Critical,
 
         };
-
-        /**
-         * @brief Get the Logger object
-         * 
-         * @return Logger& 
-         */
-        static Logger& GetLogger();
 
         /**
          * @brief 
@@ -181,10 +193,7 @@ namespace Nenuphar
     
     private:
         /**  */
-        String name;
-
-        /**  */
-        static Ptr<Logger> Instance;
+        std::string name;
     };
 
 
@@ -253,13 +262,12 @@ namespace Nenuphar
     }
 
 
-
 }
 
 
-#define NP_INFO(NAME, ...)      ::Nenuphar::Logger::GetLogger().Info(__VA_ARGS__)
-#define NP_WARN(NAME, ...)      ::Nenuphar::Logger::GetLogger().Warn(__VA_ARGS__)
-#define NP_TRACE(NAME, ...)     ::Nenuphar::Logger::GetLogger().Trace(__VA_ARGS__)
-#define NP_DEBUG(NAME, ...)     ::Nenuphar::Logger::GetLogger().Debug(__VA_ARGS__)
-#define NP_ERROR(NAME, ...)     ::Nenuphar::Logger::GetLogger().Error(__VA_ARGS__)
-#define NP_CRITICAL(NAME, ...)  ::Nenuphar::Logger::GetLogger().Critical(__VA_ARGS__)
+#define NP_INFO(NAME, ...)      ::Nenuphar::GetMainLogger()->Info(__VA_ARGS__)
+#define NP_WARN(NAME, ...)      ::Nenuphar::GetMainLogger()->Warn(__VA_ARGS__)
+#define NP_TRACE(NAME, ...)     ::Nenuphar::GetMainLogger()->Trace(__VA_ARGS__)
+#define NP_DEBUG(NAME, ...)     ::Nenuphar::GetMainLogger()->Debug(__VA_ARGS__)
+#define NP_ERROR(NAME, ...)     ::Nenuphar::GetMainLogger()->Error(__VA_ARGS__)
+#define NP_CRITICAL(NAME, ...)  ::Nenuphar::GetMainLogger()->Critical(__VA_ARGS__)

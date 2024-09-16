@@ -4,9 +4,10 @@
 
 namespace Nenuphar
 {
-    struct ConsoleColor
-    {
 
+    class ConsoleColor
+    {
+    public:
         static String Reset();
 
         static String Red();

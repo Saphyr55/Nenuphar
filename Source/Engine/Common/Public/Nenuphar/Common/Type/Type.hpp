@@ -47,7 +47,7 @@ namespace Nenuphar
     using Word16 = UInt16;
     using Word32 = UInt32;
     using Word64 = UInt64;
-    using Word = std::size_t;
+    using Word = Word8;
 
     using String = std::string;
     using StringView = std::string_view;

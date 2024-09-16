@@ -11,17 +11,14 @@ out VertexData
 	vec2 UV;
 } Out;
 
-layout (std140, binding = 0) uniform MainUniformBlock
-{
-	mat4 UProjection;
-	mat4 UView;
-	mat4 UModel;
-};
+uniform mat4 UProjection;
+uniform mat4 UView;
+uniform mat4 UModel;
 
 void main()
 {
 	Out.UV = InUV;
-	Out.Position = vec3(model * vec4(InPosition, 1.0));
+	Out.Position = vec3(UModel * vec4(InPosition, 1.0));
 	Out.Normal = InNormal;
 	gl_Position = UProjection * UView * UModel * vec4(InPosition, 1.0);
 }

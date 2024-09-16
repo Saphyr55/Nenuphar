@@ -107,6 +107,7 @@ namespace Nenuphar
 
     void WindowsWindow::SetTitle(StringView title)
     {
+        
     }
 
     WindowsWindow::WindowsWindow(WindowsApplication& inApplication,
@@ -119,7 +120,8 @@ namespace Nenuphar
 
         if (hwnd)
         {
-            WindowsApplication::WindowsWindowRegistry.emplace(hwnd, this);
+            RegisterWindowsWindow(hwnd, this);
+            
             NP_INFO(WindowsWindow, "Windows window was created successfully.");
             NP_DEBUG(WindowsWindow, "Windows window configuration : ");
             NP_DEBUG(WindowsWindow, "      ID = {}", ID);
