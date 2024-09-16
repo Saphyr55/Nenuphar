@@ -4,6 +4,3 @@
 [submodule "Source/ThirdParty/Catch2/Catch2"]
 	path = Source/ThirdParty/Catch2/Catch2
 	url = https://github.com/catchorg/Catch2.git
-[submodule "Source/ThirdParty/SDL2/SDL"]
-	path = Source/ThirdParty/SDL2/SDL
-	url = https://github.com/libsdl-org/SDL.git

@@ -77,7 +77,6 @@ add_subdirectory(Source/ThirdParty/fmt)
 add_subdirectory(Source/ThirdParty/glad)
 add_subdirectory(Source/ThirdParty/stb)
 add_subdirectory(Source/ThirdParty/tinyobj)
-add_subdirectory(Source/ThirdParty/SDL2)
 
 
 # If the variable NENUPHAR_TEST_ENABLE is ON, add Catch2.
