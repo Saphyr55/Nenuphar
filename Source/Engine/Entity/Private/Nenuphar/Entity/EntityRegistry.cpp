@@ -7,7 +7,7 @@ namespace Nenuphar
 
     Entity EntityRegistry::Create(std::string_view name)
     {
-        auto entity = Container<Entity>::MaxTIndex;
+        auto entity = GMaxTIndex;
 
         if (m_entities.size() == 0)
         {

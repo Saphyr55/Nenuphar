@@ -1,11 +1,36 @@
 #include "Nenuphar/Rendering/Windows/WGLContext.hpp"
+#include "Nenuphar/Core/Debug.hpp"
+#include <memory>
+
+#if NP_PLATFORM_WINDOWS
+
 #include "Nenuphar/Core/Logger/Logger.hpp"
+#include "Nenuphar/Rendering/Renderer.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 
 #include <glad/glad.h>
 
 namespace Nenuphar
 {
+    
+    UniquePtr<GraphicContext> GraphicContext::Create(RenderAPI api, SharedRef<Window> window)
+    {
+        NCHECK(window);
+        switch (api) 
+        {
+            case RenderAPI::OpenGL: {  
+                WGLContext::Init();
+                auto ww = std::reinterpret_pointer_cast<WindowsWindow>(window);
+                auto deviceContext  = MakeUnique<WindowsDeviceContext>(ww);
+                return MakeUnique<WGLContext>(std::move(deviceContext));
+            }
+            default: {
+                NCHECK(false)
+                return nullptr;
+            }
+        }
+    }
 
     WGLContext::WGLContext(Ptr<WindowsDeviceContext> deviceContext)
         : m_deviceContext(std::move(deviceContext))
@@ -197,3 +222,4 @@ namespace Nenuphar
 
 }
 
+#endif

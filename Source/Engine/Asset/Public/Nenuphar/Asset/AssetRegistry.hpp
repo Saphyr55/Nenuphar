@@ -54,8 +54,6 @@ namespace Nenuphar
         TAssetStorage m_assets;
         TMetadataStorage m_metadataStorage;
         AssetHandle m_lastHandle;
-
-        static AssetRegistry s_mainRegistry;
     };
 
 

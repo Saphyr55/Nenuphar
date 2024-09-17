@@ -33,7 +33,7 @@ Np::AppContext* GenesisApp::ProvideAppContext()
 }
 
 void GenesisApp::OnInitialize()
-{
+{    
     Np::AssetRegistry& assets = Np::AssetRegistry::Instance();
     auto textureAssetLoader = Np::MakeSharedRef<Np::TextureAssetLoader>();
     auto modelAssetLoader = Np::MakeSharedRef<Np::ModelAssetLoader>();
@@ -42,7 +42,8 @@ void GenesisApp::OnInitialize()
 
     Np::WindowDefinition definition("Genesis Sample Application", 1080, 720);
     MainWindow = Np::WindowBase::Create(definition);
-    MainGraphicContext = Np::GraphicContext::Create(*MainWindow);
+    MainGraphicContext = Np::GraphicContext::Create(Np::RenderAPI::OpenGL, MainWindow);
+        
     auto [data, rModels] = RenderData::Default();
     MainRenderData = data;
 

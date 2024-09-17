@@ -8,9 +8,9 @@ namespace Nenuphar
     
     struct MainUniformBlock
     {
-        Matrix4f UProjection;
-        Matrix4f UView;
-        Matrix4f UModel;
+        Matrix4f Projection;
+        Matrix4f View;
+        Matrix4f Model;
     };
 
     class UniformBuffer

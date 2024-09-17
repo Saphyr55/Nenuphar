@@ -1,12 +1,11 @@
 #pragma once
 
-#include "Nenuphar/Core/Core.hpp"
+#include "Nenuphar/Core/Windows.hpp"
 
 #if NP_PLATFORM_WINDOWS
 
 #include "Nenuphar/Rendering/GraphicContext.hpp"
 #include "Nenuphar/Rendering/Windows/WindowsDeviceContext.hpp"
-#include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 
 namespace Nenuphar
 {

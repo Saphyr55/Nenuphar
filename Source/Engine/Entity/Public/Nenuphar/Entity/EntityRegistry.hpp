@@ -273,7 +273,7 @@ namespace Nenuphar
         auto it = m_componentBitPosition.find(name);
         if (it == m_componentBitPosition.end())
         {
-            return Container<Entity>::MaxTIndex;
+            return GMaxTIndex;
         }
 
         return it->second;
@@ -284,7 +284,7 @@ namespace Nenuphar
     {
         std::size_t bitPos = GetComponentBitPosition<C>();
 
-        if (bitPos == Container<Entity>::MaxTIndex)
+        if (bitPos == GMaxTIndex)
         {
             TName name = GetComponentTI<C>().name();
             m_componentBitPosition.emplace(name, m_componentPools.size());
@@ -304,7 +304,7 @@ namespace Nenuphar
     void EntityRegistry::SetComponentBit(ComponentMask& mask, bool val)
     {
         std::size_t bitPos = GetComponentBitPosition<C>();
-        NCHECK(bitPos != Container<Entity>::MaxTIndex);
+        NCHECK(bitPos != GMaxTIndex);
         mask[bitPos] = val;
     }
 
@@ -313,7 +313,7 @@ namespace Nenuphar
             ComponentMask& mask)
     {
         std::size_t bitPos = GetComponentBitPosition<C>();
-        NCHECK(bitPos != Container<Entity>::MaxTIndex);
+        NCHECK(bitPos != GMaxTIndex);
         return mask[bitPos];
     }
 

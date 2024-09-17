@@ -6,12 +6,12 @@ namespace Nenuphar
 {
 
     class Window;
+    enum class RenderAPI;
 
     class GraphicContext
     {
     public:
-
-        static Ptr<GraphicContext> Create(Window& window);
+        static UniquePtr<GraphicContext> Create(RenderAPI renderAPI, SharedRef<Window> window);
 
         virtual void Current() const = 0;
 
@@ -20,7 +20,5 @@ namespace Nenuphar
         virtual ~GraphicContext() = default;
 
     };
-
-    using GraphicContextPtr = Ptr<GraphicContext>;
 
 }

@@ -1,21 +1,25 @@
 #pragma once
 
+#undef max
+
 #include "Nenuphar/Common/Type/Type.hpp"
+
 #include <utility>
 #include <vector>
-
+#include <limits>
 
 namespace Nenuphar
 {
+
+    static constexpr std::size_t GMaxTIndex = 
+        std::numeric_limits<std::size_t>::max();
+
     template<typename TId>
     class Container
     {
     public:
         
         using TIndex = std::size_t;
-
-        static constexpr std::size_t MaxTIndex =
-                std::numeric_limits<TIndex>::max();
 
     public:
         virtual void Remove(TId id) = 0;
@@ -78,7 +82,7 @@ namespace Nenuphar
         Sparse& sparse = m_sparses[page];
         if (sparseIndex >= sparse.size())
         {
-            sparse.resize(sparseIndex + 1, TSuper::MaxTIndex);
+            sparse.resize(sparseIndex + 1, GMaxTIndex);
         }
 
         sparse[sparseIndex] = index;
@@ -100,7 +104,7 @@ namespace Nenuphar
             }
         }
 
-        return TSuper::MaxTIndex;
+        return GMaxTIndex;
     }
 
 
@@ -108,7 +112,7 @@ namespace Nenuphar
     TValue* SparseSet<TId, TValue, MaxNumPage>::Add(TId id, const TValue& value)
     {
         size_t index = GetDenseIndex(id);
-        if (index != TSuper::MaxTIndex)
+        if (index != GMaxTIndex)
         {
             m_denseValue[index] = value;
             m_denseIdentification[index] = id;
@@ -129,7 +133,7 @@ namespace Nenuphar
     TValue* SparseSet<TId, TValue, MaxNumPage>::Get(TId id)
     {
         TIndex index = GetDenseIndex(id);
-        return (index != TSuper::MaxTIndex) ? &m_denseValue[index] : nullptr;
+        return (index != GMaxTIndex) ? &m_denseValue[index] : nullptr;
     }
 
 
@@ -137,10 +141,10 @@ namespace Nenuphar
     void SparseSet<TId, TValue, MaxNumPage>::Remove(TId id)
     {
         TIndex deletedIndex = GetDenseIndex(id);
-        NCHECK(deletedIndex != TSuper::MaxTIndex && !m_denseValue.empty());
+        NCHECK(deletedIndex != GMaxTIndex && !m_denseValue.empty());
 
         SetDenseIndex(m_denseIdentification.back(), deletedIndex);
-        SetDenseIndex(id, TSuper::MaxTIndex);
+        SetDenseIndex(id, GMaxTIndex);
 
         auto tmp = std::move(m_denseValue.back());
         auto left = std::move(m_denseValue[deletedIndex]);

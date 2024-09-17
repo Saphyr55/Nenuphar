@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Core.hpp"
 
 #if NP_PLATFORM_WINDOWS
@@ -12,14 +13,14 @@ namespace Nenuphar
     class WindowsDeviceContext
     {
     public:
-        WindowsDeviceContext(WindowsWindow& windowsWindow);
+        WindowsDeviceContext(SharedRef<WindowsWindow> windowsWindow);
     
         HDC GetHDC();
 
         void Release();
 
     private:
-        WindowsWindow& m_windowsWindow;
+        SharedRef<WindowsWindow> m_windowsWindow;
         HDC m_hdc;
         HWND m_hwnd;
     };

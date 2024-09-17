@@ -17,6 +17,12 @@ namespace Nenuphar
         Bool ReleaseData = true;
     };
 
+    enum class RenderAPI
+    {
+        OpenGL,
+        None
+    };
+
     class Renderer
     {
     public:
