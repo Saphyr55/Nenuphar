@@ -15,15 +15,18 @@ namespace Nenuphar
     static WindowsWindowRegistry GWindowsWindowRegistry;
 
     const TCHAR WindowsApplication::ApplicationClassName[] = TEXT("NenupharApplication");
-    
+
     void RegisterWindowsWindow(HWND handle, WindowsWindow* windowsWindow)
     {
         GWindowsWindowRegistry.emplace(handle, windowsWindow);
     }
 
-    SharedRef<PlatformApplication> PlatformAppCreate()
+    SharedRef<PlatformApplication> PlatformAppGet()
     {
-        return MakeSharedRef<WindowsApplication>(GetModuleHandle(nullptr));
+        static SharedRef<WindowsApplication> GWindowsApplication = 
+            MakeSharedRef<WindowsApplication>(GetModuleHandle(nullptr));
+        
+        return GWindowsApplication;
     }
 
     WindowsApplication::WindowsApplication(HINSTANCE hinstance)

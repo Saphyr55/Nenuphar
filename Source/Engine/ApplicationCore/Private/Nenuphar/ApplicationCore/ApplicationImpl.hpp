@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Nenuphar/ApplicationCore/Application.hpp"
+#include "Nenuphar/ApplicationCore/Clock.hpp"
 #include "Nenuphar/ApplicationCore/PlatformApplication.hpp"
 
 #include "Nenuphar/Common/Type/Type.hpp"
@@ -35,7 +36,9 @@ namespace Nenuphar
         Bool m_isRunning;
         Bool m_isSuspended;
         Double m_lastTime;
-    
+
+        Clock m_clock;
+        
         SharedRef<AppDelegate> m_appDelegate;
         SharedRef<PlatformApplication> m_platformApplication;
     };

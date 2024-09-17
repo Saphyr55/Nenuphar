@@ -34,7 +34,7 @@ namespace Nenuphar
         virtual ~PlatformApplication() = default;
 
     };
-
-    SharedRef<PlatformApplication> PlatformAppCreate();
+    
+    SharedRef<PlatformApplication> PlatformAppGet();
 
 }
