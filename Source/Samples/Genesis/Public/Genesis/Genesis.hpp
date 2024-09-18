@@ -7,7 +7,7 @@
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Entity/Entity.hpp"
 #include "Nenuphar/Entity/EntityRegistry.hpp"
-#include "Nenuphar/Rendering/GraphicContext.hpp"
+#include "Nenuphar/Rendering/GraphicsContext.hpp"
 
 namespace Np = Nenuphar;
 
@@ -17,7 +17,7 @@ class GenesisApp : public Np::AppDelegate
 public:
     virtual Np::AppContext* ProvideAppContext() override;
 
-    virtual void OnInitialize() override;
+    virtual Bool OnInitialize() override;
 
     virtual void OnTick(Double deltaTime) override;
 
@@ -34,7 +34,7 @@ private:
     Np::Entity EFloor;
     Np::Entity EBarrel;
     Np::Entity ESponza;
-    UniquePtr<Np::GraphicContext> MainGraphicContext;
+    UniquePtr<Np::GraphicsContext> MainGraphicContext;
     SharedRef<Np::Window> MainWindow;
-    SharedRef<RenderData> MainRenderData;
+    RenderData MainRenderData;
 };

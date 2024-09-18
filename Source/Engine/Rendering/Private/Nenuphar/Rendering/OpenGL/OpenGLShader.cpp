@@ -1,12 +1,35 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLShader.hpp"
+#include "Nenuphar/Asset/Asset.hpp"
+#include "Nenuphar/Core/IO/Path.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
+#include "Nenuphar/Rendering/Shader.hpp"
+#include "Nenuphar/Rendering/Uniform.hpp"
+
+#include <string_view>
 
 #include <fmt/core.h>
+#include <glad/glad.h>
 
 namespace Nenuphar 
 {
+	
+    SharedRef<OpenGLShader> ShaderCreateProgram(std::string_view name)
+    {
+        auto vertexFileName = String(name) + GVertexFileExtension;
+        Path vertexFilepath = FromAssets("/Shaders/" + vertexFileName);
+        Path::TRes vertexResult = ReadFileContent(vertexFilepath);
+        NCHECK(vertexResult.HasValue())
+
+        auto fragmentFileName = String(name) + GFragmentFileExtension;
+        Path fragmentFilepath = FromAssets("/Shaders/" + fragmentFileName);
+        Path::TRes fragmentResult = ReadFileContent(fragmentFilepath);
+        NCHECK(fragmentResult.HasValue())
+
+        // Create the main OpenGL shader.
+        return MakeSharedRef<OpenGLShader>(vertexResult.Value(), fragmentResult.Value());
+    };
 
 	OpenGLShaderPart::OpenGLShaderPart(OpenGLShaderType shaderType) 
 		: m_shaderType(shaderType)
@@ -45,16 +68,19 @@ namespace Nenuphar
         NP_GL_CHECK_CALL(glUseProgram(m_programID));
     }
 
-	void OpenGLShader::Link() const
+    UniformLocation OpenGLShader::GetUniformLocation(std::string_view name) const
+	{
+		return NP_GL_CHECK_RCALL(glGetUniformLocation(Id(), name.data()));
+	}
+
+	void OpenGLShader::Link()
 	{
 		NP_GL_CHECK_CALL(glLinkProgram(m_programID));
 		m_parts.clear();
 		CheckInfo(GL_LINK_STATUS);
     }
-
-	const OpenGLShader& OpenGLShader::Attach(
-        OpenGLShaderType st, 
-        StringView source) const
+	
+	OpenGLShader& OpenGLShader::Attach(OpenGLShaderType st, std::string_view source)
 	{
 		auto shader = MakeUnique<OpenGLShaderPart>(st);
 
@@ -98,13 +124,18 @@ namespace Nenuphar
         }
     }
 
-    OpenGLShader::OpenGLShader(StringView vs, StringView fs)
+    OpenGLShader::OpenGLShader(std::string_view vs, std::string_view fs)
         : OpenGLShader()
 	{
         SetupShaderProgram(*this, vs, fs);
     }
 
-    void SetupShaderProgram(OpenGLShader& program, StringView vs, StringView fs)
+	ShaderProgramId OpenGLShader::Id() const
+	{
+		return m_programID;
+	}
+
+    void SetupShaderProgram(OpenGLShader& program, std::string_view vs, std::string_view fs)
 	{
         program
                 .Attach(VertexShader, vs)

@@ -15,7 +15,7 @@ namespace Nenuphar
          * @brief 
          * 
          */
-        virtual void Initialize() = 0;
+        virtual Bool Initialize() = 0;
 
         /**
          * @brief Get the absolute time.

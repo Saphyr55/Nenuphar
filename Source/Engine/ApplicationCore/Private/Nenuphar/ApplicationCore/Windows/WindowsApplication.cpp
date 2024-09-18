@@ -33,12 +33,10 @@ namespace Nenuphar
         : m_hinstance(hinstance)
         , m_classID(0)
     {
-        Initialize();
     }
 
     WindowsApplication::~WindowsApplication()
     {
-        Destroy();
     }
 
     HINSTANCE WindowsApplication::GetHInstance() const
@@ -48,7 +46,7 @@ namespace Nenuphar
 
     LRESULT CALLBACK WindowsApplication::ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
     {
-
+        
         if (!GWindowsWindowRegistry.contains(hwnd))
         {
             return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -66,7 +64,7 @@ namespace Nenuphar
         return window->ProcessEvent(message);
     }
 
-    void WindowsApplication::Initialize()
+    Bool WindowsApplication::Initialize()
     {
         WNDCLASSEX windowClassEX;
         windowClassEX.cbSize = sizeof(WNDCLASSEX);
@@ -85,8 +83,8 @@ namespace Nenuphar
         m_classID = RegisterClassEx(&windowClassEX);
         if (!m_classID)
         {
-            NP_ERROR(WindowsWindow, "Call to RegisterClassEx failed!");
-            return;
+            NP_CRITICAL(WindowsWindow, "Call to RegisterClassEx failed!");
+            return false;
         }
 
         NP_INFO(WindowsWindow, "Windows Application Instance has been registered.");
@@ -96,6 +94,8 @@ namespace Nenuphar
         QueryPerformanceFrequency(&frequency);
         GClockFrequency = 1.0 / (Double) frequency.QuadPart;
         QueryPerformanceCounter(&GStartTime);
+        
+        return true;
     }
 
     Double WindowsApplication::GetAbsoluteTime() const

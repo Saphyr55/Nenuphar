@@ -14,7 +14,7 @@
 namespace Nenuphar
 {
     
-    UniquePtr<GraphicContext> GraphicContext::Create(RenderAPI api, SharedRef<Window> window)
+    UniquePtr<GraphicsContext> GraphicsContext::Create(RenderAPI api, SharedRef<Window> window)
     {
         NCHECK(window);
         switch (api) 

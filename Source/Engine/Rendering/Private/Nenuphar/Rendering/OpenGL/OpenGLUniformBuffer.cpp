@@ -1,50 +1,51 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLUniformBuffer.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
+#include "glad/glad.h"
 
 
 namespace Nenuphar
 {
 
-    OpenGLUniformBuffer::OpenGLUniformBuffer()
+    UInt OpenGL_GetUniformBlock(SharedRef<Shader> program,
+                                const char* uniformBlockName)
     {
-        NP_GL_CHECK_CALL(glGenBuffers(1, &m_uniformBufferBlock));
+        return NP_GL_CHECK_RCALL(glGetUniformBlockIndex(program->Id(), uniformBlockName));
+    }
+
+    OpenGLUniformBuffer::OpenGLUniformBuffer(std::size_t size)
+        : m_size(size)
+    {
+        NP_GL_CHECK_CALL(glCreateBuffers(1, &m_uniformBuffer));
     }
 
     OpenGLUniformBuffer::~OpenGLUniformBuffer()
     {
-        NP_GL_CHECK_CALL(glDeleteBuffers(1, &m_uniformBufferBlock));
+        NP_GL_CHECK_CALL(glDeleteBuffers(1, &m_uniformBuffer));
     }
 
     void OpenGLUniformBuffer::BufferSubData(std::size_t offset,
                                             std::size_t size,
                                             const void* value)
     {
-        Bind();
-        NP_GL_CHECK_CALL(glBufferSubData(GL_UNIFORM_BUFFER, offset, size, value));
-        Unbind();
+        NP_GL_CHECK_CALL(glNamedBufferSubData(m_uniformBuffer, offset, size, value));
     }
 
-    void OpenGLUniformBuffer::BufferData(std::size_t size, OpenGLBufferUsage usage)
+    void OpenGLUniformBuffer::BufferData(const void* data, OpenGLBufferUsage usage)
     {
-        Bind();
-        NP_GL_CHECK_CALL(glBufferData(GL_UNIFORM_BUFFER, size, NULL, usage));
-        Unbind();
-    }
+        NP_GL_CHECK_CALL(glNamedBufferData(m_uniformBuffer, m_size, data, usage));
+    }   
 
-    void OpenGLUniformBuffer::BindBufferRange(std::size_t index,
-                                              std::size_t offset,
-                                              std::size_t size)
+    void OpenGLUniformBuffer::BindBufferBase(std::size_t index)
     {
-        NP_GL_CHECK_CALL(glBindBufferRange(GL_UNIFORM_BUFFER,
-                                           index, m_uniformBufferBlock, offset, size));
+        NP_GL_CHECK_CALL(glBindBufferBase(GL_UNIFORM_BUFFER, index, m_uniformBuffer));
     }
 
     void OpenGLUniformBuffer::Bind()
     {
         if (m_isBinded) return;
         m_isBinded = true;
-        NP_GL_CHECK_CALL(glBindBuffer(GL_UNIFORM_BUFFER, m_uniformBufferBlock));
+        NP_GL_CHECK_CALL(glBindBuffer(GL_UNIFORM_BUFFER, m_uniformBuffer));
     }
 
     void OpenGLUniformBuffer::Unbind()

@@ -4,7 +4,6 @@
 #include "Nenuphar/Entity/EntityRegistry.hpp"
 #include "Nenuphar/Math/Vector4.hpp"
 #include "Nenuphar/Model/Model.hpp"
-#include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
 #include "Nenuphar/Rendering/Renderer.hpp"
 #include "Nenuphar/Rendering/Shader.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
@@ -21,13 +20,6 @@ struct Colorable
     Vector4f Color;
 };
 
-struct RenderModels
-{
-    Np::ModelId BarrelModelId;
-    Np::ModelId SponzaModelId;
-    Np::ModelId FloorModelId;
-};
-
 struct RenderableTexture
 {
     Np::Texture Texture;
@@ -40,16 +32,15 @@ struct RenderTextures
 
 struct RenderData
 {
-    using TRDefault = std::tuple<Np::SharedRef<RenderData>, RenderModels>; 
+    static RenderData Create();
 
-    static TRDefault Default();
+    void OnRenderData(Np::EntityRegistry& registry);
 
-    Np::UniquePtr<Np::Shader> MaterialShader;
-    Np::UniformRegistry MaterialRegistry;
-    Np::SharedRef<Np::Renderer> Renderer;
+    Np::ModelId BarrelModelId;
+    Np::ModelId SponzaModelId;
+    Np::ModelId FloorModelId;
 };
 
-void OnRenderData(RenderData& data, Np::EntityRegistry& registry);
 
 static constexpr Vector4f GDefaultColor =
         Vector4f(

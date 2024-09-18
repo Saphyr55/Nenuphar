@@ -4,13 +4,13 @@
 
 #if NP_PLATFORM_WINDOWS
 
-#include "Nenuphar/Rendering/GraphicContext.hpp"
+#include "Nenuphar/Rendering/GraphicsContext.hpp"
 #include "Nenuphar/Rendering/Windows/WindowsDeviceContext.hpp"
 
 namespace Nenuphar
 {
     
-    class WGLContext : public GraphicContext
+    class WGLContext : public GraphicsContext
     {
     public:
         static Void Init();

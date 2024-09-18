@@ -2,15 +2,19 @@
 
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
-#include "Nenuphar/Rendering/OpenGL/OpenGLShader.hpp"
-#include "Nenuphar/Rendering/UniformBuffer.hpp"
+#include "Nenuphar/Rendering/Shader.hpp"
+
 #include <cstddef>
 
 namespace Nenuphar
 {
 
-    class OpenGLUniformBuffer : public UniformBuffer
-    {   
+    UInt OpenGL_GetUniformBlock(SharedRef<Shader> program,
+                                const char* uniformBlockName);
+
+
+    class OpenGLUniformBuffer
+    {
     public:
         /**
          * @brief 
@@ -27,47 +31,45 @@ namespace Nenuphar
          * @param size 
          * @param usage 
          */
-        void BufferData(std::size_t size, OpenGLBufferUsage usage);
-        
+        void BufferData(const void* data, OpenGLBufferUsage usage);
+
         /**
          * @brief 
          * 
          * @param index 
-         * @param offset 
-         * @param size 
          */
-        void BindBufferRange(std::size_t index,
-                             std::size_t offset,
-                             std::size_t size);
-        
+        void BindBufferBase(std::size_t index);
+
         /**
          * @brief 
          * 
          */
         void Bind();
-    
+
         /**
          * @brief 
          * 
          */
         void Unbind();
-    
+
     public:
         /**
          * @brief Construct a OpenGL Uniform Buffer object
          * 
+         * @param size-The buffer size.
          */
-        OpenGLUniformBuffer();
+        OpenGLUniformBuffer(std::size_t size);
 
         /**
          * @brief Destroy the Uniform Buffer object
          * 
          */
-        virtual ~OpenGLUniformBuffer();
+        ~OpenGLUniformBuffer();
 
     private:
+        std::size_t m_size;
         bool m_isBinded;
-        UInt m_uniformBufferBlock;
+        UInt m_uniformBuffer;
     };
 
 }// namespace Nenuphar

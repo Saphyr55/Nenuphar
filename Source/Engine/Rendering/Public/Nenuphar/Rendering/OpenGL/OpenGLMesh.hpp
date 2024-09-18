@@ -1,16 +1,15 @@
 #pragma once
 
 #include <unordered_map>
-#include <vector>
 
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Rendering/Mesh.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLVertexArray.hpp"
-#include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
 
 
 namespace Nenuphar
 {
+    class UniformRegistry;
 
     struct OpenGLMesh
     {
@@ -34,6 +33,6 @@ namespace Nenuphar
 
     void OpenGLPersistMesh(const MeshId& mesh);
 
-    void OpenGLDrawMesh(UniformRegistry& registry, const MeshId& id);
+    void OpenGLDrawMesh(SharedRef<UniformRegistry> registry, const MeshId& id);
 
 }// namespace Nenuphar

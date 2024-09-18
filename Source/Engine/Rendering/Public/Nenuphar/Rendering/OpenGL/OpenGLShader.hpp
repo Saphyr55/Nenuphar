@@ -1,16 +1,13 @@
 #pragma once
 
-#include <functional>
-#include <memory>
+#include "Nenuphar/Rendering/Shader.hpp"
 
 #include <glad/glad.h>
 
-#include "Nenuphar/Common/Common.hpp"
-#include "Nenuphar/Rendering/OpenGL/OpenGLShader.hpp"
-#include "Nenuphar/Rendering/Shader.hpp"
-
 namespace Nenuphar
 {
+    constexpr const char* GVertexFileExtension = ".Vertex.glsl";
+    constexpr const char* GFragmentFileExtension = ".Fragment.glsl";
 
     using OpenGLShaderStatus = UInt;
 
@@ -37,7 +34,7 @@ namespace Nenuphar
         void Compile() const;
 
         void CheckInfo(ShaderId status) const;
-
+		
     public:
         explicit OpenGLShaderPart(OpenGLShaderType type);
 		~OpenGLShaderPart();
@@ -51,18 +48,18 @@ namespace Nenuphar
 	class OpenGLShader : public Shader
 	{
 	public:
+	    virtual void Use() const override;
+
+        virtual UniformLocation GetUniformLocation(std::string_view name) const override;
+
+        virtual ShaderProgramId Id() const override;
+
+	public:
         void CheckInfo(OpenGLShaderStatus status) const;
 
-        virtual void Use() const override;
-
-        virtual ShaderProgramId Id() const override
-        {
-            return m_programID;
-        }
-
-        void Link() const;
-
-		const OpenGLShader& Attach(OpenGLShaderType st, StringView source) const;
+        void Link();
+	
+		OpenGLShader& Attach(OpenGLShaderType st, StringView source);
 
     public:
         OpenGLShader(StringView vs, StringView fs);
@@ -71,10 +68,13 @@ namespace Nenuphar
 
 	private:
 		ShaderProgramId m_programID = -1;
-        mutable std::vector<UniquePtr<OpenGLShaderPart>> m_parts;
+        std::vector<UniquePtr<OpenGLShaderPart>> m_parts;
     };
 
+	//
+	SharedRef<OpenGLShader> ShaderCreateProgram(std::string_view shaderName);
 
+	// 
     void SetupShaderProgram(OpenGLShader& program, StringView vs, StringView fs);
 
 }

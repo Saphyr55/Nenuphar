@@ -17,7 +17,7 @@ namespace Nenuphar
     {
     public:
         SharedRef<RenderFrame> CreateRenderFrame(const RenderFrameDefinition& definition);
-
+        
         virtual void BeginFrame() = 0;
         
         virtual void EndFrame() = 0;

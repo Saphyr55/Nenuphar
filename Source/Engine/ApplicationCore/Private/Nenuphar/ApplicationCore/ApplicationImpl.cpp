@@ -1,19 +1,34 @@
 #include "Nenuphar/ApplicationCore/ApplicationImpl.hpp"
 #include "Nenuphar/ApplicationCore/PlatformApplication.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Core/Debug.hpp"
+#include "Nenuphar/Core/Logger/Logger.hpp"
 
 namespace Nenuphar
 {
 
-    void ApplicationImpl::Initialize()
+    Bool ApplicationImpl::Initialize()
     {
-        m_platformApplication->Initialize();
-        m_appDelegate->OnInitialize();
+        Bool isSuccess = m_platformApplication->Initialize();
+        if (!isSuccess)
+        {
+            NP_CRITICAL(ApplicationImpl::Initialize, "Impossible to load the platform application.");
+            return isSuccess;
+        }
+
+        isSuccess = m_appDelegate->OnInitialize();
+        if (!isSuccess)
+        {
+            NP_CRITICAL(ApplicationImpl::Initialize, "Impossible to load the delegate application.");
+            return isSuccess;
+        }
 
         // Start the clock
         ClockStart(m_platformApplication, m_clock);
         ClockTick(m_platformApplication, m_clock);
         m_lastTime = m_clock.Elapsed;
+
+        return isSuccess;
     }
 
     void ApplicationImpl::Tick(Double deltaTime)
@@ -24,9 +39,13 @@ namespace Nenuphar
     void ApplicationImpl::Start()
     {
         m_isRunning = true;
-
-        Initialize();
         
+        if (!Initialize())
+        {
+            m_isRunning = false;
+            return;
+        }
+
         Double runningTime = 0;
         Double count = 0;
         

@@ -10,9 +10,8 @@ namespace Nenuphar
     class RenderService
     {
     public:
-        
         static SharedRef<RenderService> Instance();
-                
+        
         virtual SharedRef<Renderer> GetRenderer() = 0;
 
         virtual void Enable() const = 0;

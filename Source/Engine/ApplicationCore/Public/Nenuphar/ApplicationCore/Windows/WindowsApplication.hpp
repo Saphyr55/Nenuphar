@@ -34,7 +34,7 @@ namespace Nenuphar
         HINSTANCE GetHInstance() const;
 
     public:
-        virtual void Initialize() override;
+        virtual Bool Initialize() override;
 
         virtual Double GetAbsoluteTime() const override;
 

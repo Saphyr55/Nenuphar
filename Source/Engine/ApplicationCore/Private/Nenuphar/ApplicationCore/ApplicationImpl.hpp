@@ -12,7 +12,7 @@ namespace Nenuphar
     class ApplicationImpl : public Application
     {
     public:        
-        virtual void Initialize() override;
+        virtual Bool Initialize() override;
         
         virtual void Tick(Double deltaTime) override;
     

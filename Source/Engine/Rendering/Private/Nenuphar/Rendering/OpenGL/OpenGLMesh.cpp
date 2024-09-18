@@ -7,15 +7,10 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLBuffer.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLLayoutBuffer.hpp"
-#include "Nenuphar/Rendering/OpenGL/OpenGLShader.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLVertexArray.hpp"
-#include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
-#include "Nenuphar/Rendering/Vertex.hpp"
-
-
-#include <cstdlib>
+#include "Nenuphar/Rendering/Uniform.hpp"
 
 
 namespace Nenuphar
@@ -59,7 +54,7 @@ namespace Nenuphar
                                                       OpenGLMesh(meshId, std::move(vao), count)});
     }
 
-    void OpenGLDrawMesh(UniformRegistry& registry, const MeshId& id)
+    void OpenGLDrawMesh(SharedRef<UniformRegistry> registry, const MeshId& id)
     {
         NCHECK(OpenGLMeshStorage::GetGlobalStorage().contains(id))
         NCHECK(MeshStorage::GetGlobalStorage().contains(id))
@@ -83,9 +78,9 @@ namespace Nenuphar
             textures.push_back(diffuseTexture);
             textures.push_back(specularTexture);
 
-            registry.Get<Vector3f>("UMaterial.Diffuse").UpdateValue(material.Diffuse);
-            registry.Get<Vector3f>("UMaterial.Specular").UpdateValue(material.Specular);
-            registry.Get<Float>("UMaterial.Shininess").UpdateValue(material.Shininess);
+            registry->Get<Vector3f>("UMaterial.Diffuse").UpdateValue(material.Diffuse);
+            registry->Get<Vector3f>("UMaterial.Specular").UpdateValue(material.Specular);
+            registry->Get<Float>("UMaterial.Shininess").UpdateValue(material.Shininess);
         }
 
         for (auto i = 0; i < textures.size(); i++)
@@ -101,19 +96,18 @@ namespace Nenuphar
                 switch (textureExtraInfo.TTM)
                 {
                     case TextureTypeModel::Diffuse: {
-                        registry.Get<Int>("UTexture").UpdateValue((Int)i);
-                        registry.Get<Int>("UMaterial.DiffuseTexture").UpdateValue((Int)i);
+                        registry->Get<Int>("UTexture").UpdateValue((Int)i);
+                        registry->Get<Int>("UMaterial.DiffuseTexture").UpdateValue((Int)i);
                     }
                     break;
                     case TextureTypeModel::Specular: {
-                        registry.Get<Int>("UMaterial.SpecularTexture").UpdateValue((Int)i);
+                        registry->Get<Int>("UMaterial.SpecularTexture").UpdateValue((Int)i);
                     }
                     break;
                 }
 
                 openGLTexture->Bind();
             }
-
         }
 
         glMesh.VAO->Bind();

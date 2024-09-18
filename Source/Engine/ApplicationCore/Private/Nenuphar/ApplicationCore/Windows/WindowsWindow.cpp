@@ -1,6 +1,7 @@
 #include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
 #include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
 #include "Nenuphar/Common/Instanciate.hpp"
+#include "Nenuphar/Core/Logger/Logger.hpp"
 #include "Nenuphar/InputSystem/Event.hpp"
 #include "Nenuphar/InputSystem/Button.hpp"
 #include "Nenuphar/InputSystem/InputSystem.hpp"
@@ -44,10 +45,10 @@ namespace Nenuphar
                 nullptr,
                 windowsApplication.GetHInstance(),
                 nullptr);
-
+        
         if (!hwnd)
         {
-            NP_ERROR(WindowsWindow, "Call to CreateWindow failed, enable to create windows window.");
+            NP_CRITICAL(WindowsWindow, "Call to CreateWindow failed, enable to create windows window.");
             return hwnd;
         }
 

@@ -8,6 +8,7 @@
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/IO/ConsoleColor.hpp"
 #include "Nenuphar/Common/Common.hpp"
+#include "Nenuphar/Core/Debug.hpp"
 
 
 namespace Nenuphar
@@ -265,9 +266,9 @@ namespace Nenuphar
 }
 
 
-#define NP_INFO(NAME, ...)      ::Nenuphar::GetMainLogger()->Info(__VA_ARGS__)
-#define NP_WARN(NAME, ...)      ::Nenuphar::GetMainLogger()->Warn(__VA_ARGS__)
-#define NP_TRACE(NAME, ...)     ::Nenuphar::GetMainLogger()->Trace(__VA_ARGS__)
-#define NP_DEBUG(NAME, ...)     ::Nenuphar::GetMainLogger()->Debug(__VA_ARGS__)
-#define NP_ERROR(NAME, ...)     ::Nenuphar::GetMainLogger()->Error(__VA_ARGS__)
-#define NP_CRITICAL(NAME, ...)  ::Nenuphar::GetMainLogger()->Critical(__VA_ARGS__)
+#define NP_INFO(NAME, ...)      ::Nenuphar::GetMainLogger()->Info(__VA_ARGS__);
+#define NP_WARN(NAME, ...)      ::Nenuphar::GetMainLogger()->Warn(__VA_ARGS__);
+#define NP_TRACE(NAME, ...)     ::Nenuphar::GetMainLogger()->Trace(__VA_ARGS__);
+#define NP_DEBUG(NAME, ...)     ::Nenuphar::GetMainLogger()->Debug(__VA_ARGS__);
+#define NP_ERROR(NAME, ...)     ::Nenuphar::GetMainLogger()->Error(__VA_ARGS__);
+#define NP_CRITICAL(NAME, ...)  ::Nenuphar::GetMainLogger()->Critical(__VA_ARGS__); NP_DEBUGBREAK();

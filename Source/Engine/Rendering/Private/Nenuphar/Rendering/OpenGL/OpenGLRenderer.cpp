@@ -1,22 +1,37 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLRenderer.hpp"
 #include "Nenuphar/Asset/AssetRegistry.hpp"
+#include "Nenuphar/Common/Instanciate.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Rendering/Mesh.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLMainShader.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLMesh.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
-#include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
+#include "Nenuphar/Rendering/Uniform.hpp"
+#include "Nenuphar/Rendering/Shader.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
 #include "Nenuphar/Rendering/TextureAsset.hpp"
 
 namespace Nenuphar
 {
-
     // TODO: Use a sparse set and the pagination technique to have better perfomance.
     static std::vector<std::vector<MeshId>> ModelStorage;
 
+    OpenGLRenderer::OpenGLRenderer() 
+    {
+        m_mainShaderProgram = MakeSharedRef<OpenGLMainShaderProgram>();
+        m_mainShaderProgram->Initialize();
+    }
+
+    SharedRef<MainShaderProgram> OpenGLRenderer::GetMainShaderProgram()
+    {
+        return m_mainShaderProgram;
+    } 
 
     Texture OpenGLRenderer::PersistTexture(SharedRef<TextureAsset> asset,
                                            const PersitTextureOption& option) const
     {
+        NCHECK(asset)
         SharedRef<OpenGLTexture2D> texture = CreateOpenGLTexture2D(0);
         texture->Bind();
         DefaultParameterTexture(asset->Information, OpenGLTexture2D::Parameter());
@@ -71,20 +86,22 @@ namespace Nenuphar
     }
 
 
-    void OpenGLRenderer::DrawMesh(const Shader& shader,
-                                  UniformRegistry& registry,
+    void OpenGLRenderer::DrawMesh(SharedRef<Shader> shader,
+                                  SharedRef<UniformRegistry> registry,
                                   const MeshId& mesh) const
     {
-        shader.Use();
+        NCHECK(shader)
+        shader->Use();
         OpenGLDrawMesh(registry, mesh);
     }
 
 
-    void OpenGLRenderer::DrawModel(const Shader& shader,
-                                   UniformRegistry& registry,
+    void OpenGLRenderer::DrawModel(SharedRef<Shader> shader,
+                                   SharedRef<UniformRegistry> registry,
                                    const ModelId& model) const
     {
-        shader.Use();
+        NCHECK(shader)
+        shader->Use();
         for (const MeshId& mesh: ModelStorage[model])
         {
             OpenGLDrawMesh(registry, mesh);

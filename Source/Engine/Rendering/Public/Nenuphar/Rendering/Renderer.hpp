@@ -1,15 +1,17 @@
 #pragma once
 
 #include "Nenuphar/Asset/AssetRegistry.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Model/Model.hpp"
 #include "Nenuphar/Rendering/Mesh.hpp"
-#include "Nenuphar/Rendering/OpenGL/Uniform.hpp"
 #include "Nenuphar/Rendering/Shader.hpp"
 #include "Nenuphar/Rendering/TextureAsset.hpp"
 
 
 namespace Nenuphar
 {
+
+    class UniformRegistry;
 
     struct PersitTextureOption
     {
@@ -26,6 +28,8 @@ namespace Nenuphar
     class Renderer
     {
     public:
+        virtual SharedRef<MainShaderProgram> GetMainShaderProgram() = 0;
+
         virtual Texture PersistTexture(SharedRef<TextureAsset> asset,
                                        const PersitTextureOption& option = {}) const = 0;
 
@@ -39,14 +43,15 @@ namespace Nenuphar
         virtual void TextureMesh(const MeshId& mesh,
                                  const Texture& texture) const = 0;
 
-        virtual void DrawModel(const Shader& shader,
-                               UniformRegistry& registry, // TODO: Remove this.
+        virtual void DrawModel(SharedRef<Shader> shader,
+                               SharedRef<UniformRegistry> registry, // TODO: Remove this.
                                const ModelId& model) const = 0;
 
-        virtual void DrawMesh(const Shader& shader,
-                              UniformRegistry& registry, // TODO: Remove this.
+        virtual void DrawMesh(SharedRef<Shader> shader,
+                              SharedRef<UniformRegistry> registry, // TODO: Remove this.
                               const MeshId& mesh) const = 0;
 
+        virtual ~Renderer() = default;
     };  
 
 }

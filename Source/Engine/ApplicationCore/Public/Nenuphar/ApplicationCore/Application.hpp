@@ -60,7 +60,7 @@ namespace Nenuphar
          * @brief 
          * 
          */
-        virtual void OnInitialize() { };
+        virtual Bool OnInitialize() { return true; };
         
         /**
          * @brief 
@@ -74,6 +74,7 @@ namespace Nenuphar
          * 
          */
         virtual void OnClose() { };
+
     };
 
 
@@ -84,7 +85,7 @@ namespace Nenuphar
     class Application
     {
     public:
-        virtual void Initialize() = 0;
+        virtual Bool Initialize() = 0;
 
         virtual void Start() = 0;
 
