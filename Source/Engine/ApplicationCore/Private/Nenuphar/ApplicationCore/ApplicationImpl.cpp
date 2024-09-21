@@ -48,7 +48,7 @@ namespace Nenuphar
 
         Double runningTime = 0;
         Double count = 0;
-        
+
         // TODO: Supply the "frame rate" by the application context.   
         Double targetSeconds = 1.0 / 60;
         
@@ -72,6 +72,10 @@ namespace Nenuphar
                 // ClockLimitCount(m_platformApplication, )
 
                 m_lastTime = currentTime;
+            } 
+            else
+            {
+                m_appDelegate->OnSuspend();
             }
         }
 
@@ -80,7 +84,6 @@ namespace Nenuphar
         m_isRunning = false;
     }
 
-
     void ApplicationImpl::Close()
     {
         ClockStop(m_clock);
@@ -88,12 +91,25 @@ namespace Nenuphar
         m_platformApplication->Destroy();
     }
 
+    void ApplicationImpl::Stop()
+    {
+        m_isRunning = false;
+    }
+
+    void ApplicationImpl::Resume()
+    {
+        m_isSuspended = false;
+    }
+
+    void ApplicationImpl::Suspend()
+    {
+        m_isSuspended = true;
+    }
 
     Bool ApplicationImpl::IsRunning() const
     {
         return m_isRunning;
     }
-
 
     Bool ApplicationImpl::IsSuspended() const
     {

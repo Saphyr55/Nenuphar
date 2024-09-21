@@ -1,7 +1,6 @@
 #include "Genesis/RenderData.hpp"
 #include "Genesis/Transform.hpp"
 #include "Nenuphar/Asset/AssetRegistry.hpp"
-#include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Entity/EntityRegistry.hpp"
@@ -13,7 +12,7 @@
 #include "Nenuphar/Rendering/RenderService.hpp"
 #include "Nenuphar/Rendering/Renderer.hpp"
 #include "Nenuphar/Rendering/Shader.hpp"
-#include "Nenuphar/Rendering/Uniform.hpp"
+#include "Nenuphar/Rendering/UniformRegistry.hpp"
 
 #include <memory>
 

@@ -25,4 +25,14 @@ namespace Nenuphar
         return GApplication;
     }
 
+    void AppStopCurrent()
+    {
+        GApplication->Stop();
+    }
+
+    void AppSuspendCurrent()
+    {
+        GApplication->Suspend();
+    }
+
 }

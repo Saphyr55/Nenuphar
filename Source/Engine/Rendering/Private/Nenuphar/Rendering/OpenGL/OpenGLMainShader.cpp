@@ -7,7 +7,7 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLShader.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLUniformBuffer.hpp"
 #include "Nenuphar/Rendering/Shader.hpp"
-#include "Nenuphar/Rendering/Uniform.hpp"
+#include "Nenuphar/Rendering/UniformRegistry.hpp"
 
 
 namespace Nenuphar
@@ -18,7 +18,8 @@ namespace Nenuphar
     void MainShaderInitializeUniformRegistry(SharedRef<UniformRegistry> uniformRegistry)
     {
         // TODO: Better way to store this.
-        uniformRegistry->Register("UModel", Matrix4f::Identity())
+        uniformRegistry
+            ->Register("UModel", Matrix4f::Identity())
             .Register("UTexture", Int(0))
 
             .Register("UCameraPosition", Vector3f(0.0f))

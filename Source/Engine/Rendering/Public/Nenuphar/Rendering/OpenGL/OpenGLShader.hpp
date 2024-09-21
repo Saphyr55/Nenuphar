@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Nenuphar/Rendering/Shader.hpp"
+#include "Nenuphar/Rendering/Uniform.hpp"
 
 #include <glad/glad.h>
+#include <string_view>
 
 namespace Nenuphar
 {
@@ -53,6 +55,8 @@ namespace Nenuphar
         virtual UniformLocation GetUniformLocation(std::string_view name) const override;
 
         virtual ShaderProgramId Id() const override;
+
+        virtual UniformUpdater GetUniformUpdater() const override;
 
 	public:
         void CheckInfo(OpenGLShaderStatus status) const;

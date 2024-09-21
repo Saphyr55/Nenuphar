@@ -30,6 +30,18 @@ namespace Nenuphar
      */
     SharedRef<Application> AppGetCurrent();
 
+    /**
+     * @brief 
+     * 
+     */
+    void AppStopCurrent();
+
+    /**
+     * @brief 
+     * 
+     */
+    void AppSuspendCurrent();
+
 
     /**
      * @brief 
@@ -73,6 +85,12 @@ namespace Nenuphar
          * @brief 
          * 
          */
+        virtual void OnSuspend() { }
+
+        /**
+         * @brief 
+         * 
+         */
         virtual void OnClose() { };
 
     };
@@ -94,6 +112,12 @@ namespace Nenuphar
         virtual void Close() = 0;
 
     public:
+        virtual void Stop() = 0;
+
+        virtual void Resume() = 0;
+
+        virtual void Suspend() = 0;
+
         virtual Bool IsRunning() const = 0;
 
         virtual Bool IsSuspended() const = 0;

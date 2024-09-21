@@ -15,8 +15,8 @@ namespace Nenuphar
     struct WindowDefinition
     {
         String Title;
-        Float Width;
-        Float Height;
+        Int Width;
+        Int Height;
     };
 
 

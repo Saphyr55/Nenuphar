@@ -21,6 +21,12 @@ namespace Nenuphar
         virtual void Close() override;
     
     public:
+        virtual void Stop() override;
+
+        virtual void Resume() override;
+
+        virtual void Suspend() override;
+        
         virtual Bool IsRunning() const override;
 
         virtual Bool IsSuspended() const override;

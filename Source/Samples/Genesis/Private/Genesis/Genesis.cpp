@@ -20,7 +20,7 @@
 #include "Nenuphar/Rendering/RenderService.hpp"
 #include "Nenuphar/Rendering/Renderer.hpp"
 #include "Nenuphar/Rendering/Shader.hpp"
-#include "Nenuphar/Rendering/Uniform.hpp"
+#include "Nenuphar/Rendering/UniformRegistry.hpp"
 
 #include <glad/glad.h>
 
@@ -102,6 +102,7 @@ Bool GenesisApp::OnInitialize()
 
     windowSignals.OnClose().Connect([&](auto&, auto&) {
         MainWindow->Destroy();
+        AppStopCurrent();
     });
 
     windowSignals.OnResize().ConnectHandler([&](const ResizeEvent& e) {
@@ -116,17 +117,22 @@ Bool GenesisApp::OnInitialize()
 void GenesisApp::OnTick(Double deltaTime)
 {
     SharedRef<Np::Renderer> renderer = Np::RenderService::Instance()->GetRenderer();
+    Vector4f backgroundColor(1.0f / 255, 10.0f / 255, 33.0f / 255, 255.0f / 255);
+    Np::RenderService::Instance()->Clear(backgroundColor);
+
     SharedRef<Np::MainShaderProgram> shader = renderer->GetMainShaderProgram();
 
     Np::OrbitCamera& camera = Registry.GetComponent<OrbitCamera>(ECamera);
     Vector3f cameraPosition = camera.Position();
+    
+    Int width = MainWindow->GetWindowDefinition().Width;
+    Int height = MainWindow->GetWindowDefinition().Height;
 
-    Float width = MainWindow->GetWindowDefinition().Width;
-    Float height = MainWindow->GetWindowDefinition().Height;
+    glViewport(0, 0, width, height);
 
     // We obtain a projection matrix using the perspective matrix with a fov of 45
     // degrees, the window aspect, and 0.1 close up and 100 far away.
-    Matrix4f projection = Matrix4f::Perspective(Np::Radians(45), width / height, 0.1f, 10000.0f);
+    Matrix4f projection = Matrix4f::Perspective(Np::Radians(45), width / (Float)height, 0.1f, 10000.0f);
 
     // We obtain the view in function of the camera.
     Matrix4f view = Matrix4f::LookAt(cameraPosition, camera.Target, camera.Up);
@@ -136,15 +142,10 @@ void GenesisApp::OnTick(Double deltaTime)
 
     shader->GetRegistry()->Get<Vector3f>("UCameraPosition").UpdateValue(cameraPosition);
 
-    Vector4f backgroundColor(1.0f / 255, 10.0f / 255, 33.0f / 255, 255.0f / 255);
-    Np::RenderService::Instance()->Clear(backgroundColor);
-    
     MainRenderData.OnRenderData(Registry);
 
-    glViewport(0, 0, (Int)width, (Int)height);
-
-    MainWindow->PoolEvent();
     MainGraphicContext->SwapBuffers();
+    MainWindow->PoolEvent();
 }
 
 void GenesisApp::OnClose()

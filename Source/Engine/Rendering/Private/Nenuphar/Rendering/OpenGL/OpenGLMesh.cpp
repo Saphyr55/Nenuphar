@@ -6,7 +6,7 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
-#include "Nenuphar/Rendering/Uniform.hpp"
+#include "Nenuphar/Rendering/UniformRegistry.hpp"
 
 
 namespace Nenuphar

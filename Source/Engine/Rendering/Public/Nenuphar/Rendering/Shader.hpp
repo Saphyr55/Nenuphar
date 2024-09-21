@@ -2,13 +2,12 @@
 
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Math/Matrix4.hpp"
+#include "Nenuphar/Rendering/UniformTypes.hpp"
 
 namespace Nenuphar
 {
     using ShaderId = UInt32;
     using ShaderProgramId = UInt32;
-
-    using UniformLocation = Int;
 
     class UniformRegistry;
 
@@ -24,7 +23,7 @@ namespace Nenuphar
          * 
          */
         virtual void Use() const = 0;
-        
+
         /**
          * @brief 
          * 
@@ -41,18 +40,33 @@ namespace Nenuphar
         virtual UniformLocation GetUniformLocation(std::string_view name) const = 0;
 
         /**
+         * @brief Get the Uniform Updater object
+         * 
+         * @return UniformUpdater 
+         */
+        virtual UniformUpdater GetUniformUpdater() const = 0;
+
+        /**
          * @brief Destroy the Shader.
          * 
          */
         virtual ~Shader() = default;
     };
 
+    /**
+     * @brief 
+     * 
+     */
     struct MainUniformBlock
     {
         Matrix4f Projection;
         Matrix4f View;
     };
 
+    /**
+     * @brief 
+     * 
+     */
     class MainShaderProgram
     {
     public:
@@ -68,7 +82,7 @@ namespace Nenuphar
          * 
          * @return const MainUniformBlock& 
          */
-        virtual const MainUniformBlock& UMainUniformBlock() const = 0; 
+        virtual const MainUniformBlock& UMainUniformBlock() const = 0;
 
         /**
          * @brief Get the Registry object
@@ -90,14 +104,13 @@ namespace Nenuphar
          * @param projection 
          */
         virtual void UpdateProjection(const Matrix4f& projection) = 0;
-        
+
         /**
          * @brief 
          * 
          * @param view 
          */
         virtual void UpdateView(const Matrix4f& view) = 0;
-
     };
 
-}
+}// namespace Nenuphar
