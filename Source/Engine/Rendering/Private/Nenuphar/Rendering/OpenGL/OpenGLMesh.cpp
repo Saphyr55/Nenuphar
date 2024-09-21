@@ -1,14 +1,10 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLMesh.hpp"
-#include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
 #include "Nenuphar/Rendering/Mesh.hpp"
-#include "Nenuphar/Rendering/OpenGL/OpenGLBuffer.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
-#include "Nenuphar/Rendering/OpenGL/OpenGLLayoutBuffer.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
-#include "Nenuphar/Rendering/OpenGL/OpenGLVertexArray.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
 #include "Nenuphar/Rendering/Uniform.hpp"
 
@@ -40,18 +36,12 @@ namespace Nenuphar
         Mesh& mesh = MeshStorage::GetGlobalStorage()[meshId];
         Int count = mesh.Indices.size();
 
-        auto vao = MakeUnique<OpenGLVertexArray>();
-        OpenGLArrayBuffer<> vbo(mesh.Vertices);
-        OpenGLElementBuffer ebo(mesh.Indices);
-
-        LinkBuffer(vbo, LayoutVertex);
-
-        vao->Unbind();
-        vbo.Unbind();
-        ebo.Unbind();
+        auto vbo = OpenGLImmutableBuffer::Create(mesh.Vertices);
+        auto ebo = OpenGLImmutableBuffer::Create(mesh.Indices);
+        auto vao = OpenGLVertexArray::Create(ebo->GetHandle(), vbo->GetHandle());
 
         OpenGLMeshStorage::GetGlobalStorage().insert({meshId,
-                                                      OpenGLMesh(meshId, std::move(vao), count)});
+                                                      OpenGLMesh(meshId, vao, count)});
     }
 
     void OpenGLDrawMesh(SharedRef<UniformRegistry> registry, const MeshId& id)
@@ -112,7 +102,6 @@ namespace Nenuphar
 
         glMesh.VAO->Bind();
         NP_GL_CHECK_CALL(glDrawElements(GL_TRIANGLES, glMesh.Count, GL_UNSIGNED_INT, 0));
-        glMesh.VAO->Unbind();
 
         ActiveTexture(0);
     }

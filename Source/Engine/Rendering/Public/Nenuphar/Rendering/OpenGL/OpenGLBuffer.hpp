@@ -1,84 +1,48 @@
 #pragma once
 
-#include <variant>
-#include <vector>
+#include "Nenuphar/Common/Type/Type.hpp"
 
 #include <fmt/core.h>
 #include <glad/glad.h>
 
-#include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
-#include "Nenuphar/Rendering/OpenGL/OpenGLLayoutBuffer.hpp"
-#include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
-
-
 namespace Nenuphar
 {
 
-    using OpenGLBufferID = UInt;
+    using OpenGLBufferHandle = UInt;
 
-    template<typename T, OpenGLBufferTarget bt>
-    class OpenGLBuffer final
+    class OpenGLImmutableBuffer
 	{
 	public:
+        static SharedRef<OpenGLImmutableBuffer> Create(std::size_t size, const void* data);
 
-		void Bind() const;
+        template<typename T>
+        static SharedRef<OpenGLImmutableBuffer> Create(std::vector<T>& data);
 
-		OpenGLBufferUsage Usage() const;
+        void Initialize();
 
-		OpenGLBufferID GetID() const;
+        void Destroy();
+        
+        void SetBufferStorage(std::size_t size, const void* data, GLbitfield flags) const;
+        
+        OpenGLBufferHandle GetHandle() const;
 
-		void Unbind() const;
+    public:
+        OpenGLImmutableBuffer(Bool init = false);
 
-		explicit OpenGLBuffer(const std::vector<T>& data, OpenGLBufferUsage usage = OpenGLBufferUsage::StaticDraw);
-        ~OpenGLBuffer();
+        virtual ~OpenGLImmutableBuffer() = default;
 
-	private:
-		OpenGLBufferUsage m_usage;
-		OpenGLBufferID m_bufferID;
+    protected:
+        OpenGLBufferHandle m_handle;
+
+    private:
+        Bool m_isInit;
+        Bool m_isDestroy;
     };
 
-	template<typename T, OpenGLBufferTarget bt>
-    OpenGLBuffer<T, bt>::~OpenGLBuffer() 
-    { 
-        NP_GL_CHECK_CALL(glDeleteBuffers(1, &m_bufferID));
+    template<typename T>
+    SharedRef<OpenGLImmutableBuffer> OpenGLImmutableBuffer::Create(std::vector<T>& data)
+    {
+        return Create(data.size() * sizeof(T), data.data());
     }
-
-	template<typename T, OpenGLBufferTarget bt>
-    OpenGLBuffer<T, bt>::OpenGLBuffer(const std::vector<T>& data, OpenGLBufferUsage usage) 
-        : m_usage(usage)
-	{
-		NP_GL_CHECK_CALL(glGenBuffers(1, &m_bufferID));
-		Bind();
-		NP_GL_CHECK_CALL(glBufferData(bt, data.size() * sizeof(T), data.data(), usage));
-    }
-	  
-	template<typename T, OpenGLBufferTarget bt>
-    inline void OpenGLBuffer<T, bt>::Bind() const 
-    { 
-        NP_GL_CHECK_CALL(glBindBuffer(bt, m_bufferID));
-    }
-
-	template<typename T, OpenGLBufferTarget bt>
-    inline void OpenGLBuffer<T, bt>::Unbind() const 
-    { 
-        NP_GL_CHECK_CALL(glBindBuffer(bt, 0));
-    }
-
-	template<typename T, OpenGLBufferTarget bt>
-    OpenGLBufferUsage OpenGLBuffer<T, bt>::Usage() const 
-    { 
-        return m_usage;
-    }
-
-	template<typename T, OpenGLBufferTarget bt>
-    OpenGLBufferID OpenGLBuffer<T, bt>::GetID() const 
-    { 
-        return m_bufferID; 
-    }
-    
-    using OpenGLElementBuffer = OpenGLBuffer<UInt, OpenGLBufferTarget::ElementArrayBuffer>;
-    
-    template<typename T = Vertex>
-    using OpenGLArrayBuffer = OpenGLBuffer<T, OpenGLBufferTarget::ArrayBuffer>;
     
 }

@@ -68,7 +68,6 @@ namespace Nenuphar
 
     private:
         std::size_t m_size;
-        bool m_isBinded;
         UInt m_uniformBuffer;
     };
 

@@ -1,7 +1,8 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLUniformBuffer.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
-#include "glad/glad.h"
+
+#include <glad/glad.h>
 
 
 namespace Nenuphar
@@ -43,15 +44,11 @@ namespace Nenuphar
 
     void OpenGLUniformBuffer::Bind()
     {
-        if (m_isBinded) return;
-        m_isBinded = true;
         NP_GL_CHECK_CALL(glBindBuffer(GL_UNIFORM_BUFFER, m_uniformBuffer));
     }
 
     void OpenGLUniformBuffer::Unbind()
     {
-        if (!m_isBinded) return;
-        m_isBinded = false;
         NP_GL_CHECK_CALL(glBindBuffer(GL_UNIFORM_BUFFER, 0));
     }
 

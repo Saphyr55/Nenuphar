@@ -14,7 +14,7 @@ namespace Nenuphar
     struct OpenGLMesh
     {
         MeshId Id;
-        UniquePtr<OpenGLVertexArray> VAO;
+        SharedRef<OpenGLVertexArray> VAO;
         Int Count;
     };
 

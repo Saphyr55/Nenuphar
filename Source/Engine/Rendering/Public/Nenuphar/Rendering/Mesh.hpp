@@ -1,12 +1,10 @@
 #pragma once
 
 
-#include "Material.hpp"
-#include "Nenuphar/Rendering/Texture.hpp"
+#include "Nenuphar/Rendering/Material.hpp"
 #include "Nenuphar/Rendering/Vertex.hpp"
 
 #include <unordered_map>
-#include <unordered_set>
 #include <vector>
 
 namespace Nenuphar

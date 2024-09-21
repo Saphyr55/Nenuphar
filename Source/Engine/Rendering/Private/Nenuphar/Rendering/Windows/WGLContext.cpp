@@ -80,12 +80,15 @@ namespace Nenuphar
             );
         }
 
+        Int majorVersion = 4;
+        Int minorVersion = 6;
+
         Int openGLAttributes[] =
         {
             WGL_CONTEXT_MAJOR_VERSION_ARB,
-            4,
+            majorVersion,
             WGL_CONTEXT_MINOR_VERSION_ARB,
-            6,
+            minorVersion,
 #if defined(_DEBUG) || defined(DEBUG)
             WGL_CONTEXT_FLAGS_ARB,
             WGL_CONTEXT_DEBUG_BIT_ARB,
