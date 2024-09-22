@@ -5,14 +5,14 @@
 
 #if NP_PLATFORM_WINDOWS
 
-#include "Nenuphar/ApplicationCore/WindowBase.hpp"
+#include "Nenuphar/ApplicationCore/Window.hpp"
 #include "Nenuphar/ApplicationCore/WindowSignals.hpp"
 #include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
 
 namespace Nenuphar
 {
     
-    class WindowsWindow : public WindowBase
+    class WindowsWindow : public Window
     {
         friend WindowsApplication;
 

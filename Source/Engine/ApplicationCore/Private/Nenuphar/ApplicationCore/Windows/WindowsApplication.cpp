@@ -137,7 +137,126 @@ namespace Nenuphar
 
     void WindowsApplication::DeferMessage(SharedRef<WindowsWindow> window, HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
     {
+        switch (msg)
+        {
+            case WM_SIZE: {
+                auto width = Float(LOWORD(lParam));
+                auto height = Float(HIWORD(lParam));
+                m_definition.Width = width;
+                m_definition.Height = height;
+                m_windowSignals.EmitOnResize(ResizeEvent(width, height));
+                break;
+            }
+            case WM_PAINT: {
+                break;
+            }
+            case WM_SYSKEYDOWN:
+            case WM_KEYDOWN: {
+                KeyEvent e(static_cast<Input::Key>(wParam));
+                if ((HIWORD(lParam) & KF_REPEAT) != KF_REPEAT)
+                {
+                    m_windowSignals.EmitOnKeyPressed(e);
+                }
+
+                m_windowSignals.EmitOnKeyDown(e);
+                break;
+            }
+            case WM_LBUTTONUP: {
+                const auto button = Input::Button::Left;
+                const MouseButtonEvent e(button);
+                m_windowSignals.EmitOnButtonRelease(e);
+                break;
+            }
+            case WM_MBUTTONUP: {
+                const auto button = Input::Button::Middle;
+                const MouseButtonEvent e(button);
+                m_windowSignals.EmitOnButtonRelease(e);
+                break;
+            }
+            case WM_RBUTTONUP: {
+                const auto button = Input::Button::Right;
+                const MouseButtonEvent e(button);
+                m_windowSignals.EmitOnButtonRelease(e);
+                break;
+            }
+            case WM_LBUTTONDOWN: {
+                const auto button = Input::Button::Left;
+                const MouseButtonEvent e(button);
+                m_windowSignals.EmitOnButtonDown(e);
+                break;
+            }
+            case WM_MBUTTONDOWN: {
+                const auto button = Input::Button::Middle;
+                const MouseButtonEvent e(button);
+                m_windowSignals.EmitOnButtonDown(e);
+                break;
+            }
+            case WM_RBUTTONDOWN: {
+                const auto button = Input::Button::Right;
+                const MouseButtonEvent e(button);
+                m_windowSignals.EmitOnButtonDown(e);
+                break;
+            }
+            case WM_XBUTTONDOWN:
+            case WM_XBUTTONUP: {
+                const auto button = GET_XBUTTON_WPARAM(wParam) == XBUTTON1
+                                            ? Input::Button::XButton1
+                                            : Input::Button::XButton2;
+
+                const MouseButtonEvent e(button);
+                if (message == WM_XBUTTONDOWN)
+                {
+                    m_windowSignals.EmitOnButtonDown(e);
+                }
+                else
+                {
+                    m_windowSignals.EmitOnButtonRelease(e);
+                }
+                break;
+            }
+            case WM_SYSKEYUP:
+            case WM_KEYUP: {
+                const KeyEvent e(static_cast<Input::Key>(wParam));
+                m_windowSignals.EmitOnKeyRelease(e);
+                break;
+            }
+            case WM_NCMOUSEMOVE:
+            case WM_MOUSEMOVE: {
+                static Float lastMouseX = 0;
+                static Float lastMouseY = 0;
+                const Float x = GET_X_LPARAM(lParam);
+                const Float y = GET_Y_LPARAM(lParam);
+                const Float relX = x - lastMouseX;
+                const Float relY = y - lastMouseY;
+                const MouseMoveEvent e(relX, relY, x, y);
+                lastMouseX = x;
+                lastMouseY = y;
+                m_windowSignals.EmitOnMouseMove(e);
+                break;
+            }
+            case WM_MOUSEWHEEL: {
+                const Float delta = GET_WHEEL_DELTA_WPARAM(wParam);
+                const Float x = GET_X_LPARAM(lParam);
+                const Float y = GET_Y_LPARAM(lParam);
+                const MouseWheelEvent e(delta, y, x);
+                m_windowSignals.EmitOnMouseWheel(e);
+                break;
+            }
+            case WM_CLOSE: {
+                CloseEvent closeEvent;
+                NP_INFO(WindowsWindow, "The window ID={}, HWND={} closed.", ID, fmt::ptr(hwnd));
+                m_windowSignals.EmitOnClose(closeEvent);
+                return EXIT_SUCCESS;
+            }
+            case WM_DESTROY: {
+                PostQuitMessage(EXIT_SUCCESS);
+                return EXIT_SUCCESS;
+            }
+            default:
+                break;
+        }
         
+        return 0;
     }
 
     void WindowsApplication::Destroy()
