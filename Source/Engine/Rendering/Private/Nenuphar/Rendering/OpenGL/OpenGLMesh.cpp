@@ -31,17 +31,10 @@ namespace Nenuphar
         return OpenGLMeshStorage::s_mainStorage.m_storage;
     }
 
-    void OpenGLPersistMesh(const MeshId& meshId)
+    void OpenGLSubmitMesh(const MeshId& meshId)
     {
         Mesh& mesh = MeshStorage::GetGlobalStorage()[meshId];
-        Int count = mesh.Indices.size();
 
-        auto vbo = OpenGLImmutableBuffer::Create(mesh.Vertices);
-        auto ebo = OpenGLImmutableBuffer::Create(mesh.Indices);
-        auto vao = OpenGLVertexArray::Create(ebo->GetHandle(), vbo->GetHandle());
-
-        OpenGLMeshStorage::GetGlobalStorage().insert({meshId,
-                                                      OpenGLMesh(meshId, vao, count)});
     }
 
     void OpenGLDrawMesh(SharedRef<UniformRegistry> registry, const MeshId& id)
@@ -49,7 +42,6 @@ namespace Nenuphar
         NCHECK(OpenGLMeshStorage::GetGlobalStorage().contains(id))
         NCHECK(MeshStorage::GetGlobalStorage().contains(id))
 
-        auto storage = OpenGLTextureStorage::GetGlobalStorageTexture2D();
         auto& glMesh = OpenGLMeshStorage::GetGlobalStorage().at(id);
         auto& mesh = MeshStorage::GetGlobalStorage().at(id);
 
@@ -79,30 +71,23 @@ namespace Nenuphar
 
             if (storage.contains(textureExtraInfo.Texture))
             {
-                SharedRef<OpenGLTexture2D> openGLTexture = storage.at(textureExtraInfo.Texture);
-
-                ActiveTexture(i);
+                SharedRef<OpenGLTexture> openGLTexture = storage.at(textureExtraInfo.Texture);
+                openGLTexture->BindTextureUnit(i);
 
                 switch (textureExtraInfo.TTM)
                 {
                     case TextureTypeModel::Diffuse: {
                         registry->Get<Int>("UTexture").UpdateValue((Int)i);
                         registry->Get<Int>("UMaterial.DiffuseTexture").UpdateValue((Int)i);
+                        break;
                     }
-                    break;
                     case TextureTypeModel::Specular: {
                         registry->Get<Int>("UMaterial.SpecularTexture").UpdateValue((Int)i);
+                        break;
                     }
-                    break;
                 }
-
-                openGLTexture->Bind();
             }
         }
-
-        glMesh.VAO->Bind();
-        NP_GL_CHECK_CALL(glDrawElements(GL_TRIANGLES, glMesh.Count, GL_UNSIGNED_INT, 0));
-
-        ActiveTexture(0);
+        
     }
 }// namespace Nenuphar

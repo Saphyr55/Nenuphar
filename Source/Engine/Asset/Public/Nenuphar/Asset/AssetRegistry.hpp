@@ -3,6 +3,7 @@
 #include "Nenuphar/Asset/Asset.hpp"
 #include "Nenuphar/Asset/AssetLoader.hpp"
 #include "Nenuphar/Common/Container/SparseSet.hpp"
+#include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
@@ -11,11 +12,12 @@
 #include <memory>
 #include <typeindex>
 #include <unordered_map>
+#include <utility>
 
 
 namespace Nenuphar
 {
-
+    
     class AssetRegistry
     {
         template<typename T>
@@ -34,6 +36,9 @@ namespace Nenuphar
 
         template<CIsAsset A, CIsAssetOptions Options = AssetOptions>
         void AddLoader(SharedRef<AssetLoader<A, Options>> loader);
+    
+        template<CIsAsset A, CIsAssetOptions Options, typename Loader>
+        void EmplaceLoader(auto&&... args);
 
         template<CIsAsset A>
         SharedRef<AssetLoader<A>> GetLoader();
@@ -88,6 +93,13 @@ namespace Nenuphar
     void AssetRegistry::AddLoader(SharedRef<AssetLoader<A, Options>> loader)
     {
         m_loaders[typeid(A)] = loader;
+    }
+
+
+    template<CIsAsset A, CIsAssetOptions Options, typename Loader>
+    void AssetRegistry::EmplaceLoader(auto&&... args)
+    {
+        AddLoader<A, Options>(MakeSharedRef<Loader>(std::forward<decltype(args)>(args)...));
     }
 
 

@@ -66,7 +66,7 @@ namespace Nenuphar
 		OpenGLShader& Attach(OpenGLShaderType st, StringView source);
 
     public:
-        OpenGLShader(StringView vs, StringView fs);
+        OpenGLShader(std::string_view vertexSource, StringView fragmentSource);
         OpenGLShader();
 		~OpenGLShader();
 

@@ -17,6 +17,7 @@
 #include "Nenuphar/Model/ModelAsset.hpp"
 #include "Nenuphar/RenderLight/RenderTypes.hpp"
 #include "Nenuphar/Rendering/GraphicsContext.hpp"
+#include "Nenuphar/Rendering/ImageAsset.hpp"
 #include "Nenuphar/Rendering/RenderService.hpp"
 #include "Nenuphar/Rendering/Renderer.hpp"
 #include "Nenuphar/Rendering/Shader.hpp"
@@ -40,16 +41,14 @@ Np::AppContext* GenesisApp::ProvideAppContext()
 Bool GenesisApp::OnInitialize()
 {
     Np::AssetRegistry& assets = Np::AssetRegistry::Instance();
-    auto textureAssetLoader = Np::MakeSharedRef<Np::TextureAssetLoader>();
-    auto modelAssetLoader = Np::MakeSharedRef<Np::ModelAssetLoader>();
-    assets.AddLoader<Np::ModelAsset, Np::ModelAssetOptions>(modelAssetLoader);
-    assets.AddLoader<Np::TextureAsset, Np::AssetOptions>(textureAssetLoader);
-
+    assets.EmplaceLoader<Np::ImageAsset, Np::AssetOptions, Np::ImageAssetLoader>();
+    assets.EmplaceLoader<Np::ModelAsset, Np::ModelAssetOptions, Np::ModelAssetLoader>();
+    
     Np::WindowDefinition definition("Genesis Sample Application", 1080, 720);
     MainWindow = Np::WindowBase::Create(definition);
     MainGraphicContext = Np::GraphicsContext::Create(Np::RenderAPI::OpenGL, MainWindow);
 
-    NCHECK(Np::RenderService::Instance()->GetRenderer()->GetMainShaderProgram())
+    NCHECK(Np::RenderService::Instance()->GetRenderer())
     SharedRef<Np::Renderer> renderer = Np::RenderService::Instance()->GetRenderer();
 
     MainRenderData = RenderData::Create();
@@ -72,7 +71,7 @@ Bool GenesisApp::OnInitialize()
     Registry.AddComponent<RenderableModel>(ESponza, rSponzaModel);
 
     Model cubeModel = CubeModelFactory();
-    ModelId cubeModelId = renderer->PersistModel(cubeModel);
+    ModelId cubeModelId = renderer->SubmitModel(cubeModel);
 
     // Light source
     RenderableModel rLightModel;

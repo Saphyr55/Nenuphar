@@ -97,7 +97,7 @@ namespace Nenuphar
 
                 if (!texturesMapping.contains(pathTexture) && isPersit)
                 {
-                    SharedRef<TextureAsset> textureAsset = assetRegistry.Load<TextureAsset>(pathTexture, texAssetOptions);
+                    SharedRef<ImageAsset> textureAsset = assetRegistry.Load<ImageAsset>(pathTexture, texAssetOptions);
                     NCHECK(textureAsset)
                     Texture texture = options.Renderer->PersistTexture(textureAsset);
                     texturesMapping.insert({pathTexture, texture});
@@ -116,7 +116,7 @@ namespace Nenuphar
                 
                 if (!texturesMapping.contains(pathTexture) && isPersit)
                 {
-                    SharedRef<TextureAsset> textureAsset = assetRegistry.Load<TextureAsset>(pathTexture, texAssetOptions);
+                    SharedRef<ImageAsset> textureAsset = assetRegistry.Load<ImageAsset>(pathTexture, texAssetOptions);
                     NCHECK(textureAsset)
 
                     Texture texture = options.Renderer->PersistTexture(textureAsset);

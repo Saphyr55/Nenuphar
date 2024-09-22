@@ -2,7 +2,7 @@
 
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Rendering/Renderer.hpp"
-#include <cstddef>
+
 
 namespace Nenuphar
 {
@@ -23,7 +23,7 @@ namespace Nenuphar
 
 
     // TODO: Change to a more concrete specification model file.
-    struct ModelAssetOptions : AssetOptions 
+    struct ModelAssetOptions : AssetOptions
     {
         bool PersistTexture = false;
         SharedRef<Renderer> Renderer = nullptr;

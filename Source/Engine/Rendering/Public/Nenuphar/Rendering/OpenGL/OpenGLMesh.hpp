@@ -31,7 +31,7 @@ namespace Nenuphar
         static OpenGLMeshStorage s_mainStorage;
     };
 
-    void OpenGLPersistMesh(const MeshId& mesh);
+    void OpenGLSubmitMesh(const MeshId& mesh);
 
     void OpenGLDrawMesh(SharedRef<UniformRegistry> registry, const MeshId& id);
 

@@ -1,23 +1,24 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLRenderer.hpp"
-#include "Nenuphar/Asset/AssetRegistry.hpp"
 #include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Debug.hpp"
+#include "Nenuphar/Rendering/ImageAsset.hpp"
 #include "Nenuphar/Rendering/Mesh.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLMainShader.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLMesh.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
-#include "Nenuphar/Rendering/Uniform.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLVertexArray.hpp"
+#include "Nenuphar/Rendering/RenderObject.hpp"
 #include "Nenuphar/Rendering/Shader.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
-#include "Nenuphar/Rendering/TextureAsset.hpp"
+#include <memory>
 
 namespace Nenuphar
 {
     // TODO: Use a sparse set and the pagination technique to have better perfomance.
     static std::vector<std::vector<MeshId>> ModelStorage;
 
-    OpenGLRenderer::OpenGLRenderer() 
+    OpenGLRenderer::OpenGLRenderer()
     {
         m_mainShaderProgram = MakeSharedRef<OpenGLMainShaderProgram>();
         m_mainShaderProgram->Initialize();
@@ -26,86 +27,30 @@ namespace Nenuphar
     SharedRef<MainShaderProgram> OpenGLRenderer::GetMainShaderProgram()
     {
         return m_mainShaderProgram;
-    } 
-
-    Texture OpenGLRenderer::PersistTexture(SharedRef<TextureAsset> asset,
-                                           const PersitTextureOption& option) const
+    }
+    
+    RenderObject OpenGLRenderer::SubmitRenderData(
+            const std::vector<Vertex>& vertices,
+            const std::vector<VIndice>& indices) const
     {
-        NCHECK(asset)
-        SharedRef<OpenGLTexture2D> texture = CreateOpenGLTexture2D(0);
-        texture->Bind();
-        DefaultParameterTexture(asset->Information, OpenGLTexture2D::Parameter());
-        texture->Unbind();
+        Int count = indices.size();
 
-        if (option.ReleaseData)
-        {
-            option.Registry.GetLoader<TextureAsset>()->Unload(asset);
-        }
+        auto vbo = OpenGLImmutableBuffer::Create(vertices);
+        auto ebo = OpenGLImmutableBuffer::Create(indices);
+        auto vao = OpenGLVertexArray::Create(ebo->GetHandle(), vbo->GetHandle());
 
-        return texture->GetHandle();
+        vbo->Destroy();
+        ebo->Destroy();
+
+        return RenderObject(0, vao);
     }
 
-
-    ModelId OpenGLRenderer::PersistModel(const Model& model) const
+    void OpenGLRenderer::Render(RenderObject& object) const
     {
-        ModelId id = ModelStorage.size();
-        ModelStorage.push_back({});
-        for (auto& mesh: model.Meshes)
-        {
-            ModelStorage[id].push_back(PersistMesh(mesh));
-        }
-        return id;
+        auto vao = std::reinterpret_pointer_cast<OpenGLVertexArray>(object.InternalState);
+        vao->Bind();
+        NP_GL_CHECK_CALL(glDrawElements(GL_TRIANGLES, glMesh.Count, GL_UNSIGNED_INT, 0));
     }
 
-
-    MeshId OpenGLRenderer::PersistMesh(const Mesh& mesh) const
-    {
-        static MeshId LastId = 0;
-        MeshId id = LastId++;
-        MeshStorage::GetGlobalStorage().insert({id, mesh});
-        OpenGLPersistMesh(id);
-        return id;
-    }
-
-
-    void OpenGLRenderer::TextureModel(const MeshId& model, const Texture& texture) const
-    {
-        for (const MeshId& mesh: ModelStorage[model])
-        {
-            TextureMesh(mesh, texture);
-        }
-    }
-
-
-    void OpenGLRenderer::TextureMesh(const MeshId& meshId, const Texture& texture) const
-    {
-        Mesh& mesh = MeshStorage::GetGlobalStorage().at(meshId);
-        Material mat;
-        mat.DiffuseTexture = texture;
-        mesh.Materials.push_back(mat);
-    }
-
-
-    void OpenGLRenderer::DrawMesh(SharedRef<Shader> shader,
-                                  SharedRef<UniformRegistry> registry,
-                                  const MeshId& mesh) const
-    {
-        NCHECK(shader)
-        shader->Use();
-        OpenGLDrawMesh(registry, mesh);
-    }
-
-
-    void OpenGLRenderer::DrawModel(SharedRef<Shader> shader,
-                                   SharedRef<UniformRegistry> registry,
-                                   const ModelId& model) const
-    {
-        NCHECK(shader)
-        shader->Use();
-        for (const MeshId& mesh: ModelStorage[model])
-        {
-            OpenGLDrawMesh(registry, mesh);
-        }
-    }
 
 }// namespace Nenuphar

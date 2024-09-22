@@ -1,39 +1,16 @@
 #pragma once
 
-#include "Nenuphar/Common/Common.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
-#include "Nenuphar/Core/IO/Path.hpp"
+#include "RenderHandle.hpp"
 
-#include <functional>
 
-namespace Nenuphar
+namespace Nenuphar 
 {
-
-    using Texture = UInt32;
-    using TextureUnit = UInt32;
-
     
-    enum class ImageFormat : Int
+    class Texture : public RenderHandle
     {
-        RED,
-        RGB,
-        RGBA
-    };
-
-    
-    struct TextureIdentication
-    {
-        Texture Handle;
-        TextureUnit Unit;
-    };
-
-    
-    struct TextureInformation
-    {
-        Word8* Data;
-        ImageFormat Format;
-        Int Width;
-        Int Height;
+    private:
+        UInt m_id;
     };
 
 }

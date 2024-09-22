@@ -14,26 +14,13 @@ namespace Nenuphar
     public:
         virtual SharedRef<MainShaderProgram> GetMainShaderProgram() override;
 
-        virtual Texture PersistTexture(SharedRef<TextureAsset> asset,
-                                       const PersitTextureOption& option = {}) const override;
+        virtual Texture SubmitTexture(SharedRef<ImageAsset> asset,
+                                      const SubmitTextureOption& option = {}) const override;
 
-        virtual ModelId PersistModel(const Model& model) const override;
+        virtual RenderObject SubmitRenderData(const std::vector<Vertex>& vertices,
+                                              const std::vector<VIndice>& indices) const override;
 
-        virtual MeshId PersistMesh(const Mesh& mesh) const override;
-
-        virtual void TextureModel(const MeshId& model,
-                                  const Texture& texture) const override;
-
-        virtual void TextureMesh(const MeshId& mesh,
-                                 const Texture& texture) const override;
-
-        virtual void DrawModel(SharedRef<Shader> shader,
-                               SharedRef<UniformRegistry> registry,
-                               const ModelId& model) const override;
-        
-        virtual void DrawMesh(SharedRef<Shader> shader,
-                              SharedRef<UniformRegistry> registry,
-                              const MeshId& mesh) const override;
+        virtual void Render(RenderObject& object) const override;
 
     public:
         OpenGLRenderer();

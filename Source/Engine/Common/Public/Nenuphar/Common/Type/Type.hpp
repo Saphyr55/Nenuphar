@@ -75,6 +75,4 @@ namespace Nenuphar
     template<class... Ts>
     OverLoaded(Ts...) -> OverLoaded<Ts...>;
 
-    using Buffer = Word8[];
-
 }

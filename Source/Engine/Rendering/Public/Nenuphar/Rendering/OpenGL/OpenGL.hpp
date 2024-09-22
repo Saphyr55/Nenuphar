@@ -11,7 +11,7 @@
 #include "Nenuphar/Math/Math.hpp"
 
 namespace Nenuphar
-{
+{	
     
     enum OpenGLFormatPixel : Int
 	{
