@@ -3,6 +3,7 @@
 #include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLCommandBuffer.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLCommandQueue.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLShader.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
@@ -27,31 +28,61 @@ namespace Nenuphar
         return MakeSharedRef<OpenGLShader>(options.VertexSource, options.FragmentSource);
     }
 
+    SharedRef<RenderHandle> OpenGLRenderDevice::CreateRenderHandle(const std::vector<Vertex>& vertices,
+                                               const std::vector<VIndice>& indices)
+    {
+        auto vbo = OpenGLImmutableBuffer::Create(vertices);
+        auto ebo = OpenGLImmutableBuffer::Create(indices);
+        auto vao = OpenGLVertexArray::Create(ebo->GetHandle(),
+                                             vbo->GetHandle());
+
+        vbo->Destroy();
+        ebo->Destroy();
+
+        return vao;
+    }
+
     SharedRef<CommandBuffer> OpenGLRenderDevice::CreateCommandBuffer()
     {
         return MakeSharedRef<OpenGLCommandBuffer>();
     }
 
+    SharedRef<CommandQueue> OpenGLRenderDevice::CreateCommandQueue()
+    {
+        return MakeSharedRef<OpenGLCommandQueue>();
+    }
+
     SharedRef<Texture> OpenGLRenderDevice::CreateTexture(SharedRef<ImageAsset> asset,
-                                                         const SubmitTextureOption& option)
+                                                         const TextureConstructOptions& option)
     {
         NCHECK(asset)
-        SharedRef<OpenGLTexture> texture = MakeSharedRef<OpenGLTexture>(asset->Definition);
-        texture->Initialize();
 
         OpenGLTexture::Rect rect;
         rect.X = 0;
         rect.Y = 0;
         rect.Width = asset->Definition.Width;
         rect.Height = asset->Definition.Height;
-        texture->SubImage(0, rect, asset->Definition.Data);
+
+        SharedRef<OpenGLTexture> texture = OpenGLTexture::Create(asset->Definition, rect);
+
+        if (option.AutoRelease)
+        {
+            option.Registry.Unload(asset);
+        }
 
         return texture;
+    }
+
+    SharedRef<MainShaderProgram> OpenGLRenderDevice::GetMainShaderProgram()
+    {
+        return m_mainShaderProgram;
     }
 
     OpenGLRenderDevice::OpenGLRenderDevice(RenderAPI renderAPI, SharedRef<Window> window)
         : RenderDevice(renderAPI, window)
     {
+        m_mainShaderProgram = MakeSharedRef<OpenGLMainShaderProgram>();
+        m_mainShaderProgram->Initialize();
     }
 
     OpenGLRenderDevice::~OpenGLRenderDevice() = default;

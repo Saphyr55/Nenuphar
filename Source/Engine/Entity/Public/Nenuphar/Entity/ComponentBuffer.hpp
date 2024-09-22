@@ -83,7 +83,7 @@ namespace Nenuphar
         private:
             std::size_t m_elementSize;
             std::size_t m_count;
-            std::unique_ptr<Buffer> m_elements;
+            std::unique_ptr<Word[]> m_elements;
             ComponentTI m_cti;
         };
 

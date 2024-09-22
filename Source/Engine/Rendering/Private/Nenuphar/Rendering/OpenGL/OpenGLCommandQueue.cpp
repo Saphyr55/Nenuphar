@@ -8,7 +8,7 @@ namespace Nenuphar
     {
         m_commandQueue.push(commandBuffer);
     }
-    
+
     void OpenGLCommandQueue::Execute() 
     {
         while (!m_commandQueue.empty()) 

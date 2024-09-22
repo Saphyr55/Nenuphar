@@ -1,32 +1,43 @@
 #include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
 #include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
+
+#include <mmiscapi.h>
 #include <profileapi.h>
+#include <windef.h>
 #include <winnt.h>
 
 #if NP_PLATFORM_WINDOWS
 
 namespace Nenuphar
 {
-    using WindowsWindowRegistry = std::unordered_map<HWND, WindowsWindow*>;
-
     static Double GClockFrequency;
     static LARGE_INTEGER GStartTime;
-
-    static WindowsWindowRegistry GWindowsWindowRegistry;
-
     const TCHAR WindowsApplication::ApplicationClassName[] = TEXT("NenupharApplication");
 
-    void RegisterWindowsWindow(HWND handle, WindowsWindow* windowsWindow)
-    {
-        GWindowsWindowRegistry.emplace(handle, windowsWindow);
-    }
+    WindowsApplication* GWindowsApplication = nullptr;
 
     SharedRef<PlatformApplication> PlatformAppGet()
     {
-        static SharedRef<WindowsApplication> GWindowsApplication = 
-            MakeSharedRef<WindowsApplication>(GetModuleHandle(nullptr));
-        
-        return GWindowsApplication;
+        static SharedRef<WindowsApplication> WindowsApplication_ = [&] {
+            auto windowsApp = MakeSharedRef<WindowsApplication>(GetModuleHandle(nullptr));
+            GWindowsApplication = windowsApp.get();
+            return windowsApp;
+        }();
+
+        return WindowsApplication_;
+    }
+
+    SharedRef<WindowsWindow> FindWindowByHWND(WindowsWindowRegistry registry, HWND hwnd)
+    {
+        for (auto& window: registry)
+        {
+            if (window->GetHWND() == hwnd)
+            {
+                return window;
+            }
+        }
+        return nullptr;
     }
 
     WindowsApplication::WindowsApplication(HINSTANCE hinstance)
@@ -44,24 +55,32 @@ namespace Nenuphar
         return m_hinstance;
     }
 
-    LRESULT CALLBACK WindowsApplication::ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
+    LRESULT WindowsApplication::ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
     {
-        
-        if (!GWindowsWindowRegistry.contains(hwnd))
+        SharedRef<WindowsWindow> currentWindow = FindWindowByHWND(m_registry, hwnd);
+
+        Int externalResult = 0;
+
+        for (WindowsMessageHandler*& handler : m_messageHandlers)
         {
-            return DefWindowProc(hwnd, msg, wParam, lParam);
+            Int result;
+            if (handler->ProcessMessage(hwnd, msg, wParam, lParam, result))
+            {   
+                externalResult = result;
+            }
         }
 
-        WindowsWindow* window = GWindowsWindowRegistry[hwnd];
+        return DefWindowProc(hwnd, msg, wParam, lParam);
+    }
 
-        MSG message{};
-        message.hwnd = hwnd;
-        message.lParam = lParam;
-        message.wParam = wParam;
-        message.message = msg;
-        message.time = 0;
+    LRESULT WindowsApplicationWndProc(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
+    {
+        return GWindowsApplication->ProcessMessage(hwnd, msg, wParam, lParam);
+    }
 
-        return window->ProcessEvent(message);
+    LRESULT CALLBACK WindowsApplication::WndProc(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
+    {
+        return WindowsApplicationWndProc(hwnd, msg, wParam, lParam);
     }
 
     Bool WindowsApplication::Initialize()
@@ -69,7 +88,7 @@ namespace Nenuphar
         WNDCLASSEX windowClassEX;
         windowClassEX.cbSize = sizeof(WNDCLASSEX);
         windowClassEX.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-        windowClassEX.lpfnWndProc = &ProcessMessage;
+        windowClassEX.lpfnWndProc = &WndProc;
         windowClassEX.cbClsExtra = 0;
         windowClassEX.cbWndExtra = 0;
         windowClassEX.hInstance = m_hinstance;
@@ -92,9 +111,9 @@ namespace Nenuphar
 
         LARGE_INTEGER frequency;
         QueryPerformanceFrequency(&frequency);
-        GClockFrequency = 1.0 / (Double) frequency.QuadPart;
+        GClockFrequency = 1.0 / (Double)frequency.QuadPart;
         QueryPerformanceCounter(&GStartTime);
-        
+
         return true;
     }
 
@@ -102,8 +121,23 @@ namespace Nenuphar
     {
         LARGE_INTEGER now;
         QueryPerformanceCounter(&now);
+
+        return (Double)now.QuadPart * GClockFrequency;
+    }
+
+    void WindowsApplication::AddMessageHandler(WindowsMessageHandler& handler)
+    {
         
-        return (Double) now.QuadPart * GClockFrequency;
+    }
+
+    void WindowsApplication::RemoveMessageHandler(WindowsMessageHandler& handler)
+    {
+
+    }
+
+    void WindowsApplication::DeferMessage(SharedRef<WindowsWindow> window, HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
+    {
+        
     }
 
     void WindowsApplication::Destroy()

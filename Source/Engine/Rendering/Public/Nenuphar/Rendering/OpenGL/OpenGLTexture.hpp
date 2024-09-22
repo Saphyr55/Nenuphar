@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Nenuphar/Common/Type/Type.hpp"
-#include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 #include "Nenuphar/Rendering/Image.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
+
 
 #include <glad/glad.h>
 
@@ -35,14 +36,6 @@ namespace Nenuphar
      */
     class OpenGLTexture : public Texture
     {
-        void SetParameter(UInt pName, Int param) const;
-
-        void SetParameter(UInt pName, Float param) const;
-
-        void SetParameter(UInt pName, const Int* param) const;
-
-        void SetParameter(UInt pName, const Float* param) const;
-
     public:
         struct Rect
         {
@@ -51,6 +44,18 @@ namespace Nenuphar
             std::size_t Width;
             std::size_t Height;
         };
+
+        static SharedRef<OpenGLTexture> Create(const ImageDefinition& imageDefinition,
+                                               const Rect& rect, const Int& level = 0);
+
+    public:
+        void SetParameter(UInt pName, Int param) const;
+
+        void SetParameter(UInt pName, Float param) const;
+
+        void SetParameter(UInt pName, const Int* param) const;
+
+        void SetParameter(UInt pName, const Float* param) const;
 
         void Initialize();
 

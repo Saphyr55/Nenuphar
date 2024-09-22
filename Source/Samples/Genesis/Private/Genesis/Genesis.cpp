@@ -10,16 +10,18 @@
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Entity/EntityRegistry.hpp"
+#include "Nenuphar/Graphics/Mesh.hpp"
 #include "Nenuphar/Math/Camera.hpp"
 #include "Nenuphar/Math/Matrix4.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
 #include "Nenuphar/Model/Model.hpp"
 #include "Nenuphar/Model/ModelAsset.hpp"
 #include "Nenuphar/RenderLight/RenderTypes.hpp"
+#include "Nenuphar/Rendering/CommandBuffer.hpp"
+#include "Nenuphar/Rendering/CommandQueue.hpp"
 #include "Nenuphar/Rendering/GraphicsContext.hpp"
 #include "Nenuphar/Rendering/ImageAsset.hpp"
-#include "Nenuphar/Rendering/RenderService.hpp"
-#include "Nenuphar/Rendering/Renderer.hpp"
+#include "Nenuphar/Rendering/RenderDevice.hpp"
 #include "Nenuphar/Rendering/Shader.hpp"
 #include "Nenuphar/Rendering/UniformRegistry.hpp"
 
@@ -43,15 +45,11 @@ Bool GenesisApp::OnInitialize()
     Np::AssetRegistry& assets = Np::AssetRegistry::Instance();
     assets.EmplaceLoader<Np::ImageAsset, Np::AssetOptions, Np::ImageAssetLoader>();
     assets.EmplaceLoader<Np::ModelAsset, Np::ModelAssetOptions, Np::ModelAssetLoader>();
-    
+
     Np::WindowDefinition definition("Genesis Sample Application", 1080, 720);
     MainWindow = Np::WindowBase::Create(definition);
-    MainGraphicContext = Np::GraphicsContext::Create(Np::RenderAPI::OpenGL, MainWindow);
-
-    NCHECK(Np::RenderService::Instance()->GetRenderer())
-    SharedRef<Np::Renderer> renderer = Np::RenderService::Instance()->GetRenderer();
-
-    MainRenderData = RenderData::Create();
+    Device = Np::RenderDevice::Create(Np::RenderAPI::OpenGL, MainWindow);
+    MainRenderData = RenderData::Create(Device);
 
     // Camera entity.
     ECamera = Registry.Create();
@@ -60,7 +58,8 @@ Bool GenesisApp::OnInitialize()
 
     // Sponza entity.
     RenderableModel rSponzaModel;
-    rSponzaModel.Model = MainRenderData.SponzaModelId;
+    rSponzaModel.Model = std::move(MainRenderData.SponzaAsset->GetModel());
+    RenderCommandSubmitModel(Device, rSponzaModel.Model);
 
     Transform sponzaTransform;
     sponzaTransform.Scale = Vector3f(0.1f);
@@ -70,12 +69,10 @@ Bool GenesisApp::OnInitialize()
     Registry.AddComponent<Transform>(ESponza, sponzaTransform);
     Registry.AddComponent<RenderableModel>(ESponza, rSponzaModel);
 
-    Model cubeModel = CubeModelFactory();
-    ModelId cubeModelId = renderer->SubmitModel(cubeModel);
-
     // Light source
     RenderableModel rLightModel;
-    rLightModel.Model = cubeModelId;
+    rLightModel.Model = CreateCubeModel();
+    RenderCommandSubmitModel(Device, rLightModel.Model);
 
     Transform lightTransform;
     lightTransform.Scale = Vector3f(1.0f);
@@ -100,7 +97,6 @@ Bool GenesisApp::OnInitialize()
     InitCamera(windowSignals, orbitCameraComponent, cameraVelocity);
 
     windowSignals.OnClose().Connect([&](auto&, auto&) {
-        MainWindow->Destroy();
         AppStopCurrent();
     });
 
@@ -115,35 +111,47 @@ Bool GenesisApp::OnInitialize()
 
 void GenesisApp::OnTick(Double deltaTime)
 {
-    SharedRef<Np::Renderer> renderer = Np::RenderService::Instance()->GetRenderer();
-    Vector4f backgroundColor(1.0f / 255, 10.0f / 255, 33.0f / 255, 255.0f / 255);
-    Np::RenderService::Instance()->Clear(backgroundColor);
-
-    SharedRef<Np::MainShaderProgram> shader = renderer->GetMainShaderProgram();
-
     Np::OrbitCamera& camera = Registry.GetComponent<OrbitCamera>(ECamera);
-    Vector3f cameraPosition = camera.Position();
-    
+
     Int width = MainWindow->GetWindowDefinition().Width;
     Int height = MainWindow->GetWindowDefinition().Height;
 
-    glViewport(0, 0, width, height);
+    Np::Viewport viewport;
+    viewport.Width = width;
+    viewport.Height = height;
 
-    // We obtain a projection matrix using the perspective matrix with a fov of 45
-    // degrees, the window aspect, and 0.1 close up and 100 far away.
-    Matrix4f projection = Matrix4f::Perspective(Np::Radians(45), width / (Float)height, 0.1f, 10000.0f);
+    Vector4f backgroundColor(1.0f / 255, 10.0f / 255, 33.0f / 255, 255.0f / 255);
 
-    // We obtain the view in function of the camera.
-    Matrix4f view = Matrix4f::LookAt(cameraPosition, camera.Target, camera.Up);
+    SharedRef<Np::MainShaderProgram> shader = Device->GetMainShaderProgram();
 
-    shader->UpdateProjection(projection);
-    shader->UpdateView(view);
+    SharedRef<Np::CommandQueue> commandQueue = Device->CreateCommandQueue();
+    SharedRef<Np::CommandBuffer> commandBuffer = Device->CreateCommandBuffer();
 
-    shader->GetRegistry()->Get<Vector3f>("UCameraPosition").UpdateValue(cameraPosition);
+    commandBuffer->Clear();
+    commandBuffer->ClearColor(backgroundColor);
+    commandBuffer->SetViewport(viewport);
+    commandBuffer->Record([&]() {
+        Vector3f cameraPosition = camera.Position();
 
-    MainRenderData.OnRenderData(Registry);
+        // We obtain a projection matrix using the perspective matrix with a fov of 45
+        // degrees, the window aspect, and 0.1 close up and 100 far away.
+        Matrix4f projection = Matrix4f::Perspective(Np::Radians(45), width / (Float)height, 0.1f, 10000.0f);
 
-    MainGraphicContext->SwapBuffers();
+        // We obtain the view in function of the camera.
+        Matrix4f view = Matrix4f::LookAt(cameraPosition, camera.Target, camera.Up);
+
+        shader->UpdateProjection(projection);
+        shader->UpdateView(view);
+        shader->GetRegistry()->Get<Vector3f>("UCameraPosition").UpdateValue(cameraPosition);
+    });
+
+    commandQueue->Submit(commandBuffer);
+
+    MainRenderData.OnRenderData(commandQueue, Registry);
+
+    commandQueue->Execute();
+
+    Device->GetGraphicsContext()->SwapBuffers();
     MainWindow->PoolEvent();
 }
 

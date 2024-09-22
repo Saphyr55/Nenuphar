@@ -14,8 +14,8 @@ struct Vector3
     R z = 0;
 
     constexpr Vector3() = default;
-    constexpr Vector3(Vector2<R> vec, R z);
     constexpr Vector3(R x, R y, R z);
+    constexpr Vector3(Vector2<R> vec, R z);
     constexpr explicit Vector3(R r);
 
     auto Dot(const Vec& vec) const;

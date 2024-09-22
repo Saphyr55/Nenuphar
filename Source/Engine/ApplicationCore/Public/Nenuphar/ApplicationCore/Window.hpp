@@ -11,7 +11,6 @@ namespace Nenuphar
 
     using WindowID = UInt16;
 
-
     struct WindowDefinition
     {
         String Title;

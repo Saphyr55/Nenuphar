@@ -8,6 +8,12 @@
 
 namespace Nenuphar
 {
+    
+    OpenGLVertexArray::~OpenGLVertexArray()
+    {
+        Destroy();
+    }
+
     SharedRef<OpenGLVertexArray> OpenGLVertexArray::Create(OpenGLBufferHandle ebo, OpenGLBufferHandle vbo)
     {
         auto vao = MakeSharedRef<OpenGLVertexArray>();

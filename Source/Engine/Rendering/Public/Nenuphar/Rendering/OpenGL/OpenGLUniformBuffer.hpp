@@ -2,9 +2,9 @@
 
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
+#include "Nenuphar/Rendering/RenderBuffer.hpp"
 #include "Nenuphar/Rendering/Shader.hpp"
 
-#include <cstddef>
 
 namespace Nenuphar
 {
@@ -13,7 +13,7 @@ namespace Nenuphar
                                 const char* uniformBlockName);
 
 
-    class OpenGLUniformBuffer
+    class OpenGLUniformBuffer : public RenderBuffer
     {
     public:
         /**

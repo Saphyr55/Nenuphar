@@ -1,46 +1,48 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLCommandBuffer.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Core/Debug.hpp"
+#include "Nenuphar/Rendering/CommandBuffer.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
-#include "Nenuphar/Rendering/OpenGL/OpenGLBuffer.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
-#include "glad/glad.h"
+#include "Nenuphar/Rendering/OpenGL/OpenGLVertexArray.hpp"
+
 #include <memory>
 #include <variant>
 
 namespace Nenuphar
 {
 
-    void OpenGLCommandBuffer::Record(RenderCommandTypes command)
+    void OpenGLCommandBuffer::Record(const RenderCommand& renderCommand)
     {
-        m_commands.push_back(command);
+        OpenGLRenderCommand command;
+        command.Command = renderCommand;
+        Record(std::move(command));
+    }
+
+    void OpenGLCommandBuffer::Record(OpenGLRenderCommandTypes command)
+    {
+        m_commands.push_back(std::move(command));
     }
 
     void OpenGLCommandBuffer::Clear()
     {
-        Record([] {
-        });
+        OpenGLClearCommand command;
+        Record(std::move(command));
     }
 
     void OpenGLCommandBuffer::ClearColor(const Vector4f& color)
     {
-        Record([=] {
-        });
+        OpenGLClearColorCommand command;
+        command.Color = color;
+        Record(std::move(command));
     }
 
     void OpenGLCommandBuffer::SetViewport(const Viewport& viewport)
     {
         OpenGLViewportCommand command;
         command.Viewport = viewport;
-        Record(command);
-    }
-
-    void OpenGLCommandBuffer::BindVertexBuffer(SharedRef<RenderBuffer> buffer)
-    {
-    }
-
-    void OpenGLCommandBuffer::BindIndexBuffer(SharedRef<RenderBuffer> buffer)
-    {
+        Record(std::move(command));
     }
 
     void OpenGLCommandBuffer::BindTexture(SharedRef<Texture> texture, UInt slot)
@@ -48,20 +50,27 @@ namespace Nenuphar
         OpenGLBindTextureCommand command;
         command.Texture = std::reinterpret_pointer_cast<OpenGLTexture>(texture);
         command.Slot = slot;
-        Record(command);
+        NCHECK(command.Texture);
+        Record(std::move(command));
     }
 
-    void OpenGLCommandBuffer::DrawIndexed(UInt indexCount)
+    void OpenGLCommandBuffer::DrawIndexed(SharedRef<RenderHandle> handle, UInt indexCount)
     {
         OpenGLDrawIndexedCommand command;
         command.IndexCount = indexCount;
-        Record(command);
+        command.VAO = std::reinterpret_pointer_cast<OpenGLVertexArray>(handle);
+        Record(std::move(command));
+    }
+
+    void OpenGLCommandBuffer::Execute(const OpenGLRenderCommand& command)
+    {
+        command.Command();
     }
 
     void OpenGLCommandBuffer::Execute(const OpenGLViewportCommand& command)
     {
-        NP_GL_CHECK_CALL(glViewport(command.Viewport.X,
-                                    command.Viewport.Y,
+        NP_GL_CHECK_CALL(glViewport((Int)command.Viewport.X,
+                                    (Int)command.Viewport.Y,
                                     command.Viewport.Width,
                                     command.Viewport.Height));
     }
@@ -78,17 +87,26 @@ namespace Nenuphar
 
     void OpenGLCommandBuffer::Execute(const OpenGLDrawIndexedCommand& command)
     {
+        NCHECK(command.VAO)
+        command.VAO->Bind();
         NP_GL_CHECK_CALL(glDrawElements(GL_TRIANGLES, command.IndexCount, GL_UNSIGNED_INT, nullptr));
+    }
+
+    void OpenGLCommandBuffer::Execute(const OpenGLBindTextureCommand& command)
+    {
+        NCHECK(command.Texture);
+        command.Texture->BindTextureUnit(command.Slot);
     }
 
     void OpenGLCommandBuffer::Execute()
     {
+        auto runCommand = [this](const auto& c) {
+            Execute(c);
+        };
+
         for (const auto& command: m_commands)
         {
-            std::visit([&](const auto& c) {
-                Execute(c);
-            },
-                       command);
+            std::visit(runCommand, command);
         }
     }
 

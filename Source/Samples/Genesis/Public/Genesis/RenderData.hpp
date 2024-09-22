@@ -4,15 +4,17 @@
 #include "Nenuphar/Entity/EntityRegistry.hpp"
 #include "Nenuphar/Math/Vector4.hpp"
 #include "Nenuphar/Model/Model.hpp"
-#include "Nenuphar/Rendering/Renderer.hpp"
-#include "Nenuphar/Rendering/Shader.hpp"
+#include "Nenuphar/Model/ModelAsset.hpp"
+#include "Nenuphar/Rendering/RenderDevice.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
+#include "Nenuphar/Rendering/CommandQueue.hpp"
+
 
 namespace Np = Nenuphar;
 
 struct RenderableModel
 {
-    Np::ModelId Model;
+    Np::Model Model;
 };
 
 struct Colorable
@@ -32,13 +34,12 @@ struct RenderTextures
 
 struct RenderData
 {
-    static RenderData Create();
+    static RenderData Create(SharedRef<Np::RenderDevice> device);
 
-    void OnRenderData(Np::EntityRegistry& registry);
+    void OnRenderData(SharedRef<Np::CommandQueue> commandQueue, Np::EntityRegistry& registry);
 
-    Np::ModelId BarrelModelId;
-    Np::ModelId SponzaModelId;
-    Np::ModelId FloorModelId;
+    SharedRef<Np::RenderDevice> Device;
+    SharedRef<Np::ModelAsset> SponzaAsset;
 };
 
 

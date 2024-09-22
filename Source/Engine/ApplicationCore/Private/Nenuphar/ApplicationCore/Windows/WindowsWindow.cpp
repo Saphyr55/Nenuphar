@@ -5,6 +5,8 @@
 #include "Nenuphar/InputSystem/Event.hpp"
 #include "Nenuphar/InputSystem/Button.hpp"
 #include "Nenuphar/InputSystem/InputSystem.hpp"
+#include <cstdlib>
+#include <winuser.h>
 
 #if NP_PLATFORM_WINDOWS
 
@@ -22,7 +24,7 @@ namespace Nenuphar
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
-        }
+        }       
     }
 
     WindowID WindowsWindow::GetID() const
@@ -100,10 +102,9 @@ namespace Nenuphar
 
     void WindowsWindow::Destroy()
     {
-        if (hwnd != nullptr)
+        if (hwnd)
         {
             DestroyWindow(hwnd);
-            hwnd = nullptr;
         }
     }
 
@@ -152,7 +153,12 @@ namespace Nenuphar
                     InputSystem::DownButtons.erase(event.Button);
                 });
     }
-
+    
+    WindowsWindow::~WindowsWindow()
+    {
+        Destroy();
+    }
+    
     Int WindowsWindow::ProcessEvent(MSG msg)
     {
         auto& message = msg.message;
@@ -268,17 +274,22 @@ namespace Nenuphar
                 CloseEvent closeEvent;
                 NP_INFO(WindowsWindow, "The window ID={}, HWND={} closed.", ID, fmt::ptr(hwnd));
                 m_windowSignals.EmitOnClose(closeEvent);
-                break;
+                return EXIT_SUCCESS;
             }
             case WM_DESTROY: {
-                PostQuitMessage(0);
-                return 0;
+                PostQuitMessage(EXIT_SUCCESS);
+                return EXIT_SUCCESS;
             }
             default:
                 break;
         }
 
         return DefWindowProc(hwnd, message, wParam, lParam);
+    }
+
+    HWND WindowsWindow::GetHWND()
+    {
+        return hwnd;
     }
 
     const WindowSignals& WindowsWindow::GetWindowSignals() const

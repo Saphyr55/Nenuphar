@@ -2,14 +2,15 @@
 
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLBuffer.hpp"
+#include "Nenuphar/Rendering/RenderHandle.hpp"
 
 
 namespace Nenuphar
 {
-
+    
     using OpenGLVertexArrayHandle = UInt32;
     
-    class OpenGLVertexArray
+    class OpenGLVertexArray : public RenderHandle
     {
 
     public: 
@@ -26,7 +27,7 @@ namespace Nenuphar
         inline OpenGLVertexArrayHandle GetHandle() const { return m_handle;  }
         
         OpenGLVertexArray() = default;
-        ~OpenGLVertexArray() = default;
+        ~OpenGLVertexArray();
 
     private:
         OpenGLVertexArrayHandle m_handle;

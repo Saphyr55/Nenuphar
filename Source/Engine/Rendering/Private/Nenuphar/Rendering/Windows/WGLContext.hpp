@@ -19,12 +19,12 @@ namespace Nenuphar
 
         virtual void SwapBuffers() const override;
 
-        WGLContext(Ptr<WindowsDeviceContext> deviceContext);
+        WGLContext(UniquePtr<WindowsDeviceContext> deviceContext);
 
         ~WGLContext();
 
     private:
-        Ptr<WindowsDeviceContext> m_deviceContext;
+        UniquePtr<WindowsDeviceContext> m_deviceContext;
         HGLRC m_context;
     };
 

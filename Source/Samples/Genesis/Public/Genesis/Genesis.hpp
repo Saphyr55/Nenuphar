@@ -8,6 +8,7 @@
 #include "Nenuphar/Entity/Entity.hpp"
 #include "Nenuphar/Entity/EntityRegistry.hpp"
 #include "Nenuphar/Rendering/GraphicsContext.hpp"
+#include "Nenuphar/Rendering/RenderDevice.hpp"
 
 namespace Np = Nenuphar;
 
@@ -31,10 +32,8 @@ private:
     Np::AppContext Context;
     Np::EntityRegistry Registry;
     Np::Entity ECamera;
-    Np::Entity EFloor;
-    Np::Entity EBarrel;
     Np::Entity ESponza;
-    UniquePtr<Np::GraphicsContext> MainGraphicContext;
+    SharedRef<Np::RenderDevice> Device;
     SharedRef<Np::Window> MainWindow;
     RenderData MainRenderData;
 };

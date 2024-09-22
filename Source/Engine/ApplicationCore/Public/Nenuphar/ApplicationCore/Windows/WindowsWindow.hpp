@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Nenuphar/Core/Windows.hpp"
+#include <windef.h>
 
 #if NP_PLATFORM_WINDOWS
 
@@ -14,41 +15,43 @@ namespace Nenuphar
     class WindowsWindow : public WindowBase
     {
         friend WindowsApplication;
+
     public:
+        virtual WindowID GetID() const override;
 
-        WindowID GetID() const override;
+        virtual const WindowDefinition& GetWindowDefinition() const override;
 
-        const WindowDefinition& GetWindowDefinition() const override;
+        virtual const WindowSignals& GetWindowSignals() const override;
 
-        const WindowSignals& GetWindowSignals() const override;
+        virtual bool IsWindowMaximized() const override;
 
-        bool IsWindowMaximized() const override;
+        virtual bool IsWindowMinimized() const override;
 
-        bool IsWindowMinimized() const override;
+        virtual bool IsVisible() const override;
 
-        bool IsVisible() const override;
+        virtual void* GetOSWindowHandle() const override;
 
-        void* GetOSWindowHandle() const override;
+        virtual void PoolEvent() const override;
 
-        void PoolEvent() const override;
+        virtual void Hide() override;
 
-        void Hide() override;
+        virtual void Show() override;
 
-        void Show() override;
+        virtual void Restore() override;
 
-        void Restore() override;
+        virtual void Maximize() override;
 
-        void Maximize() override;
+        virtual void Destroy() override;
 
-        void Destroy() override;
+        virtual void ReshapeWindow(Int width, Int height) override;
 
-        void ReshapeWindow(Int width, Int height) override;
+        virtual void SetTitle(StringView title) override;
 
-        void SetTitle(StringView title) override;
+        HWND GetHWND();
 
         WindowsWindow(WindowsApplication& inApplication, WindowDefinition inDefinition);
 
-        ~WindowsWindow() override = default;
+        ~WindowsWindow() override;
 
     private:
         HWND Initialize();

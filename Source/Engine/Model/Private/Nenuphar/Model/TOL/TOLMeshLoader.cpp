@@ -1,26 +1,29 @@
 #include "Nenuphar/Model/TOL/TOLMeshLoader.hpp"
+
 #include "Nenuphar/Asset/AssetRegistry.hpp"
-#include "Nenuphar/Common/Instanciate.hpp"
-#include "Nenuphar/Common/Type/Result.hpp"
+
 #include "Nenuphar/Common/Type/Type.hpp"
+
 #include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Core/IO/Path.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
+
+#include "Nenuphar/Graphics/Material.hpp"
+
 #include "Nenuphar/Math/Vector3.hpp"
+
 #include "Nenuphar/Model/ModelAsset.hpp"
-#include "Nenuphar/Rendering/Material.hpp"
+
+#include "Nenuphar/Rendering/ImageAsset.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
-#include "Nenuphar/Rendering/TextureAsset.hpp"
 #include "Nenuphar/Rendering/Vertex.hpp"
-#include <algorithm>
-#include <unordered_map>
-#include <unordered_set>
 
 #define TINYOBJLOADER_IMPLEMENTATION
-#define TINYOBJLOADER_USE_MAPBOX_EARCUT
 #include <tiny_obj_loader.h>
 
 #include <optional>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 
@@ -31,8 +34,8 @@ namespace Nenuphar
                                            const TOLModelAssetOptions& options) const
     {
         using TRes = ModelLoader::TRes;
-        AssetRegistry& assetRegistry = AssetRegistry::Instance();
-        bool isPersit = options.PersistTexture && options.Renderer;
+        AssetRegistry& assets = AssetRegistry::Instance();
+        bool toSubmit = options.IsSubmit && options.RenderDevice;
 
         NP_INFO(TOLModelLoader::Load, "Loading the obj file '{}'", path.GetFilePath());
 
@@ -78,11 +81,11 @@ namespace Nenuphar
         }
 
         std::vector<Mesh> meshes;
-        std::unordered_map<std::string, Texture> texturesMapping;
+        std::unordered_map<std::string, SharedRef<Texture>> texturesMapping;
         std::vector<Material> inMaterials;
 
-        AssetOptions texAssetOptions;
-        texAssetOptions.IsFromAsset = false;
+        ImageAssetOptions imageOptions;
+        imageOptions.IsFromAsset = false;
 
         for (const tinyobj::material_t& m: materials)
         {
@@ -90,46 +93,59 @@ namespace Nenuphar
             material.Diffuse = Vector3f(m.diffuse[0], m.diffuse[1], m.diffuse[2]);
             material.Specular = Vector3f(m.specular[0], m.specular[1], m.specular[2]);
             material.Shininess = m.shininess;
-
+            
             if (m.diffuse_texname.length() > 0)
             {
-                std::string pathTexture = mtlPathDir->GetFilePath() + m.diffuse_texname;
+                std::string v = mtlPathDir->GetFilePath() + m.diffuse_texname;
 
-                if (!texturesMapping.contains(pathTexture) && isPersit)
+                if (!texturesMapping.contains(v) && toSubmit)
                 {
-                    SharedRef<ImageAsset> textureAsset = assetRegistry.Load<ImageAsset>(pathTexture, texAssetOptions);
-                    NCHECK(textureAsset)
-                    Texture texture = options.Renderer->PersistTexture(textureAsset);
-                    texturesMapping.insert({pathTexture, texture});
+                    SharedRef<ImageAsset> image = assets.Load<ImageAsset>(v, imageOptions);
+                    NCHECK(image)
+
+                    SharedRef<Texture> texture = options.RenderDevice->CreateTexture(image);
+                    NCHECK(texture);
+
+                    texturesMapping.insert({v, texture});
+
+                    if (options.AutoReleaseTextue)
+                    {
+                        assets.Unload(image);
+                    }
                 }
 
-                if (isPersit)
+                if (toSubmit)
                 {
-                    material.DiffuseTexture = texturesMapping.at(pathTexture);
+                    material.DiffuseTexture = texturesMapping.at(v);
                 }
-
             }
 
             if (m.specular_texname.length() > 0)
             {
-                std::string pathTexture = mtlPathDir->GetFilePath() + m.specular_texname;
-                
-                if (!texturesMapping.contains(pathTexture) && isPersit)
-                {
-                    SharedRef<ImageAsset> textureAsset = assetRegistry.Load<ImageAsset>(pathTexture, texAssetOptions);
-                    NCHECK(textureAsset)
+                std::string imagePath = mtlPathDir->GetFilePath() + m.specular_texname;
 
-                    Texture texture = options.Renderer->PersistTexture(textureAsset);
-                    texturesMapping.insert({pathTexture, texture});
+                if (!texturesMapping.contains(imagePath) && toSubmit)
+                {
+                    SharedRef<ImageAsset> image = assets.Load<ImageAsset>(imagePath, imageOptions);
+                    NCHECK(image)
+
+                    SharedRef<Texture> texture = options.RenderDevice->CreateTexture(image);
+                    NCHECK(texture);
+
+                    texturesMapping.insert({imagePath, texture});
+
+                    if (options.AutoReleaseTextue)
+                    {
+                        assets.Unload(image);
+                    }
                 }
 
-                if (isPersit)
+                if (toSubmit)
                 {
-                    material.SpecularTexture = texturesMapping.at(pathTexture);
+                    material.SpecularTexture = texturesMapping.at(imagePath);
                 }
-                
             }
-            
+
             inMaterials.push_back(material);
         }
 
@@ -196,7 +212,7 @@ namespace Nenuphar
                 }
 
                 tinyobj::material_t& material = materials.at(m);
-                
+
                 Material inMaterial = inMaterials.at(m);
                 inMaterial.Id = UInt(m);
                 if (!mat_ids.contains(inMaterial.Id))
@@ -206,10 +222,16 @@ namespace Nenuphar
                 }
             }
 
-            meshes.push_back(Mesh(
-                    std::move(vertices),
-                    std::move(indices),
-                    std::move(mats)));
+            Mesh ownMesh(std::move(vertices),
+                         std::move(indices),
+                         std::move(mats));
+
+            if (toSubmit)
+            {
+                RenderCommandSubmitMesh(options.RenderDevice, ownMesh);
+            }
+
+            meshes.push_back(std::move(ownMesh));
         }
 
 

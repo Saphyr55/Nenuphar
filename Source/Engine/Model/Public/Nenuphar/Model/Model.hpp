@@ -1,61 +1,27 @@
 #pragma once
 
-#include "Nenuphar/Math/Vector2.hpp"
-#include "Nenuphar/Math/Vector3.hpp"
-#include "Nenuphar/Rendering/Mesh.hpp"
-#include "Nenuphar/Rendering/Vertex.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Graphics/Mesh.hpp"
+#include "Nenuphar/Rendering/CommandBuffer.hpp"
+#include "Nenuphar/Rendering/UniformRegistry.hpp"
+
 
 namespace Nenuphar
 {
-    
-    using ModelId = std::size_t;
 
     struct Model
     {
         std::vector<Mesh> Meshes;
     };
 
-    constexpr auto FloorModelFactory = []() {
+    void RenderCommandSubmitModel(SharedRef<RenderDevice> device, Model& model);
 
-        const std::vector<Vertex> Vertices{
-                Vertex{Vector3f(-1.0f, 0.0f, 1.0f), Vector3f(1.0f, 1.0f, 1.0f), Vector2f(0.0f, 0.0f)},
-                Vertex{Vector3f(-1.0f, 0.0f, -1.0f), Vector3f(1.0f, 1.0f, 1.0f), Vector2f(0.0f, 1.0f)},
-                Vertex{Vector3f(1.0f, 0.0f, -1.0f), Vector3f(1.0f, 1.0f, 1.0f), Vector2f(1.0f, 1.0f)},
-                Vertex{Vector3f(1.0f, 0.0f, 1.0f), Vector3f(1.0f, 1.0f, 1.0f), Vector2f(1.0f, 0.0f)}};
+    void RenderCommandDrawModel(SharedRef<CommandBuffer> commandBuffer,
+                                SharedRef<UniformRegistry> registry,
+                                const Model& model);
 
-        // Indices for vertices order
-        std::vector<VIndice> Indices{0, 1, 2,
-                                     0, 2, 3};
+    Model CreateFloorModel();
 
-        return Model({Mesh(std::move(Vertices), std::move(Indices), { })});
-    };
+    Model CreateCubeModel();
 
-    constexpr auto CubeModelFactory = []() {
-
-        const std::vector<Vertex> CubeVertices{
-                Vertex(Vector3f(0.5f, 0.5f, 0.5f),    Vector3f(1.0f),  Vector2f(0.0f, 0.0f)),
-                Vertex(Vector3f(-0.5f, 0.5f, -0.5f),  Vector3f(1.0f),  Vector2f(0.0f, 1.0f)),
-                Vertex(Vector3f(-0.5f, 0.5f, 0.5f),   Vector3f(1.0f),  Vector2f(1.0f, 0.0f)),
-                Vertex(Vector3f(0.5f, -0.5f, -0.5f),  Vector3f(1.0f),  Vector2f(1.0f, 1.0f)),
-                Vertex(Vector3f(-0.5f, -0.5f, -0.5f), Vector3f(1.0f),  Vector2f(0.0f, 0.0f)),
-                Vertex(Vector3f(0.5f, 0.5f, -0.5f),   Vector3f(1.0f),  Vector2f(1.0f, 0.0f)),
-                Vertex(Vector3f(0.5f, -0.5f, 0.5f),   Vector3f(1.0f),  Vector2f(0.0f, 1.0f)),
-                Vertex(Vector3f(-0.5f, -0.5f, 0.5f),  Vector3f(1.0f),  Vector2f(1.0f, 1.0f))};
-
-        const std::vector<VIndice> CubeIndices{
-                0, 1, 2,
-                1, 3, 4,
-                5, 6, 3,
-                7, 3, 6,
-                2, 4, 7,
-                0, 7, 6,
-                0, 5, 1,
-                1, 5, 3,
-                5, 0, 6,
-                7, 4, 3,
-                2, 1, 4,
-                0, 2, 7};
-
-        return Model({Mesh(std::move(CubeVertices), std::move(CubeIndices), {})});
-    };
-}
+}// namespace Nenuphar

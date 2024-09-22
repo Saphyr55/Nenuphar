@@ -17,12 +17,10 @@ namespace Nenuphar
 
     }
 
-
     ModelAsset::ModelAsset(Model&& model)
         : m_model(model)
     {
     }
-
 
     SharedRef<ModelAsset> ModelAssetLoader::Load(const Path& path,
                                                  const ModelAssetOptions& options)
@@ -30,10 +28,10 @@ namespace Nenuphar
         const ModelAssetOptions* optionsPtr = &options;
         if (path.GetExtenstion() == ".obj")
         {
-            // FIXME: Better way to get the options.
+            // TODO: Better way to get the options.
             const TOLModelAssetOptions* tolOptions = 
                 static_cast<const TOLModelAssetOptions*>(optionsPtr);
-                
+
             ModelLoader::TRes res = m_objLoader->Load(path, *tolOptions);
             
             if (!res.HasValue())

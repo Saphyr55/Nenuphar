@@ -15,8 +15,8 @@ namespace Nenuphar
         Vector3f Specular;
         Float Shininess;
 
-        Texture DiffuseTexture;
-        Texture SpecularTexture;
+        SharedRef<Texture> DiffuseTexture;
+        SharedRef<Texture> SpecularTexture;
     };
 
 }

@@ -29,7 +29,7 @@ namespace Nenuphar
         constexpr explicit Asset(const AssetHandle& handle);
         virtual ~Asset() = default;
 
-        inline AssetHandle GetHandle();
+        AssetHandle GetHandle();
 
     private:
         AssetHandle m_handle;

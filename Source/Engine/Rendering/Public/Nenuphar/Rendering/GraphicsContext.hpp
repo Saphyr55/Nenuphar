@@ -18,7 +18,6 @@ namespace Nenuphar
         virtual void SwapBuffers() const = 0;
 
         virtual ~GraphicsContext() = default;
-
     };
 
 }

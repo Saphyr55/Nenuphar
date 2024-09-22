@@ -1,7 +1,6 @@
 #pragma once
 
-#include "ComponentTI.hpp"
-#include "Nenuphar/Common/Container/SparseSet.hpp"
+#include "Nenuphar/Core/Container/SparseSet.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Core.hpp"
 #include "Nenuphar/Entity/ComponentTI.hpp"
@@ -11,9 +10,7 @@
 #include "Nenuphar/Common/Instanciate.hpp"
 
 #include <bitset>
-#include <map>
 #include <memory>
-#include <unordered_set>
 
 
 namespace Nenuphar

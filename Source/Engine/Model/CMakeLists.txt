@@ -11,7 +11,8 @@ set(DEPS            fmt::fmt
                     Engine.Common
                     Engine.Math
                     Engine.Core 
-                    Engine.Rendering                    
+                    Engine.Rendering    
+                    Engine.Graphics                                    
                     Engine.Asset
                     )
 

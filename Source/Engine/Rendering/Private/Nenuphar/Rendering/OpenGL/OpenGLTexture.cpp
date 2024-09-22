@@ -1,4 +1,5 @@
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
+#include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
@@ -6,14 +7,24 @@
 namespace Nenuphar
 {
 
+    SharedRef<OpenGLTexture> OpenGLTexture::Create(const ImageDefinition& imageDefinition,
+                                                   const Rect& rect, const Int& level)
+    {
+        SharedRef<OpenGLTexture> texture = MakeSharedRef<OpenGLTexture>(imageDefinition);
+        texture->Initialize();
+        texture->SubImage(level, rect, imageDefinition.Data);
+        return texture;
+    }
+
     OpenGLTexture::OpenGLTexture(const ImageDefinition& imageDefinition)
         : m_imageDefinition(imageDefinition)
-        , m_formatPixel(OpenGLFormat(m_imageDefinition.Format))
+        , m_formatPixel(OpenGLFormat(imageDefinition.Format))
     {
     }
-    
+
     OpenGLTexture::~OpenGLTexture()
     {
+        Destroy();
     }
 
     void OpenGLTexture::Initialize()
@@ -75,7 +86,7 @@ namespace Nenuphar
     {
         NP_GL_CHECK_CALL(glBindTextureUnit(unit, m_handle));
     }
-    
+
     void OpenGLUnbindTexture(OpenGLTextureTarget target)
     {
         NP_GL_CHECK_CALL(glBindTexture(target, 0));
@@ -85,15 +96,17 @@ namespace Nenuphar
     {
         switch (format)
         {
-            case ImageFormat::RGB:
+            case ImageFormat::RGB: {
                 return OpenGLFormatPixel::RGB;
-            case ImageFormat::RGBA:
+            }
+            case ImageFormat::RGBA: {
                 return OpenGLFormatPixel::RGBA;
-            case ImageFormat::RED:
+            }
+            case ImageFormat::RED: {
                 return OpenGLFormatPixel::RED;
-            default:
-                NCHECK(false)
+            }
         }
+        NCHECK(false)
     }
 
 

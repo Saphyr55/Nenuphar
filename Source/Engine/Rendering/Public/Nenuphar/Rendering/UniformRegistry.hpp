@@ -12,15 +12,13 @@ namespace Nenuphar
     {
     public:
         /**
-        * @brief 
-        * 
-        * @tparam TUniformValueType 
-        * @param name 
-        * @param value 
-        * @return UniformRegistry& 
-        */
-        template<CUniformValueType TUniformValueType>
-        UniformRegistry& Register(std::string_view name, TUniformValueType value);
+         * @brief 
+         * 
+         * @param name 
+         * @param value 
+         * @return UniformRegistry& 
+         */
+        UniformRegistry& Register(std::string_view name, CUniformValueType auto value);
 
         /**
          * @brief Get the Standard object
@@ -35,10 +33,10 @@ namespace Nenuphar
          * 
          * @tparam TUniformValueType 
          * @param name 
-         * @return Uniform<TUniformValueType> 
+         * @return Uniform<TUniformValueType>&
          */
         template<CUniformValueType TUniformValueType>
-        Uniform<TUniformValueType> Get(std::string_view name);
+        Uniform<TUniformValueType>& Get(std::string_view name);
 
         /**
          * @brief 
@@ -61,15 +59,15 @@ namespace Nenuphar
     };
 
     template<CUniformValueType TUniformValueType>
-    Uniform<TUniformValueType> UniformRegistry::Get(std::string_view name)
+    Uniform<TUniformValueType>& UniformRegistry::Get(std::string_view name)
     {   
         return std::get<Uniform<TUniformValueType>>(GetStandard(name));
     }
 
-    template<CUniformValueType TUniformValueType>
-    UniformRegistry& UniformRegistry::Register(std::string_view name, TUniformValueType value)
+    UniformRegistry& UniformRegistry::Register(std::string_view name, CUniformValueType auto value)
     {   
-        m_registry.insert(std::make_pair(name.data(), Uniform<decltype(value)>(m_owner, name, value)));
+        using ValueType = decltype(value); 
+        m_registry.insert(std::make_pair(std::string(name.data()), Uniform<ValueType>(m_owner, name, value)));
         return *this;
     }
     
