@@ -2,10 +2,11 @@
 #include "Genesis/Camera.hpp"
 #include "Genesis/RenderData.hpp"
 #include "Genesis/Transform.hpp"
+#include "Genesis/GenesisApplicationMessageHandler.hpp"
 
 #include "Nenuphar/ApplicationCore/Application.hpp"
-#include "Nenuphar/ApplicationCore/WindowBase.hpp"
-#include "Nenuphar/ApplicationCore/WindowSignals.hpp"
+#include "Nenuphar/ApplicationCore/PlatformApplication.hpp"
+#include "Nenuphar/ApplicationCore/Window.hpp"
 #include "Nenuphar/Asset/AssetRegistry.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Debug.hpp"
@@ -42,12 +43,16 @@ Np::AppContext* GenesisApp::ProvideAppContext()
 
 Bool GenesisApp::OnInitialize()
 {
+    // Do something by default.
+    Np::PlatformAppGet()->SetApplicationMessageHandler(MakeSharedRef<GenesisApplicationMessageHandler>());
+    
     Np::AssetRegistry& assets = Np::AssetRegistry::Instance();
     assets.EmplaceLoader<Np::ImageAsset, Np::AssetOptions, Np::ImageAssetLoader>();
     assets.EmplaceLoader<Np::ModelAsset, Np::ModelAssetOptions, Np::ModelAssetLoader>();
 
     Np::WindowDefinition definition("Genesis Sample Application", 1080, 720);
-    MainWindow = Np::WindowBase::Create(definition);
+
+    MainWindow = Np::PlatformAppGet()->MakeWindow(definition);
     Device = Np::RenderDevice::Create(Np::RenderAPI::OpenGL, MainWindow);
     MainRenderData = RenderData::Create(Device);
 
@@ -89,20 +94,18 @@ Bool GenesisApp::OnInitialize()
     Registry.AddComponent<Np::Light>(ELight, light);
     Registry.AddComponent<RenderableModel>(ELight, rLightModel);
 
-    auto& windowSignals = MainWindow->GetWindowSignals();
-
     auto& orbitCameraComponent = Registry.GetComponent<OrbitCamera>(ECamera);
     auto& cameraVelocity = Registry.GetComponent<Velocity>(ECamera);
 
-    InitCamera(windowSignals, orbitCameraComponent, cameraVelocity);
+    InitCamera(orbitCameraComponent, cameraVelocity);
 
-    windowSignals.OnClose().Connect([&](auto&, auto&) {
-        AppStopCurrent();
-    });
+    // windowSignals.OnClose().Connect([&](auto&, auto&) {
+    //    AppStopCurrent();
+    // });
 
-    windowSignals.OnResize().ConnectHandler([&](const ResizeEvent& e) {
-        OnTick(0.0);
-    });
+    // windowSignals.OnResize().ConnectHandler([&](const ResizeEvent& e) {
+    //    OnTick(0.0);
+    // });
 
     MainWindow->Show();
 
@@ -152,7 +155,6 @@ void GenesisApp::OnTick(Double deltaTime)
     commandQueue->Execute();
 
     Device->GetGraphicsContext()->SwapBuffers();
-    MainWindow->PoolEvent();
 }
 
 void GenesisApp::OnClose()

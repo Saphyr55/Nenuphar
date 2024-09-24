@@ -72,6 +72,8 @@ namespace Nenuphar
                 // ClockLimitCount(m_platformApplication, )
 
                 m_lastTime = currentTime;
+
+                m_platformApplication->PumpMessages();
             } 
             else
             {

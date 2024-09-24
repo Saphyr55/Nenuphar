@@ -5,10 +5,6 @@
 namespace Nenuphar
 {
 
-    class Application;
-    class WindowEventHandler;
-    class WindowSignals;
-
     using WindowID = UInt16;
 
     struct WindowDefinition
@@ -34,19 +30,15 @@ namespace Nenuphar
     public:
         virtual const WindowDefinition& GetWindowDefinition() const = 0;
 
-        virtual const WindowSignals& GetWindowSignals() const = 0;
-
         virtual WindowID GetID() const = 0;
 
-        virtual Bool IsWindowMaximized() const = 0;
+        virtual bool IsWindowMaximized() const = 0;
 
-        virtual Bool IsWindowMinimized() const = 0;
+        virtual bool IsWindowMinimized() const = 0;
 
-        virtual Bool IsVisible() const = 0;
+        virtual bool IsVisible() const = 0;
 
         virtual void* GetOSWindowHandle() const = 0;
-
-        virtual void PoolEvent() const = 0;
 
         virtual void Hide() = 0;
 

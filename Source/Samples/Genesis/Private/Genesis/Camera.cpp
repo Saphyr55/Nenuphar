@@ -8,10 +8,10 @@ static OrbitCamera DefaultCamera((float)Radians(45.0f),
                                  Vector3f(0.0, 0.0, 0.0),
                                  Vector3f(0.0f, 1.0f, 0.0f));
 
-void InitCamera(const WindowSignals& signals,
-                Np::OrbitCamera& camera,
+void InitCamera(Np::OrbitCamera& camera,
                 const Velocity& velocity)
 {
+    /*
     signals.OnKeyPressed().Connect([&](auto&, auto& evt) {
         ResetCameraTarget(evt, camera);
     });
@@ -24,6 +24,7 @@ void InitCamera(const WindowSignals& signals,
     signals.OnMouseWheel().Connect([&](auto&, auto& evt) {
         OnMoveCameraZOnScroll(evt, camera, velocity);
     });
+    */
 }
 
 Void ResetCameraTarget(const Np::KeyEvent& evt, Np::OrbitCamera& camera)

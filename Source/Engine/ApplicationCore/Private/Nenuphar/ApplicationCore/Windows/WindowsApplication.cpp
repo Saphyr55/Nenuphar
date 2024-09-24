@@ -1,20 +1,23 @@
 #include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
+
+#if NP_PLATFORM_WINDOWS
+
 #include "Nenuphar/ApplicationCore/Windows/WindowsWindow.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/InputSystem/Button.hpp"
 
 #include <mmiscapi.h>
 #include <profileapi.h>
 #include <windef.h>
 #include <winnt.h>
 
-#if NP_PLATFORM_WINDOWS
-
 namespace Nenuphar
 {
     static Double GClockFrequency;
     static LARGE_INTEGER GStartTime;
     const TCHAR WindowsApplication::ApplicationClassName[] = TEXT("NenupharApplication");
-
+    static Float GLastMouseX = 0;
+    static Float GLastMouseY = 0;
     WindowsApplication* GWindowsApplication = nullptr;
 
     SharedRef<PlatformApplication> PlatformAppGet()
@@ -43,11 +46,17 @@ namespace Nenuphar
     WindowsApplication::WindowsApplication(HINSTANCE hinstance)
         : m_hinstance(hinstance)
         , m_classID(0)
+        , m_applicationMessageHandler(MakeSharedRef<ApplicationMessageHandler>())
     {
     }
 
     WindowsApplication::~WindowsApplication()
     {
+    }
+    
+    void WindowsApplication::SetApplicationMessageHandler(SharedRef<ApplicationMessageHandler> handler) 
+    {
+        m_applicationMessageHandler = handler;
     }
 
     HINSTANCE WindowsApplication::GetHInstance() const
@@ -57,20 +66,155 @@ namespace Nenuphar
 
     LRESULT WindowsApplication::ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
     {
-        SharedRef<WindowsWindow> currentWindow = FindWindowByHWND(m_registry, hwnd);
+        SharedRef<WindowsWindow> window = FindWindowByHWND(m_registry, hwnd);
 
         Int externalResult = 0;
 
-        for (WindowsMessageHandler*& handler : m_messageHandlers)
+        for (WindowsMessageHandler*& handler: m_messageHandlers)
         {
             Int result;
             if (handler->ProcessMessage(hwnd, msg, wParam, lParam, result))
-            {   
+            {
                 externalResult = result;
             }
         }
 
-        return DefWindowProc(hwnd, msg, wParam, lParam);
+        switch (msg)
+        {
+            case WM_ERASEBKGND: {
+                return 1;
+            }
+            case WM_SIZE: {
+                UInt width = LOWORD(lParam);
+                UInt height = HIWORD(lParam);
+                m_applicationMessageHandler->OnWindowResize(window, width, height);
+                break;
+            }
+            case WM_PAINT: {
+                break;
+            }
+            case WM_SYSKEYUP:
+            case WM_KEYUP:
+            case WM_SYSKEYDOWN:
+            case WM_KEYDOWN: {
+
+                Input::Key key = static_cast<Input::Key>(wParam);
+
+                bool down = (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN);
+                bool repeat = (HIWORD(lParam) & KF_REPEAT) == KF_REPEAT;
+
+                if (down)
+                {
+                    m_applicationMessageHandler->OnKeyDown(key);
+                }
+                else
+                {
+                    m_applicationMessageHandler->OnKeyUp(key);
+                }
+
+                break;
+            }
+            case WM_LBUTTONUP:
+            case WM_MBUTTONUP:
+            case WM_RBUTTONUP:
+            case WM_LBUTTONDOWN:
+            case WM_MBUTTONDOWN:
+            case WM_RBUTTONDOWN: {
+
+                Input::Button button;
+                bool down =
+                        msg == WM_LBUTTONDOWN ||
+                        msg == WM_RBUTTONDOWN ||
+                        msg == WM_MBUTTONDOWN;
+
+                switch (msg)
+                {
+                    case WM_LBUTTONDOWN:
+                    case WM_LBUTTONUP:
+                        button = Input::Button::Left;
+                        break;
+                    case WM_MBUTTONUP:
+                    case WM_MBUTTONDOWN:
+                        button = Input::Button::Middle;
+                        break;
+                    case WM_RBUTTONUP:
+                    case WM_RBUTTONDOWN:
+                        button = Input::Button::Right;
+                        break;
+                    default:
+                        break;
+                }
+
+                if (down)
+                {
+                    m_applicationMessageHandler->OnButtonDown(button);
+                }
+                else
+                {
+                    m_applicationMessageHandler->OnButtonUp(button);
+                }
+
+                break;
+            }
+            case WM_XBUTTONDOWN:
+            case WM_XBUTTONUP: {
+
+                Input::Button button = GET_XBUTTON_WPARAM(wParam) == XBUTTON1
+                                               ? Input::Button::XButton1
+                                               : Input::Button::XButton2;
+
+                if (msg == WM_XBUTTONDOWN)
+                {
+                    m_applicationMessageHandler->OnButtonDown(button);
+                }
+                else
+                {
+                    m_applicationMessageHandler->OnButtonUp(button);
+                }
+
+                break;
+            }
+            case WM_NCMOUSEMOVE:
+            case WM_MOUSEMOVE: {
+                float x = GET_X_LPARAM(lParam);
+                float y = GET_Y_LPARAM(lParam);
+                float relX = x - GLastMouseX;
+                float relY = y - GLastMouseY;
+                GLastMouseX = x;
+                GLastMouseY = y;
+                m_applicationMessageHandler->OnMouseMove(relX, relY, x, y);
+                break;
+            }
+            case WM_MOUSEWHEEL: {
+                Float delta = GET_WHEEL_DELTA_WPARAM(wParam);
+                m_applicationMessageHandler->OnMouseWheel(delta);
+                break;
+            }
+            case WM_SHOWWINDOW: {
+                if (!::GetLayeredWindowAttributes(hwnd, NULL, NULL, NULL))
+                {
+                    ::SetLayeredWindowAttributes(hwnd, 0, 0, LWA_ALPHA);
+                    ::DefWindowProc(hwnd, WM_ERASEBKGND, (WPARAM)GetDC(hwnd), lParam);
+                    ::SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
+                    ::AnimateWindow(hwnd, 200, AW_ACTIVATE | AW_BLEND);
+                    return 0;
+                }
+                break;
+            }
+            case WM_CLOSE: {
+                NP_INFO(WindowsWindow, "The window ID={}, HWND={} closed.", window->GetID(), fmt::ptr(hwnd));
+                m_applicationMessageHandler->OnWindowClose(window);
+                return externalResult;
+            }
+            case WM_DESTROY: {
+                PostQuitMessage(externalResult);
+                return externalResult;
+            }
+            default:
+                break;
+        }
+
+        return ::DefWindowProc(hwnd, msg, wParam, lParam);
     }
 
     LRESULT WindowsApplicationWndProc(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
@@ -81,6 +225,23 @@ namespace Nenuphar
     LRESULT CALLBACK WindowsApplication::WndProc(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
     {
         return WindowsApplicationWndProc(hwnd, msg, wParam, lParam);
+    }
+
+    void WindowsApplication::PumpMessages()
+    {
+        MSG msg;
+        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+    }
+
+    SharedRef<Window> WindowsApplication::MakeWindow(const WindowDefinition& definition)
+    {
+        SharedRef<WindowsWindow> windowsWindow = MakeSharedRef<WindowsWindow>(*this, definition);
+        m_registry.push_back(windowsWindow);
+        return windowsWindow;
     }
 
     Bool WindowsApplication::Initialize()
@@ -127,136 +288,16 @@ namespace Nenuphar
 
     void WindowsApplication::AddMessageHandler(WindowsMessageHandler& handler)
     {
-        
+        m_messageHandlers.push_back(&handler);
     }
 
     void WindowsApplication::RemoveMessageHandler(WindowsMessageHandler& handler)
     {
-
+        m_messageHandlers.remove(&handler);
     }
 
     void WindowsApplication::DeferMessage(SharedRef<WindowsWindow> window, HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
     {
-        switch (msg)
-        {
-            case WM_SIZE: {
-                auto width = Float(LOWORD(lParam));
-                auto height = Float(HIWORD(lParam));
-                m_definition.Width = width;
-                m_definition.Height = height;
-                m_windowSignals.EmitOnResize(ResizeEvent(width, height));
-                break;
-            }
-            case WM_PAINT: {
-                break;
-            }
-            case WM_SYSKEYDOWN:
-            case WM_KEYDOWN: {
-                KeyEvent e(static_cast<Input::Key>(wParam));
-                if ((HIWORD(lParam) & KF_REPEAT) != KF_REPEAT)
-                {
-                    m_windowSignals.EmitOnKeyPressed(e);
-                }
-
-                m_windowSignals.EmitOnKeyDown(e);
-                break;
-            }
-            case WM_LBUTTONUP: {
-                const auto button = Input::Button::Left;
-                const MouseButtonEvent e(button);
-                m_windowSignals.EmitOnButtonRelease(e);
-                break;
-            }
-            case WM_MBUTTONUP: {
-                const auto button = Input::Button::Middle;
-                const MouseButtonEvent e(button);
-                m_windowSignals.EmitOnButtonRelease(e);
-                break;
-            }
-            case WM_RBUTTONUP: {
-                const auto button = Input::Button::Right;
-                const MouseButtonEvent e(button);
-                m_windowSignals.EmitOnButtonRelease(e);
-                break;
-            }
-            case WM_LBUTTONDOWN: {
-                const auto button = Input::Button::Left;
-                const MouseButtonEvent e(button);
-                m_windowSignals.EmitOnButtonDown(e);
-                break;
-            }
-            case WM_MBUTTONDOWN: {
-                const auto button = Input::Button::Middle;
-                const MouseButtonEvent e(button);
-                m_windowSignals.EmitOnButtonDown(e);
-                break;
-            }
-            case WM_RBUTTONDOWN: {
-                const auto button = Input::Button::Right;
-                const MouseButtonEvent e(button);
-                m_windowSignals.EmitOnButtonDown(e);
-                break;
-            }
-            case WM_XBUTTONDOWN:
-            case WM_XBUTTONUP: {
-                const auto button = GET_XBUTTON_WPARAM(wParam) == XBUTTON1
-                                            ? Input::Button::XButton1
-                                            : Input::Button::XButton2;
-
-                const MouseButtonEvent e(button);
-                if (message == WM_XBUTTONDOWN)
-                {
-                    m_windowSignals.EmitOnButtonDown(e);
-                }
-                else
-                {
-                    m_windowSignals.EmitOnButtonRelease(e);
-                }
-                break;
-            }
-            case WM_SYSKEYUP:
-            case WM_KEYUP: {
-                const KeyEvent e(static_cast<Input::Key>(wParam));
-                m_windowSignals.EmitOnKeyRelease(e);
-                break;
-            }
-            case WM_NCMOUSEMOVE:
-            case WM_MOUSEMOVE: {
-                static Float lastMouseX = 0;
-                static Float lastMouseY = 0;
-                const Float x = GET_X_LPARAM(lParam);
-                const Float y = GET_Y_LPARAM(lParam);
-                const Float relX = x - lastMouseX;
-                const Float relY = y - lastMouseY;
-                const MouseMoveEvent e(relX, relY, x, y);
-                lastMouseX = x;
-                lastMouseY = y;
-                m_windowSignals.EmitOnMouseMove(e);
-                break;
-            }
-            case WM_MOUSEWHEEL: {
-                const Float delta = GET_WHEEL_DELTA_WPARAM(wParam);
-                const Float x = GET_X_LPARAM(lParam);
-                const Float y = GET_Y_LPARAM(lParam);
-                const MouseWheelEvent e(delta, y, x);
-                m_windowSignals.EmitOnMouseWheel(e);
-                break;
-            }
-            case WM_CLOSE: {
-                CloseEvent closeEvent;
-                NP_INFO(WindowsWindow, "The window ID={}, HWND={} closed.", ID, fmt::ptr(hwnd));
-                m_windowSignals.EmitOnClose(closeEvent);
-                return EXIT_SUCCESS;
-            }
-            case WM_DESTROY: {
-                PostQuitMessage(EXIT_SUCCESS);
-                return EXIT_SUCCESS;
-            }
-            default:
-                break;
-        }
-        
-        return 0;
     }
 
     void WindowsApplication::Destroy()

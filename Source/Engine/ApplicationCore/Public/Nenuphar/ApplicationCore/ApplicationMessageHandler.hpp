@@ -17,19 +17,11 @@ namespace Nenuphar
         {
         }
 
-        virtual void OnWindowResize(SharedRef<Window> window)
+        virtual void OnWindowResize(SharedRef<Window> window, UInt width, UInt height)
         {
         }
 
-        virtual void OnMouseWheel(SharedRef<Window> window, Float Delta, Float PosX, Float PosY)
-        {
-        }
-
-        virtual void OnMouseWheel(Float Delta, Float PosX, Float PosY)
-        {
-        }
-
-        virtual void OnKeyUp(SharedRef<Window> window, Input::Key key)
+        virtual void OnMouseWheel(Float Delta)
         {
         }
 
@@ -37,27 +29,15 @@ namespace Nenuphar
         {
         }
 
-        virtual void OnKeyDown(SharedRef<Window> window, Input::Key key)
-        {
-        }
-
         virtual void OnKeyDown(Input::Key key)
         {
         }
 
-        virtual void OnButtonUp(SharedRef<Window> window, Input::Button Button, UInt Clicks)
+        virtual void OnButtonUp(Input::Button Button)
         {
         }
 
-        virtual void OnButtonUp(Input::Button Button, UInt Clicks)
-        {
-        }
-
-        virtual void OnButtonDown(SharedRef<Window> window, Input::Button Button, UInt Clicks)
-        {
-        }
-
-        virtual void OnButtonDown(Input::Button Button, UInt Clicks)
+        virtual void OnButtonDown(Input::Button Button)
         {
         }
 

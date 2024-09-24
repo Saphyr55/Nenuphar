@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Nenuphar/ApplicationCore/ApplicationMessageHandler.hpp"
 #include "Nenuphar/Core/Windows.hpp"
 #include <winuser.h>
 
@@ -65,7 +66,13 @@ namespace Nenuphar
         HINSTANCE GetHInstance() const;
 
     public:
-        virtual Bool Initialize() override;
+        virtual void PumpMessages() override;
+
+        virtual void SetApplicationMessageHandler(SharedRef<ApplicationMessageHandler> handler) override;
+
+        virtual SharedRef<Window> MakeWindow(const WindowDefinition& definition) override; 
+
+        virtual bool Initialize() override;
 
         virtual Double GetAbsoluteTime() const override;
 
@@ -89,8 +96,9 @@ namespace Nenuphar
         ~WindowsApplication() override;
 
     private:
+        SharedRef<ApplicationMessageHandler> m_applicationMessageHandler;
         std::vector<WindowsMessage> m_defferedWindowsMessage;
-        std::vector<WindowsMessageHandler*> m_messageHandlers;
+        std::list<WindowsMessageHandler*> m_messageHandlers;
         WindowsWindowRegistry m_registry;
 
         UInt16 m_classID;

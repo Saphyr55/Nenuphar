@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Nenuphar/ApplicationCore/WindowSignals.hpp"
 #include "Nenuphar/InputSystem/Event.hpp"
 #include "Nenuphar/Math/Camera.hpp"
 
@@ -20,8 +19,7 @@ constexpr auto DefaultOrbitCameraFactory = [] {
     return OrbitCamera(theta, phi, radius, target, up);
 };
 
-void InitCamera(const WindowSignals& signals,
-                Np::OrbitCamera& camera,
+void InitCamera(Np::OrbitCamera& camera,
                 const Velocity& velocity);
 
 void ResetCameraTarget(const Np::KeyEvent& evt, Np::OrbitCamera& camera);
