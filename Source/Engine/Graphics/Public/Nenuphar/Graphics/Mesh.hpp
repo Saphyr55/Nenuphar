@@ -13,18 +13,30 @@ namespace Nenuphar
     class CommandBuffer;
     class UniformRegistry;
 
-    struct Mesh
+    class Mesh : public RenderHandle
     {
+    public:
         std::vector<Vertex> Vertices;
         std::vector<VIndice> Indices;
         std::vector<Material> Materials;
         SharedRef<RenderHandle> RenderHandle;
+
+        virtual void Destroy() override;
+
+        Mesh(const std::vector<Vertex>& vertices,
+             const std::vector<VIndice>& indices,
+             const std::vector<Material>& materials)
+            : Vertices(vertices)
+            , Indices(indices)
+            , Materials(materials)
+        {
+        }
     };
 
     void RenderCommandSubmitMesh(SharedRef<RenderDevice> renderDevice, Mesh& mesh);
 
     void RenderCommandDrawMesh(SharedRef<CommandBuffer> commandBuffer,
-                           SharedRef<UniformRegistry> registry,
-                           const Mesh& mesh);
+                               SharedRef<UniformRegistry> registry,
+                               const Mesh& mesh);
 
 }// namespace Nenuphar

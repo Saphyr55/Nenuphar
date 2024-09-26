@@ -11,8 +11,8 @@ namespace Nenuphar
     
     class ApplicationImpl : public Application
     {
-    public:        
-        virtual Bool Initialize() override;
+    public:
+        virtual bool Initialize() override;
         
         virtual void Tick(Double deltaTime) override;
     
@@ -27,26 +27,23 @@ namespace Nenuphar
 
         virtual void Suspend() override;
         
-        virtual Bool IsRunning() const override;
+        virtual bool IsRunning() const override;
 
-        virtual Bool IsSuspended() const override;
+        virtual bool IsSuspended() const override;
 
-        virtual Double GetLastTime() const override;
+        virtual double GetLastTime() const override;
         
-        virtual SharedRef<PlatformApplication> GetPlatformApplication() override;
-
         ApplicationImpl(SharedRef<AppDelegate> appDelegate);
         ~ApplicationImpl() = default;
 
     private:   
-        Bool m_isRunning;
-        Bool m_isSuspended;
-        Double m_lastTime;
+        bool m_isRunning;
+        bool m_isSuspended;
+        double m_lastTime;
 
         Clock m_clock;
         
         SharedRef<AppDelegate> m_appDelegate;
-        SharedRef<PlatformApplication> m_platformApplication;
     };
 
 }

@@ -21,7 +21,7 @@ namespace Nenuphar
 
         void Initialize();
         
-        void Destroy();
+        virtual void Destroy() override;
 
         void SetBufferStorage(std::size_t size, const void* data, GLbitfield flags) const;
 
@@ -31,7 +31,7 @@ namespace Nenuphar
         OpenGLBufferHandle GetHandle() const;
 
     public:
-        OpenGLImmutableBuffer(Bool init = false);
+        OpenGLImmutableBuffer();
 
         virtual ~OpenGLImmutableBuffer() = default;
 

@@ -28,13 +28,14 @@ namespace Nenuphar
         return MakeSharedRef<OpenGLShader>(options.VertexSource, options.FragmentSource);
     }
 
-    SharedRef<RenderHandle> OpenGLRenderDevice::CreateRenderHandle(const std::vector<Vertex>& vertices,
-                                               const std::vector<VIndice>& indices)
-    {
+    SharedRef<RenderHandle> OpenGLRenderDevice::CreateRenderHandle(
+            const std::vector<Vertex>& vertices,
+            const std::vector<VIndice>& indices)
+    {   
         auto vbo = OpenGLImmutableBuffer::Create(vertices);
         auto ebo = OpenGLImmutableBuffer::Create(indices);
-        auto vao = OpenGLVertexArray::Create(ebo->GetHandle(),
-                                             vbo->GetHandle());
+        auto vao = OpenGLVertexArray::Create(vbo->GetHandle(),
+                                             ebo->GetHandle());
 
         vbo->Destroy();
         ebo->Destroy();

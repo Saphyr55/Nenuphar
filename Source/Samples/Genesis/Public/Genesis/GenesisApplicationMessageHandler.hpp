@@ -8,9 +8,10 @@ namespace Np = Nenuphar;
 class GenesisApplicationMessageHandler : public Np::ApplicationMessageHandler
 {
 public:
-    virtual void OnWindowClose(SharedRef<Window> window) override
+    virtual void OnWindowClose(Np::SharedRef<Np::Window> window) override
     {
-        Np::AppStopCurrent();   
+        window->Destroy();
+        Np::AppStopCurrent();
     }
-    
+
 };

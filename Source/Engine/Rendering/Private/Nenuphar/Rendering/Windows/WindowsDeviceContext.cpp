@@ -13,18 +13,18 @@ namespace Nenuphar
         , m_hwnd(nullptr)
     {
         NCHECK(windowsWindow)
-        m_hwnd = static_cast<HWND>(windowsWindow->GetOSWindowHandle());
-        m_hdc = GetDC(m_hwnd);
+        m_hwnd = static_cast<::HWND>(windowsWindow->GetOSWindowHandle());
+        m_hdc = ::GetDC(m_hwnd);
     }
 
-    HDC WindowsDeviceContext::GetHDC()
+    ::HDC WindowsDeviceContext::GetHDC()
     {
         return m_hdc;
     }
 
     void WindowsDeviceContext::Release()
     {
-        ReleaseDC(m_hwnd, m_hdc);
+        ::ReleaseDC(m_hwnd, m_hdc);
     }
 
 

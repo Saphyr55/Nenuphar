@@ -10,26 +10,50 @@
 #include <profileapi.h>
 #include <windef.h>
 #include <winnt.h>
+#include <winuser.h>
 
 namespace Nenuphar
 {
-    static Double GClockFrequency;
-    static LARGE_INTEGER GStartTime;
+
     const TCHAR WindowsApplication::ApplicationClassName[] = TEXT("NenupharApplication");
+
+    /** */
+    static Double GClockFrequency;
+
+    /** */
+    static LARGE_INTEGER GStartTime;
+
+    /** */
     static Float GLastMouseX = 0;
+
+    /** */
     static Float GLastMouseY = 0;
-    WindowsApplication* GWindowsApplication = nullptr;
+
+    /**  */
+    static SharedRef<WindowsApplication> GWindowsApplication = nullptr;
+
+    /**
+     * @brief 
+     * 
+     * @param hwnd 
+     * @param msg 
+     * @param wParam 
+     * @param lParam 
+     * @return LRESULT 
+     */
+    static LRESULT CALLBACK WndProc(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam);
+
 
     SharedRef<PlatformApplication> PlatformAppGet()
     {
         static SharedRef<WindowsApplication> WindowsApplication_ = [&] {
-            auto windowsApp = MakeSharedRef<WindowsApplication>(GetModuleHandle(nullptr));
-            GWindowsApplication = windowsApp.get();
-            return windowsApp;
+            GWindowsApplication = MakeSharedRef<WindowsApplication>(::GetModuleHandle(nullptr));
+            return GWindowsApplication;
         }();
 
-        return WindowsApplication_;
+        return GWindowsApplication;
     }
+
 
     SharedRef<WindowsWindow> FindWindowByHWND(WindowsWindowRegistry registry, HWND hwnd)
     {
@@ -43,54 +67,42 @@ namespace Nenuphar
         return nullptr;
     }
 
+
     WindowsApplication::WindowsApplication(HINSTANCE hinstance)
         : m_hinstance(hinstance)
         , m_classID(0)
         , m_applicationMessageHandler(MakeSharedRef<ApplicationMessageHandler>())
+        , m_registry()
     {
     }
+
 
     WindowsApplication::~WindowsApplication()
     {
     }
-    
-    void WindowsApplication::SetApplicationMessageHandler(SharedRef<ApplicationMessageHandler> handler) 
+
+
+    void WindowsApplication::SetApplicationMessageHandler(SharedRef<ApplicationMessageHandler> handler)
     {
         m_applicationMessageHandler = handler;
     }
+
 
     HINSTANCE WindowsApplication::GetHInstance() const
     {
         return m_hinstance;
     }
 
+
     LRESULT WindowsApplication::ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
     {
         SharedRef<WindowsWindow> window = FindWindowByHWND(m_registry, hwnd);
-
-        Int externalResult = 0;
-
-        for (WindowsMessageHandler*& handler: m_messageHandlers)
-        {
-            Int result;
-            if (handler->ProcessMessage(hwnd, msg, wParam, lParam, result))
-            {
-                externalResult = result;
-            }
-        }
-
         switch (msg)
         {
-            case WM_ERASEBKGND: {
-                return 1;
-            }
             case WM_SIZE: {
                 UInt width = LOWORD(lParam);
                 UInt height = HIWORD(lParam);
                 m_applicationMessageHandler->OnWindowResize(window, width, height);
-                break;
-            }
-            case WM_PAINT: {
                 break;
             }
             case WM_SYSKEYUP:
@@ -190,25 +202,13 @@ namespace Nenuphar
                 m_applicationMessageHandler->OnMouseWheel(delta);
                 break;
             }
-            case WM_SHOWWINDOW: {
-                if (!::GetLayeredWindowAttributes(hwnd, NULL, NULL, NULL))
-                {
-                    ::SetLayeredWindowAttributes(hwnd, 0, 0, LWA_ALPHA);
-                    ::DefWindowProc(hwnd, WM_ERASEBKGND, (WPARAM)GetDC(hwnd), lParam);
-                    ::SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
-                    ::AnimateWindow(hwnd, 200, AW_ACTIVATE | AW_BLEND);
-                    return 0;
-                }
-                break;
-            }
             case WM_CLOSE: {
-                NP_INFO(WindowsWindow, "The window ID={}, HWND={} closed.", window->GetID(), fmt::ptr(hwnd));
                 m_applicationMessageHandler->OnWindowClose(window);
-                return externalResult;
+                return 0;
             }
             case WM_DESTROY: {
-                PostQuitMessage(externalResult);
-                return externalResult;
+                ::PostQuitMessage(0);
+                return 0;
             }
             default:
                 break;
@@ -217,25 +217,25 @@ namespace Nenuphar
         return ::DefWindowProc(hwnd, msg, wParam, lParam);
     }
 
-    LRESULT WindowsApplicationWndProc(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
+
+    LRESULT CALLBACK WndProc(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
     {
         return GWindowsApplication->ProcessMessage(hwnd, msg, wParam, lParam);
     }
 
-    LRESULT CALLBACK WindowsApplication::WndProc(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
-    {
-        return WindowsApplicationWndProc(hwnd, msg, wParam, lParam);
-    }
 
-    void WindowsApplication::PumpMessages()
+    bool WindowsApplication::PumpMessages()
     {
         MSG msg;
-        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+        while (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+            ::TranslateMessage(&msg);
+            ::DispatchMessage(&msg);
         }
+
+        return true;
     }
+
 
     SharedRef<Window> WindowsApplication::MakeWindow(const WindowDefinition& definition)
     {
@@ -244,8 +244,11 @@ namespace Nenuphar
         return windowsWindow;
     }
 
+
     Bool WindowsApplication::Initialize()
     {
+        HCURSOR cursor = LoadCursor(nullptr, IDC_ARROW);
+        HICON icon = LoadIcon(m_hinstance, IDI_APPLICATION);
         WNDCLASSEX windowClassEX;
         windowClassEX.cbSize = sizeof(WNDCLASSEX);
         windowClassEX.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -253,10 +256,10 @@ namespace Nenuphar
         windowClassEX.cbClsExtra = 0;
         windowClassEX.cbWndExtra = 0;
         windowClassEX.hInstance = m_hinstance;
-        windowClassEX.hIcon = LoadIcon(m_hinstance, IDI_APPLICATION);
-        windowClassEX.hIconSm = LoadIcon(m_hinstance, IDI_APPLICATION);
-        windowClassEX.hCursor = LoadCursor(nullptr, IDC_ARROW);
-        windowClassEX.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
+        windowClassEX.hIcon = icon;
+        windowClassEX.hIconSm = icon;
+        windowClassEX.hCursor = cursor;
+        windowClassEX.hbrBackground = nullptr; // reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
         windowClassEX.lpszMenuName = nullptr;
         windowClassEX.lpszClassName = ApplicationClassName;
 
@@ -278,6 +281,7 @@ namespace Nenuphar
         return true;
     }
 
+
     Double WindowsApplication::GetAbsoluteTime() const
     {
         LARGE_INTEGER now;
@@ -286,22 +290,16 @@ namespace Nenuphar
         return (Double)now.QuadPart * GClockFrequency;
     }
 
-    void WindowsApplication::AddMessageHandler(WindowsMessageHandler& handler)
-    {
-        m_messageHandlers.push_back(&handler);
-    }
-
-    void WindowsApplication::RemoveMessageHandler(WindowsMessageHandler& handler)
-    {
-        m_messageHandlers.remove(&handler);
-    }
-
-    void WindowsApplication::DeferMessage(SharedRef<WindowsWindow> window, HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam)
-    {
-    }
 
     void WindowsApplication::Destroy()
     {
+        for (auto& window: m_registry)
+        {
+            window->Destroy();
+        }
+
+        m_registry.clear();
+
         UnregisterClass(ApplicationClassName, m_hinstance);
     }
 

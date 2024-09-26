@@ -4,7 +4,15 @@
 
 namespace Nenuphar
 {
-    
+
+    void Model::Destroy()
+    {
+        for (auto& mesh: Meshes)
+        {
+            mesh.Destroy();
+        }
+    }
+
     void RenderCommandSubmitModel(SharedRef<RenderDevice> device, Model& model)
     {
         for (auto& mesh: model.Meshes)
@@ -14,8 +22,8 @@ namespace Nenuphar
     }
 
     void RenderCommandDrawModel(SharedRef<CommandBuffer> commandBuffer,
-                            SharedRef<UniformRegistry> registry,
-                            const Model& model)
+                                SharedRef<UniformRegistry> registry,
+                                const Model& model)
     {
         for (auto& mesh: model.Meshes)
         {

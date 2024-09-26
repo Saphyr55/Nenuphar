@@ -37,6 +37,11 @@ namespace Nenuphar
 
     }
 
+    OpenGLMainShaderProgram::~OpenGLMainShaderProgram()
+    {
+        m_OpenGLMainShader.MainUniformBuffer->Destroy();
+    }
+
     void OpenGLMainShaderProgram::Initialize()
     { 
         if (m_isInitialize) 
@@ -114,7 +119,7 @@ namespace Nenuphar
     {
         return m_OpenGLMainShader.UMainUniformBlock;
     } 
-
+    
     SharedRef<Shader> OpenGLMainShaderProgram::GetDelegate()
     {
         return m_OpenGLMainShader.Delegate;

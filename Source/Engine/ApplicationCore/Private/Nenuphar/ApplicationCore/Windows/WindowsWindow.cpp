@@ -40,7 +40,6 @@ namespace Nenuphar
 
     WindowsWindow::~WindowsWindow()
     {
-        Destroy();
     }
 
     void WindowsWindow::InitializeWindowHandle()
@@ -62,7 +61,8 @@ namespace Nenuphar
                 nullptr,
                 nullptr,
                 m_windowsApplication.GetHInstance(),
-                nullptr);
+                nullptr
+                );
     }
 
     bool WindowsWindow::IsWindowMaximized() const
@@ -90,29 +90,29 @@ namespace Nenuphar
 
     void WindowsWindow::Hide()
     {
-        ShowWindow(m_hwnd, SW_HIDE);
+        ::ShowWindow(m_hwnd, SW_HIDE);
     }
 
     void WindowsWindow::Show()
     {
-        ShowWindow(m_hwnd, SW_NORMAL);
+        ::ShowWindow(m_hwnd, SW_NORMAL);
     }
 
     void WindowsWindow::Restore()
     {
-        ShowWindow(m_hwnd, SW_RESTORE);
+        ::ShowWindow(m_hwnd, SW_RESTORE);
     }
 
     void WindowsWindow::Maximize()
     {
-        ShowWindow(m_hwnd, SW_SHOWMAXIMIZED);
+        ::ShowWindow(m_hwnd, SW_SHOWMAXIMIZED);
     }
 
     void WindowsWindow::Destroy()
     {
         if (m_hwnd)
         {
-            DestroyWindow(m_hwnd);
+            ::DestroyWindow(m_hwnd);
         }
     }
 
@@ -145,7 +145,6 @@ namespace Nenuphar
     {
         return ID;
     }
-
 
 }// namespace Nenuphar
 

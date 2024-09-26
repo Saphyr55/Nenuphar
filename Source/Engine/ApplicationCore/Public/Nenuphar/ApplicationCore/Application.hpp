@@ -124,8 +124,6 @@ namespace Nenuphar
 
         virtual Double GetLastTime() const = 0;
 
-        virtual SharedRef<PlatformApplication> GetPlatformApplication() = 0;
-
     public:
         virtual ~Application() = default;
     };

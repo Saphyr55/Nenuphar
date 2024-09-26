@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Nenuphar/ApplicationCore/Application.hpp"
+#include "Nenuphar/ApplicationCore/PlatformApplication.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
 
+#include <cstdlib>
 
 
 namespace Nenuphar
@@ -26,7 +28,14 @@ namespace Nenuphar
     {
         SharedRef<Logger> logger = MakeSharedRef<Logger>("Nenuphar.Engine");
         DefineLogger(logger);
-
+        
+        bool isSuccess = PlatformAppGet()->Initialize();
+        if (!isSuccess)
+        {
+            NP_CRITICAL(PlatformApplication::Initialize, "Impossible to load the platform application.");
+            return isSuccess;
+        }
+    
         SharedRef<AppDelegate> appDelegate = AppDelegateCreate();
 
         if (!appDelegate)
@@ -40,7 +49,13 @@ namespace Nenuphar
         // TODO: Switching between application with asynchrone or parralism.
         AppMakeCurrent(application);
 
+        if (!application->Initialize())
+        {
+            return EXIT_FAILURE;
+        }
+
         application->Start();
+        application->Stop();
 
         return EXIT_SUCCESS;
     }

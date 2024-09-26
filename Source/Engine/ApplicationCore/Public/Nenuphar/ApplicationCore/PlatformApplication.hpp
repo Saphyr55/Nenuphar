@@ -46,7 +46,7 @@ namespace Nenuphar
          * 
          * @return
          */
-        virtual void PumpMessages() = 0;
+        virtual bool PumpMessages() = 0;
 
         /**
          * @brief Create a new Window.

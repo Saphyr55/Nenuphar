@@ -10,6 +10,7 @@
 #include "Nenuphar/Model/ModelAsset.hpp"
 #include "Nenuphar/RenderLight/RenderTypes.hpp"
 
+#include "Nenuphar/Rendering/CommandBuffer.hpp"
 #include "Nenuphar/Rendering/RenderDevice.hpp"
 #include "Nenuphar/Rendering/Shader.hpp"
 #include "Nenuphar/Rendering/UniformRegistry.hpp"
@@ -17,27 +18,26 @@
 #include <memory>
 
 
-void RenderData::OnRenderData(SharedRef<Np::CommandQueue> commandQueue, Np::EntityRegistry& registry)
+void RenderData::OnRenderData(SharedRef<Np::CommandBuffer> commandBuffer, Np::EntityRegistry& registry)
 {
-    SharedRef<Np::CommandBuffer> commandBuffer = Device->CreateCommandBuffer();
     SharedRef<Np::MainShaderProgram> shader = Device->GetMainShaderProgram();
 
     for (auto& [e, transform, rModel]: registry.View<Transform, RenderableModel>())
     {
         Matrix4f matrixModel = Transform::Tranformation(transform);
 
-        commandBuffer->Record([&] {
+        commandBuffer->Record([=] {
             shader->GetRegistry()->Get<Matrix4f>("UModel").UpdateValue(matrixModel);
         });
 
-        RenderCommandDrawModel(commandBuffer, shader->GetRegistry(), rModel.Model);
+        RenderCommandDrawModel(commandBuffer, shader->GetRegistry(), *rModel.Model);
     }
-
+    
     for (auto& [e, light, transform, rModel]: registry.View<Np::Light, Transform, RenderableModel>())
     {
         Matrix4f matrixModel = Transform::Tranformation(transform);
-        
-        commandBuffer->Record([&] {
+
+        commandBuffer->Record([=] {
             shader->GetRegistry()->Get<Matrix4f>("UModel").UpdateValue(matrixModel);
             shader->GetRegistry()->Get<Vector3f>("ULight.Position").UpdateValue(light.Position);
             shader->GetRegistry()->Get<Vector3f>("ULight.Ambient").UpdateValue(light.Ambient);
@@ -45,10 +45,9 @@ void RenderData::OnRenderData(SharedRef<Np::CommandQueue> commandQueue, Np::Enti
             shader->GetRegistry()->Get<Vector3f>("ULight.Specular").UpdateValue(light.Specular);
         });
 
-        RenderCommandDrawModel(commandBuffer, shader->GetRegistry(), rModel.Model);
+        RenderCommandDrawModel(commandBuffer, shader->GetRegistry(), *rModel.Model);
     }
-
-    commandQueue->Submit(commandBuffer);
+    
 }
 
 RenderData RenderData::Create(SharedRef<RenderDevice> device)

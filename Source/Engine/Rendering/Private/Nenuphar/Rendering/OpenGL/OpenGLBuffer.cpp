@@ -10,18 +10,15 @@ namespace Nenuphar
     
     SharedRef<OpenGLImmutableBuffer> OpenGLImmutableBuffer::Create(std::size_t size, const void* data)
     {
-        SharedRef<OpenGLImmutableBuffer> buffer = MakeSharedRef<OpenGLImmutableBuffer>(true);
-        buffer->SetBufferStorage(size, data, 0);
+        SharedRef<OpenGLImmutableBuffer> buffer = MakeSharedRef<OpenGLImmutableBuffer>();
+        buffer->Initialize();
+        buffer->SetBufferStorage(size, data, GL_DYNAMIC_STORAGE_BIT);
         return buffer;
     }
 
-    OpenGLImmutableBuffer::OpenGLImmutableBuffer(Bool init)
+    OpenGLImmutableBuffer::OpenGLImmutableBuffer()
         : m_isInit(false), m_isDestroy(false)
     {
-        if (init)
-        {
-            Initialize();
-        }
     }
 
     void OpenGLImmutableBuffer::SetBufferStorage(std::size_t size, const void* data, GLbitfield flags) const
@@ -33,15 +30,17 @@ namespace Nenuphar
     void OpenGLImmutableBuffer::Initialize()
     {
         if (m_isInit) return;
-        NP_GL_CHECK_CALL(glCreateBuffers(1, &m_handle));
         m_isInit = true;
+
+        NP_GL_CHECK_CALL(glCreateBuffers(1, &m_handle));
     }
 
     void OpenGLImmutableBuffer::Destroy()
     {
         if (m_isDestroy) return;
-        NP_GL_CHECK_CALL(glDeleteBuffers(1, &m_handle));
         m_isDestroy = true;
+
+        NP_GL_CHECK_CALL(glDeleteBuffers(1, &m_handle));
     }
 
     OpenGLBufferHandle OpenGLImmutableBuffer::GetHandle() const

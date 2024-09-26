@@ -1,13 +1,14 @@
 #include "Nenuphar/ApplicationCore/EntryPoint.hpp"
 #include "Genesis/Genesis.hpp"
 
+namespace Np = Nenuphar;
 
-SharedRef<AppDelegate> Nenuphar::AppDelegateCreate()
+SharedRef<AppDelegate> Np::AppDelegateCreate()
 {
     return MakeSharedRef<GenesisApp>();
 }
 
 int main(int argc, const char* argv[])
 {
-    return Nenuphar::NMain(argc, argv);
+    return Np::NMain(argc, argv);
 }

@@ -2,7 +2,6 @@
 
 #include "Nenuphar/ApplicationCore/ApplicationMessageHandler.hpp"
 #include "Nenuphar/Core/Windows.hpp"
-#include <winuser.h>
 
 #if NP_PLATFORM_WINDOWS
 
@@ -19,38 +18,7 @@ namespace Nenuphar
     using WindowsWindowRegistry = std::vector<SharedRef<WindowsWindow>>;
 
     SharedRef<WindowsWindow> FindWindowByHWND(WindowsWindowRegistry registry, HWND hwnd);
-
-    struct WindowsMessage
-    {
-    public:
-        WeakPtr<WindowsWindow> Window;
-
-        HWND HWnd;
-        UInt Message;
-        WPARAM WParam;
-        LPARAM LParam;
-
-    public:
-        WindowsMessage(SharedRef<WindowsWindow> window,
-                       HWND hwnd,
-                       UInt msg,
-                       WPARAM wParam,
-                       LPARAM lParam)
-            : Window(window)
-            , HWnd(hwnd)
-            , Message(msg)
-            , WParam(wParam)
-            , LParam(lParam)
-        {
-        }
-        ~WindowsMessage() = default;
-    };
-
-    class WindowsMessageHandler
-    {
-    public:
-        virtual bool ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam, Int& result) = 0;
-    };
+    
 
     /**
      * @brief 
@@ -66,7 +34,7 @@ namespace Nenuphar
         HINSTANCE GetHInstance() const;
 
     public:
-        virtual void PumpMessages() override;
+        virtual bool PumpMessages() override;
 
         virtual void SetApplicationMessageHandler(SharedRef<ApplicationMessageHandler> handler) override;
 
@@ -78,27 +46,16 @@ namespace Nenuphar
 
         virtual void Destroy() override;
 
-        void AddMessageHandler(WindowsMessageHandler& handler);
-
-        void RemoveMessageHandler(WindowsMessageHandler& handler);
-
-        void DeferMessage(SharedRef<WindowsWindow> window, HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam);
-
         LRESULT ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam);
 
-    protected:
-        friend LRESULT WindowsApplicationWndProc(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam);
-
-        static LRESULT CALLBACK WndProc(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam);
-
+        inline UInt16 GetClassID() { return m_classID; }
+        
     public:
         explicit WindowsApplication(HINSTANCE hinstance);
         ~WindowsApplication() override;
 
     private:
         SharedRef<ApplicationMessageHandler> m_applicationMessageHandler;
-        std::vector<WindowsMessage> m_defferedWindowsMessage;
-        std::list<WindowsMessageHandler*> m_messageHandlers;
         WindowsWindowRegistry m_registry;
 
         UInt16 m_classID;

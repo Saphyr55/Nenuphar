@@ -30,7 +30,8 @@ namespace Nenuphar
         virtual SharedRef<Shader> GetDelegate() override;
 
     public:
-        // 
+        ~OpenGLMainShaderProgram();
+
         void Initialize();
 
     private:

@@ -7,6 +7,7 @@
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Entity/Entity.hpp"
 #include "Nenuphar/Entity/EntityRegistry.hpp"
+#include "Nenuphar/Model/Model.hpp"
 #include "Nenuphar/Rendering/GraphicsContext.hpp"
 #include "Nenuphar/Rendering/RenderDevice.hpp"
 
@@ -29,6 +30,7 @@ public:
     ~GenesisApp() = default;
 
 private:
+    Np::Model Cube;
     Np::AppContext Context;
     Np::EntityRegistry Registry;
     Np::Entity ECamera;

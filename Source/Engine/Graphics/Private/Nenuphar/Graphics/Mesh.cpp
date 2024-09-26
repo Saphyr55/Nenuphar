@@ -20,6 +20,11 @@ namespace Nenuphar
         SharedRef<Texture> Texture;
         TextureTypeModel TTM;
     };
+    
+    void Mesh::Destroy()
+    {
+        RenderHandle->Destroy();
+    }
 
     void RenderCommandSubmitMesh(SharedRef<RenderDevice> renderDevice, Mesh& mesh)
     {
@@ -50,8 +55,8 @@ namespace Nenuphar
     }
 
     void RenderCommandDrawMesh(SharedRef<CommandBuffer> commandBuffer,
-                           SharedRef<UniformRegistry> registry,
-                           const Mesh& mesh)
+                               SharedRef<UniformRegistry> registry,
+                               const Mesh& mesh)
     {
         std::vector<TextureExtraInfo> textures;
 
@@ -76,19 +81,20 @@ namespace Nenuphar
             }
 
             // TODO: Pipepline and binding.
-            commandBuffer->Record([registry, &material]() {
+            commandBuffer->Record([registry, material]() {
                 ApplyMaterial(material, registry);
             });
         }
 
-        for (std::size_t i = 0; i < textures.size(); i++)
+        for (std::size_t slot = 0; slot < textures.size(); slot++)
         {
-            TextureExtraInfo& textureExtraInfo = textures.at(i);
-            commandBuffer->BindTexture(textureExtraInfo.Texture, i);
+            TextureExtraInfo& textureExtraInfo = textures.at(slot);
+
+            commandBuffer->BindTexture(textureExtraInfo.Texture, slot);
 
             // TODO: Pipepline and binding.
-            commandBuffer->Record([registry, i, &textureExtraInfo]() {
-                ApplyMaterialTexture(textureExtraInfo, registry, i);
+            commandBuffer->Record([registry, slot, &textureExtraInfo]() {
+                ApplyMaterialTexture(textureExtraInfo, registry, slot);
             });
         }
 

@@ -22,7 +22,6 @@ namespace Nenuphar
 
     OpenGLUniformBuffer::~OpenGLUniformBuffer()
     {
-        NP_GL_CHECK_CALL(glDeleteBuffers(1, &m_uniformBuffer));
     }
 
     void OpenGLUniformBuffer::BufferSubData(std::size_t offset,
@@ -50,6 +49,11 @@ namespace Nenuphar
     void OpenGLUniformBuffer::Unbind()
     {
         NP_GL_CHECK_CALL(glBindBuffer(GL_UNIFORM_BUFFER, 0));
+    }
+
+    void OpenGLUniformBuffer::Destroy()
+    {
+        NP_GL_CHECK_CALL(glDeleteBuffers(1, &m_uniformBuffer));
     }
 
 }// namespace Nenuphar

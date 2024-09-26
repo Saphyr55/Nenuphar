@@ -46,7 +46,7 @@ namespace Nenuphar
 
         WindowsWindow(WindowsApplication& application, const WindowDefinition& definition);
 
-        ~WindowsWindow() override;
+        virtual ~WindowsWindow() override;
 
     private:
         bool IsValid();

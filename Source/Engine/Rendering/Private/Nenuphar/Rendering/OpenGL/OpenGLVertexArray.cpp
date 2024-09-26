@@ -11,7 +11,6 @@ namespace Nenuphar
     
     OpenGLVertexArray::~OpenGLVertexArray()
     {
-        Destroy();
     }
 
     SharedRef<OpenGLVertexArray> OpenGLVertexArray::Create(OpenGLBufferHandle ebo, OpenGLBufferHandle vbo)
@@ -21,7 +20,7 @@ namespace Nenuphar
         vao->LinkElementBuffer(ebo, vbo);
         return vao;
     }
-    
+
     void OpenGLVertexArray::Initialize()
     {
         NP_GL_CHECK_CALL(glCreateVertexArrays(1, &m_handle))

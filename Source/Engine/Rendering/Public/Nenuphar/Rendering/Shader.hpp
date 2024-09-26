@@ -111,6 +111,7 @@ namespace Nenuphar
          * @param view 
          */
         virtual void UpdateView(const Matrix4f& view) = 0;
+
     };
 
 }// namespace Nenuphar

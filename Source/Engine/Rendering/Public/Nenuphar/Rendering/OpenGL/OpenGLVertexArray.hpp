@@ -12,13 +12,12 @@ namespace Nenuphar
     
     class OpenGLVertexArray : public RenderHandle
     {
-
     public: 
         static SharedRef<OpenGLVertexArray> Create(OpenGLBufferHandle ebo, OpenGLBufferHandle vbo);
 
         void Initialize();
 
-        void Destroy();
+        virtual void Destroy() override;
 
         void Bind() const;
 

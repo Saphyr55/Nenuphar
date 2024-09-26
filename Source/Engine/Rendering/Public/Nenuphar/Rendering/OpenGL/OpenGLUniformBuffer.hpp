@@ -52,6 +52,12 @@ namespace Nenuphar
          */
         void Unbind();
 
+        /**
+         * @brief 
+         * 
+         */
+        virtual void Destroy() override;
+
     public:
         /**
          * @brief Construct a OpenGL Uniform Buffer object
