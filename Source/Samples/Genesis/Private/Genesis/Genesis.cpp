@@ -100,6 +100,7 @@ Bool GenesisApp::OnInitialize()
     auto& cameraVelocity = Registry.GetComponent<Velocity>(ECamera);
 
     InitCamera(orbitCameraComponent, cameraVelocity);
+    CommandQueue = Device->CreateCommandQueue();
 
     MainWindow->Show();
 
@@ -132,7 +133,6 @@ void GenesisApp::OnTick(Double deltaTime)
 
     SharedRef<Np::MainShaderProgram> shader = Device->GetMainShaderProgram();
 
-    SharedRef<Np::CommandQueue> commandQueue = Device->CreateCommandQueue();
     SharedRef<Np::CommandBuffer> commandBuffer = Device->CreateCommandBuffer();
 
     commandBuffer->Clear();
@@ -147,8 +147,8 @@ void GenesisApp::OnTick(Double deltaTime)
 
     MainRenderData.OnRenderData(commandBuffer, Registry);
 
-    commandQueue->Submit(commandBuffer);
-    commandQueue->Execute();
+    CommandQueue->Submit(commandBuffer);
+    CommandQueue->Execute();
 
     Device->GetGraphicsContext()->SwapBuffers();
 }

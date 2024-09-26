@@ -10,7 +10,7 @@ namespace Nenuphar
     class Texture : public RenderHandle
     {
     public:
-        virtual void Destroy() override { }
+        virtual void Destroy() = 0;
 
     private:
         UInt m_id;

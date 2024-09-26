@@ -2,11 +2,13 @@
 
 #include "Nenuphar/Common/Instanciate.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLBuffer.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLCommandBuffer.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLCommandQueue.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLShader.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLVertexArray.hpp"
 #include "Nenuphar/Rendering/RenderDevice.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
 
@@ -32,13 +34,9 @@ namespace Nenuphar
             const std::vector<Vertex>& vertices,
             const std::vector<VIndice>& indices)
     {   
-        auto vbo = OpenGLImmutableBuffer::Create(vertices);
-        auto ebo = OpenGLImmutableBuffer::Create(indices);
-        auto vao = OpenGLVertexArray::Create(vbo->GetHandle(),
-                                             ebo->GetHandle());
-
-        vbo->Destroy();
-        ebo->Destroy();
+        SharedRef<OpenGLImmutableBuffer> vbo = OpenGLImmutableBuffer::Create(vertices);
+        SharedRef<OpenGLImmutableBuffer> ebo = OpenGLImmutableBuffer::Create(indices);
+        SharedRef<OpenGLVertexArray> vao = OpenGLVertexArray::Create(vbo->GetHandle(), ebo->GetHandle());
 
         return vao;
     }

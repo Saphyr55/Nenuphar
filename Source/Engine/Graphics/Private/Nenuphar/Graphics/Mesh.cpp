@@ -20,10 +20,15 @@ namespace Nenuphar
         SharedRef<Texture> Texture;
         TextureTypeModel TTM;
     };
-    
+
     void Mesh::Destroy()
     {
         RenderHandle->Destroy();
+        for (auto& mat : Materials) 
+        {
+            mat.DiffuseTexture->Destroy();
+            mat.SpecularTexture->Destroy();
+        }
     }
 
     void RenderCommandSubmitMesh(SharedRef<RenderDevice> renderDevice, Mesh& mesh)
@@ -62,26 +67,19 @@ namespace Nenuphar
 
         for (auto& material: mesh.Materials)
         {
-            if (material.DiffuseTexture)
-            {
-                TextureExtraInfo diffuseTexture;
-                diffuseTexture.Texture = material.DiffuseTexture;
-                diffuseTexture.TTM = TextureTypeModel::Diffuse;
+            TextureExtraInfo diffuseTexture;
+            diffuseTexture.Texture = material.DiffuseTexture;
+            diffuseTexture.TTM = TextureTypeModel::Diffuse;
 
-                textures.push_back(std::move(diffuseTexture));
-            }
+            TextureExtraInfo specularTexture;
+            specularTexture.Texture = material.SpecularTexture;
+            specularTexture.TTM = TextureTypeModel::Specular;
 
-            if (material.SpecularTexture)
-            {
-                TextureExtraInfo specularTexture;
-                specularTexture.Texture = material.SpecularTexture;
-                specularTexture.TTM = TextureTypeModel::Specular;
-
-                textures.push_back(std::move(specularTexture));
-            }
+            textures.push_back(std::move(diffuseTexture));
+            textures.push_back(std::move(specularTexture));
 
             // TODO: Pipepline and binding.
-            commandBuffer->Record([registry, material]() {
+            commandBuffer->Record([registry, material] {
                 ApplyMaterial(material, registry);
             });
         }
@@ -90,7 +88,10 @@ namespace Nenuphar
         {
             TextureExtraInfo& textureExtraInfo = textures.at(slot);
 
-            commandBuffer->BindTexture(textureExtraInfo.Texture, slot);
+            if (textureExtraInfo.Texture)
+            {
+                commandBuffer->BindTexture(textureExtraInfo.Texture, slot);
+            }
 
             // TODO: Pipepline and binding.
             commandBuffer->Record([registry, slot, &textureExtraInfo]() {

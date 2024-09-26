@@ -59,6 +59,7 @@ namespace Nenuphar
         OpenGLDrawIndexedCommand command;
         command.IndexCount = indexCount;
         command.VAO = std::reinterpret_pointer_cast<OpenGLVertexArray>(handle);
+        NCHECK(command.VAO)
         Record(std::move(command));
     }
 
@@ -89,7 +90,7 @@ namespace Nenuphar
     {
         NCHECK(command.VAO)
         command.VAO->Bind();
-        NP_GL_CHECK_CALL(glDrawElements(GL_TRIANGLES, command.IndexCount, GL_UNSIGNED_INT, nullptr));
+        NP_GL_CHECK_CALL(glDrawElements(GL_TRIANGLES, command.IndexCount, GL_UNSIGNED_INT, 0));
     }
 
     void OpenGLCommandBuffer::Execute(const OpenGLBindTextureCommand& command)

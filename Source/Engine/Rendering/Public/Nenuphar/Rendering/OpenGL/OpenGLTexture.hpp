@@ -21,7 +21,15 @@ namespace Nenuphar
      * @param info 
      * @return OpenGLFormatPixel 
      */
-    OpenGLFormatPixel OpenGLFormat(const ImageFormat& format);
+    GLenum OpenGLImageFormat(const ImageFormat& format);
+
+    /**
+     * @brief 
+     * 
+     * @param format 
+     * @return GLenum 
+     */
+    GLenum OpenGLTextureStorageFormat(const ImageFormat& format);
 
     /**
      * @brief 
@@ -76,7 +84,7 @@ namespace Nenuphar
         ~OpenGLTexture();
 
     private:
-        OpenGLFormatPixel m_formatPixel;
+        ImageFormat m_formatPixel;
         OpenGLTextureHandle m_handle;
         ImageDefinition m_imageDefinition;
     };

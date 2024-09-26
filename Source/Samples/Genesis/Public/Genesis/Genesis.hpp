@@ -35,6 +35,7 @@ private:
     Np::EntityRegistry Registry;
     Np::Entity ECamera;
     Np::Entity ESponza;
+    SharedRef<Np::CommandQueue> CommandQueue;
     SharedRef<Np::RenderDevice> Device;
     SharedRef<Np::Window> MainWindow;
     RenderData MainRenderData;

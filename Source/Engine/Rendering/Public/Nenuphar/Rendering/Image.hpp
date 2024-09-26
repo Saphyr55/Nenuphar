@@ -9,6 +9,7 @@ namespace Nenuphar
     enum class ImageFormat : Int
     {
         RED,
+        RG,
         RGB,
         RGBA
     };

@@ -13,10 +13,10 @@
 namespace Nenuphar
 {	
     
-    enum OpenGLFormatPixel : Int
+    enum OpenGLFormatPixel : UInt
 	{
-		RGBA = GL_RGBA,
-		RGB = GL_RGB,
+		RGBA = GL_RGBA8,
+		RGB = GL_RGB8,
         RED = GL_RED
 	};
 

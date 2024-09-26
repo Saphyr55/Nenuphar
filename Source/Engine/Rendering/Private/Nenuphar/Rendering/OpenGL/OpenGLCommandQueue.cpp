@@ -9,14 +9,12 @@ namespace Nenuphar
         m_commandQueue.push(commandBuffer);
     }
 
-    void OpenGLCommandQueue::Execute() 
+    void OpenGLCommandQueue::Execute()
     {
-        while (!m_commandQueue.empty()) 
+        for (SharedRef<CommandBuffer> commandBuffer = m_commandQueue.front(); !m_commandQueue.empty(); m_commandQueue.pop())
         {
-            SharedRef<CommandBuffer> commandBuffer = m_commandQueue.front();
             commandBuffer->Execute();
-            m_commandQueue.pop();
         }
     }
 
-}
+}// namespace Nenuphar

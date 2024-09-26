@@ -13,11 +13,11 @@ namespace Nenuphar
     {
     }
 
-    SharedRef<OpenGLVertexArray> OpenGLVertexArray::Create(OpenGLBufferHandle ebo, OpenGLBufferHandle vbo)
+    SharedRef<OpenGLVertexArray> OpenGLVertexArray::Create(OpenGLBufferHandle vbo, OpenGLBufferHandle ebo)
     {
         auto vao = MakeSharedRef<OpenGLVertexArray>();
         vao->Initialize();
-        vao->LinkElementBuffer(ebo, vbo);
+        vao->LinkElementBuffer(vbo, ebo);
         return vao;
     }
 
@@ -36,7 +36,7 @@ namespace Nenuphar
         NP_GL_CHECK_CALL(glBindVertexArray(m_handle))
     }
 
-    void OpenGLVertexArray::LinkElementBuffer(OpenGLBufferHandle ebo, OpenGLBufferHandle vbo)
+    void OpenGLVertexArray::LinkElementBuffer(OpenGLBufferHandle vbo, OpenGLBufferHandle ebo)
     {
         Int bindingIndex = 0;
 

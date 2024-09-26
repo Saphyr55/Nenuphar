@@ -15,6 +15,7 @@
 #include "Nenuphar/Model/ModelAsset.hpp"
 
 #include "Nenuphar/Rendering/ImageAsset.hpp"
+#include "Nenuphar/Rendering/RenderDevice.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
 #include "Nenuphar/Rendering/Vertex.hpp"
 
@@ -36,7 +37,7 @@ namespace Nenuphar
         using TRes = ModelLoader::TRes;
         AssetRegistry& assets = AssetRegistry::Instance();
         bool toSubmit = options.IsSubmit && options.RenderDevice;
-
+        
         NP_INFO(TOLModelLoader::Load, "Loading the obj file '{}'", path.GetFilePath());
 
         if (!path.IsExists())
@@ -86,6 +87,9 @@ namespace Nenuphar
 
         ImageAssetOptions imageOptions;
         imageOptions.IsFromAsset = false;
+        
+        TextureConstructOptions textureConstructOptions;
+        textureConstructOptions.AutoRelease = options.AutoReleaseTextue;
 
         for (const tinyobj::material_t& m: materials)
         {
@@ -103,19 +107,10 @@ namespace Nenuphar
                     SharedRef<ImageAsset> image = assets.Load<ImageAsset>(v, imageOptions);
                     NCHECK(image)
 
-                    SharedRef<Texture> texture = options.RenderDevice->CreateTexture(image);
+                    SharedRef<Texture> texture = options.RenderDevice->CreateTexture(image, textureConstructOptions);
                     NCHECK(texture);
 
                     texturesMapping.insert({v, texture});
-
-                    if (options.AutoReleaseTextue)
-                    {
-                        assets.Unload(image);
-                    }
-                }
-
-                if (toSubmit)
-                {
                     material.DiffuseTexture = texturesMapping.at(v);
                 }
             }
@@ -129,19 +124,10 @@ namespace Nenuphar
                     SharedRef<ImageAsset> image = assets.Load<ImageAsset>(imagePath, imageOptions);
                     NCHECK(image)
 
-                    SharedRef<Texture> texture = options.RenderDevice->CreateTexture(image);
+                    SharedRef<Texture> texture = options.RenderDevice->CreateTexture(image, textureConstructOptions);
                     NCHECK(texture);
 
                     texturesMapping.insert({imagePath, texture});
-
-                    if (options.AutoReleaseTextue)
-                    {
-                        assets.Unload(image);
-                    }
-                }
-
-                if (toSubmit)
-                {
                     material.SpecularTexture = texturesMapping.at(imagePath);
                 }
             }

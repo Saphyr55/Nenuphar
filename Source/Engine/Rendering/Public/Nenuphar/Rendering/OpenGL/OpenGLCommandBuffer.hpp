@@ -32,7 +32,6 @@ namespace Nenuphar
     struct OpenGLDrawIndexedCommand
     {
         SharedRef<OpenGLVertexArray> VAO;
-        // SharedRef<UniformRegistry> Bindings;
         UInt IndexCount;
     };
 

@@ -34,13 +34,9 @@ namespace Nenuphar
         OpenGLImmutableBuffer();
 
         virtual ~OpenGLImmutableBuffer() = default;
-
-    protected:
-        OpenGLBufferHandle m_handle;
-
+    
     private:
-        Bool m_isInit;
-        Bool m_isDestroy;
+        OpenGLBufferHandle m_handle;
     };
 
     template<typename T>

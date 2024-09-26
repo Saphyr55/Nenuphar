@@ -27,6 +27,7 @@ void RenderData::OnRenderData(SharedRef<Np::CommandBuffer> commandBuffer, Np::En
         Matrix4f matrixModel = Transform::Tranformation(transform);
 
         commandBuffer->Record([=] {
+            shader->GetDelegate()->Use();
             shader->GetRegistry()->Get<Matrix4f>("UModel").UpdateValue(matrixModel);
         });
 
@@ -38,6 +39,7 @@ void RenderData::OnRenderData(SharedRef<Np::CommandBuffer> commandBuffer, Np::En
         Matrix4f matrixModel = Transform::Tranformation(transform);
 
         commandBuffer->Record([=] {
+            shader->GetDelegate()->Use();
             shader->GetRegistry()->Get<Matrix4f>("UModel").UpdateValue(matrixModel);
             shader->GetRegistry()->Get<Vector3f>("ULight.Position").UpdateValue(light.Position);
             shader->GetRegistry()->Get<Vector3f>("ULight.Ambient").UpdateValue(light.Ambient);
@@ -64,6 +66,7 @@ RenderData RenderData::Create(SharedRef<RenderDevice> device)
     // Load sponza obj model.
     Np::TOLModelAssetOptions sponzaOptions;
     sponzaOptions.RenderDevice = device;
+    sponzaOptions.IsSubmit = true;
     sponzaOptions.MtlPathDir = Np::FromAssets("/sponza/");
     std::string path = "/sponza/sponza.obj";
     Np::ModelAssetRef sponzaAsset = assets.Load<Np::ModelAsset, Np::TOLModelAssetOptions>(path, sponzaOptions);

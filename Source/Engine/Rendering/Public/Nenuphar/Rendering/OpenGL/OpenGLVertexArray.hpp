@@ -13,7 +13,7 @@ namespace Nenuphar
     class OpenGLVertexArray : public RenderHandle
     {
     public: 
-        static SharedRef<OpenGLVertexArray> Create(OpenGLBufferHandle ebo, OpenGLBufferHandle vbo);
+        static SharedRef<OpenGLVertexArray> Create(OpenGLBufferHandle vbo, OpenGLBufferHandle ebo);
 
         void Initialize();
 
@@ -21,7 +21,7 @@ namespace Nenuphar
 
         void Bind() const;
 
-        void LinkElementBuffer(OpenGLBufferHandle ebo, OpenGLBufferHandle vbo);        
+        void LinkElementBuffer(OpenGLBufferHandle vbo, OpenGLBufferHandle ebo);        
 
         inline OpenGLVertexArrayHandle GetHandle() const { return m_handle;  }
         
