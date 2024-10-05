@@ -3,8 +3,16 @@
 namespace Nenuphar
 {
 
-    OrbitCamera::OrbitCamera(Float inTheta, Float inPhi, Float inRadius, Vector3f inTarget, Vector3f inUp)
-        : Theta(inTheta), Phi(inPhi), Radius(inRadius), Target(inTarget), Up(inUp)
+    OrbitCamera::OrbitCamera(Float inTheta,
+                             Float inPhi,
+                             Float inRadius,
+                             Vector3f inTarget,
+                             Vector3f inUp)
+        : Theta(inTheta)
+        , Phi(inPhi)
+        , Radius(inRadius)
+        , Target(inTarget)
+        , Up(inUp)
     {
     }
 

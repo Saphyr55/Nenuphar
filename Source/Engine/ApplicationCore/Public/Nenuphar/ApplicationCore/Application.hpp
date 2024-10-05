@@ -72,14 +72,14 @@ namespace Nenuphar
          * @brief 
          * 
          */
-        virtual Bool OnInitialize() { return true; };
+        virtual bool OnInitialize() { return true; };
         
         /**
          * @brief 
          * 
          * @param deltaTime 
          */
-        virtual void OnTick(Double deltaTime) { };
+        virtual void OnTick(double deltaTime) { };
 
         /**
          * @brief 

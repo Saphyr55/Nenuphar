@@ -30,6 +30,8 @@ namespace Nenuphar
     public:
         virtual const WindowDefinition& GetWindowDefinition() const = 0;
 
+        virtual WindowDefinition& GetWindowDefinition() = 0;
+
         virtual WindowID GetID() const = 0;
 
         virtual bool IsWindowMaximized() const = 0;
@@ -50,7 +52,7 @@ namespace Nenuphar
 
         virtual void Destroy() = 0;
 
-        virtual void ReshapeWindow(Int width, Int height) = 0;
+        virtual void ReshapeWindow(UInt width, UInt height) = 0;
 
         virtual void SetTitle(StringView title) = 0;
 

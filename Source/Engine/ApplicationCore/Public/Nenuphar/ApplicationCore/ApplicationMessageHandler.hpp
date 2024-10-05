@@ -21,7 +21,7 @@ namespace Nenuphar
         {
         }
 
-        virtual void OnMouseWheel(Float Delta)
+        virtual void OnMouseWheel(Float delta)
         {
         }
 
@@ -33,15 +33,15 @@ namespace Nenuphar
         {
         }
 
-        virtual void OnButtonUp(Input::Button Button)
+        virtual void OnButtonUp(Input::Button button)
         {
         }
 
-        virtual void OnButtonDown(Input::Button Button)
+        virtual void OnButtonDown(Input::Button button)
         {
         }
 
-        virtual void OnMouseMove(Float PosRelX, Float PosRelY, Float PosX, Float PosY)
+        virtual void OnMouseMove(Float posRelX, Float posRelY, Float posX, Float posY)
         {
         }
     };

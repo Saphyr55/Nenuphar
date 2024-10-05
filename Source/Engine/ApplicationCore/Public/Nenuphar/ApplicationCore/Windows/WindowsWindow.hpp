@@ -19,7 +19,9 @@ namespace Nenuphar
         virtual WindowID GetID() const override;
 
         virtual const WindowDefinition& GetWindowDefinition() const override;
-        
+
+        virtual WindowDefinition& GetWindowDefinition() override;
+
         virtual bool IsWindowMaximized() const override;
 
         virtual bool IsWindowMinimized() const override;
@@ -38,7 +40,7 @@ namespace Nenuphar
 
         virtual void Destroy() override;
 
-        virtual void ReshapeWindow(Int width, Int height) override;
+        virtual void ReshapeWindow(UInt width, UInt height) override;
 
         virtual void SetTitle(StringView title) override;
 

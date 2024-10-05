@@ -6,6 +6,7 @@
 
 
 #include "Nenuphar/ApplicationCore/Application.hpp"
+#include "Nenuphar/ApplicationCore/ApplicationMessageHandler.hpp"
 #include "Nenuphar/ApplicationCore/PlatformApplication.hpp"
 #include "Nenuphar/ApplicationCore/Window.hpp"
 #include "Nenuphar/Asset/AssetRegistry.hpp"
@@ -35,6 +36,7 @@ static Vector3f GDefaultPosition(0.0f, 0.0f, 0.0f);
 
 GenesisApp::GenesisApp()
     : Cube(CreateCubeModel())
+    , DeltaTime(0.0)
 {
 }
 
@@ -45,8 +47,12 @@ Np::AppContext* GenesisApp::ProvideAppContext()
 
 Bool GenesisApp::OnInitialize()
 {
-    // Do something by default.
-    Np::PlatformAppGet()->SetApplicationMessageHandler(MakeSharedRef<GenesisApplicationMessageHandler>());
+    EventHandler = MakeSharedRef<WindowEventHandler>();
+
+    Np::SharedRef<Np::ApplicationMessageHandler> messageHandler = 
+        MakeSharedRef<GenesisApplicationMessageHandler>(EventHandler);
+
+    Np::PlatformAppGet()->SetApplicationMessageHandler(messageHandler);
 
     Np::AssetRegistry& assets = Np::AssetRegistry::Instance();
     assets.EmplaceLoader<Np::ImageAsset, Np::AssetOptions, Np::ImageAssetLoader>();
@@ -57,6 +63,17 @@ Bool GenesisApp::OnInitialize()
     MainWindow = Np::PlatformAppGet()->MakeWindow(definition);
     Device = Np::RenderDevice::Create(Np::RenderAPI::OpenGL, MainWindow);
     MainRenderData = RenderData::Create(Device);
+
+    EventHandler->SetWindow(MainWindow);
+
+    EventHandler->OnClose().ConnectHandler([&](auto) {
+        MainWindow->Destroy();
+        Np::AppStopCurrent();
+    });
+
+    EventHandler->OnResize().ConnectHandler([&](auto& event) {
+        OnTick(GetDeltaTime());
+    });
 
     // Camera entity.
     ECamera = Registry.Create();
@@ -99,7 +116,7 @@ Bool GenesisApp::OnInitialize()
     auto& orbitCameraComponent = Registry.GetComponent<OrbitCamera>(ECamera);
     auto& cameraVelocity = Registry.GetComponent<Velocity>(ECamera);
 
-    InitCamera(orbitCameraComponent, cameraVelocity);
+    InitCamera(EventHandler, orbitCameraComponent, cameraVelocity);
     CommandQueue = Device->CreateCommandQueue();
 
     MainWindow->Show();
@@ -109,6 +126,8 @@ Bool GenesisApp::OnInitialize()
 
 void GenesisApp::OnTick(Double deltaTime)
 {
+    DeltaTime = deltaTime;
+    
     Np::OrbitCamera& camera = Registry.GetComponent<OrbitCamera>(ECamera);
 
     Int width = MainWindow->GetWindowDefinition().Width;
@@ -164,4 +183,9 @@ void GenesisApp::OnClose()
     {
         rModel.Model->Destroy();
     }
+}
+
+double GenesisApp::GetDeltaTime()
+{
+    return DeltaTime;
 }

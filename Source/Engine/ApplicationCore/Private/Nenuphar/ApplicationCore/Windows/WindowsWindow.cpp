@@ -116,7 +116,7 @@ namespace Nenuphar
         }
     }
 
-    void WindowsWindow::ReshapeWindow(Int width, Int height)
+    void WindowsWindow::ReshapeWindow(UInt width, UInt height)
     {
         // TODO: Reshape window.
     }
@@ -137,6 +137,11 @@ namespace Nenuphar
     }
 
     const WindowDefinition& WindowsWindow::GetWindowDefinition() const
+    {
+        return m_definition;
+    }
+
+    WindowDefinition& WindowsWindow::GetWindowDefinition()
     {
         return m_definition;
     }

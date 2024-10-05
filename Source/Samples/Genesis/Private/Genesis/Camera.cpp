@@ -1,4 +1,6 @@
 #include "Genesis/Camera.hpp"
+#include "Genesis/WindowEventHandler.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/InputSystem/InputSystem.hpp"
 #include "Nenuphar/Math/Camera.hpp"
 
@@ -8,23 +10,20 @@ static OrbitCamera DefaultCamera((float)Radians(45.0f),
                                  Vector3f(0.0, 0.0, 0.0),
                                  Vector3f(0.0f, 1.0f, 0.0f));
 
-void InitCamera(Np::OrbitCamera& camera,
-                const Velocity& velocity)
+void InitCamera(Np::SharedRef<WindowEventHandler> windowEventHandler, Np::OrbitCamera& camera, const Velocity& velocity)
 {
-    /*
-    signals.OnKeyPressed().Connect([&](auto&, auto& evt) {
+    windowEventHandler->OnKeyPressed().Connect([&](auto&, auto& evt) {
         ResetCameraTarget(evt, camera);
     });
 
-    signals.OnMouseMove().Connect([&](auto&, auto& evt) {
+    windowEventHandler->OnMouseMove().Connect([&](auto&, auto& evt) {
         OnMoveCameraXY(evt, camera, velocity);
         OnRotateCamera(evt, camera, velocity);
     });
 
-    signals.OnMouseWheel().Connect([&](auto&, auto& evt) {
+    windowEventHandler->OnMouseWheel().Connect([&](auto&, auto& evt) {
         OnMoveCameraZOnScroll(evt, camera, velocity);
     });
-    */
 }
 
 Void ResetCameraTarget(const Np::KeyEvent& evt, Np::OrbitCamera& camera)
