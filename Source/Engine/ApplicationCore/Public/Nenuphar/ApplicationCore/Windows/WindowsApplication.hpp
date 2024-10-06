@@ -1,19 +1,30 @@
 #pragma once
 
-#include <functional>
-
-#include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/ApplicationCore/ApplicationMessageHandler.hpp"
 #include "Nenuphar/Core/Windows.hpp"
+
+#if NP_PLATFORM_WINDOWS
+
 #include "Nenuphar/ApplicationCore/PlatformApplication.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
+
+#include <vector>
 
 namespace Nenuphar
 {
 
     class WindowsWindow;
 
-    using WindowsWindowRegistry = std::unordered_map<HWND, WindowsWindow*>;
+    using WindowsWindowRegistry = std::vector<SharedRef<WindowsWindow>>;
 
-    class WindowsApplication final : public PlatformApplication
+    SharedRef<WindowsWindow> FindWindowByHWND(WindowsWindowRegistry registry, HWND hwnd);
+    
+
+    /**
+     * @brief 
+     * 
+     */
+    class WindowsApplication : public PlatformApplication
     {
         friend WindowsWindow;
 
@@ -22,23 +33,36 @@ namespace Nenuphar
 
         HINSTANCE GetHInstance() const;
 
-        void Initialize();
+    public:
+        virtual bool PumpMessages() override;
 
-        void Destroy() const override;
+        virtual void SetApplicationMessageHandler(SharedRef<ApplicationMessageHandler> handler) override;
 
-        inline ApplicationID Id() const override { return classID; }
+        virtual SharedRef<Window> MakeWindow(const WindowDefinition& definition) override; 
 
-        static LRESULT CALLBACK ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam);
+        virtual bool Initialize() override;
 
-        explicit WindowsApplication(HINSTANCE hinstance = GetModuleHandle(nullptr));
+        virtual Double GetAbsoluteTime() const override;
 
+        virtual void Destroy() override;
+
+        LRESULT ProcessMessage(HWND hwnd, UInt msg, WPARAM wParam, LPARAM lParam);
+
+        inline UInt16 GetClassID() { return m_classID; }
+        
+    public:
+        explicit WindowsApplication(HINSTANCE hinstance);
         ~WindowsApplication() override;
 
     private:
-        ApplicationID classID;
-        HINSTANCE hinstance{};
-        static thread_local WindowsWindowRegistry WindowsWindowRegistry;
+        SharedRef<ApplicationMessageHandler> m_applicationMessageHandler;
+        WindowsWindowRegistry m_registry;
+
+        UInt16 m_classID;
+        HINSTANCE m_hinstance{};
     };
 
 
-}
+}// namespace Nenuphar
+
+#endif

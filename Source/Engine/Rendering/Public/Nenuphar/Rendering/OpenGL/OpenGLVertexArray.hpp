@@ -1,44 +1,37 @@
 #pragma once
 
-#include "Nenuphar/Common/Common.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLBuffer.hpp"
+#include "Nenuphar/Rendering/RenderHandle.hpp"
+
 
 namespace Nenuphar
 {
-
-    using VertexArrayID = UInt;
-
-    class OpenGLVertexArray final
+    
+    using OpenGLVertexArrayHandle = UInt32;
+    
+    class OpenGLVertexArray : public RenderHandle
     {
+    public: 
+        static SharedRef<OpenGLVertexArray> Create(OpenGLBufferHandle vbo, OpenGLBufferHandle ebo);
 
-    public:
+        void Initialize();
 
-        [[nodiscard]] inline VertexArrayID GetID() const  { return m_vertexArrayID;  }
+        virtual void Destroy() override;
 
         void Bind() const;
 
-        void Unbind() const;
+        void LinkElementBuffer(OpenGLBufferHandle vbo, OpenGLBufferHandle ebo);        
 
-        OpenGLVertexArray();
+        inline OpenGLVertexArrayHandle GetHandle() const { return m_handle;  }
+        
+        OpenGLVertexArray() = default;
         ~OpenGLVertexArray();
 
     private:
-        VertexArrayID m_vertexArrayID;
+        OpenGLVertexArrayHandle m_handle;
     };
 
 
-    template<typename T>
-    void LinkBuffer(
-        const OpenGLBuffer<T, OpenGLBufferTarget::ArrayBuffer>& buffer, 
-        const std::vector<LayoutBuffer>& layouts)
-    {
-        buffer.Bind();
-        for (const auto& lb : layouts)
-        {
-            glVertexAttribPointer(lb.Index, lb.Size, lb.Type, lb.Normalized, lb.Stride, lb.Offset);
-            glEnableVertexAttribArray(lb.Index);
-        }
-        buffer.Unbind();
-    }
 
 }

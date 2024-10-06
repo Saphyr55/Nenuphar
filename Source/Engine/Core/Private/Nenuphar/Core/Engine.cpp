@@ -1,24 +1,26 @@
 #include "Nenuphar/Core/Engine.hpp"
 
-#include "Nenuphar/ApplicationCore/Application.hpp"
 #include "Nenuphar/Core/Logger/Logger.hpp"
 
 namespace Nenuphar
 {
+    bool Engine::HasStarted = false;
+    bool Engine::IsFinish = false;
 
-    void Engine::Initialize(int argc, const char** argv)
+    int Engine::LoopRun(const std::function<void()>& runnable)
     {
-    }
-
-    int Engine::Start(const std::function<void()>& runnable)
-    {
-        
         try
         {
-            while (!GIsFinish)
+            NP_INFO(Engine::LoopRun, "Engine start the main loop.");
+            IsFinish = false;
+            HasStarted = true;
+
+            while (!IsFinish)
             {
                 runnable();
             }
+
+            NP_INFO(Engine::LoopRun, "Engine closed the main loop.");
         }
         catch (const std::exception& e)
         {
@@ -29,4 +31,4 @@ namespace Nenuphar
         return EXIT_SUCCESS;
     }
 
-}
+}// namespace Nenuphar

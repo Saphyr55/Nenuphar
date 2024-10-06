@@ -1,65 +1,68 @@
 #pragma once
 
-#include "Nenuphar/ApplicationCore/WindowBase.hpp"
-#include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
-#include "Nenuphar/ApplicationCore/WindowDefinition.hpp"
 #include "Nenuphar/Core/Windows.hpp"
-#include "Nenuphar/EventSystem/EventSystem.hpp"
 
+#if NP_PLATFORM_WINDOWS
+
+#include "Nenuphar/ApplicationCore/Window.hpp"
+#include "Nenuphar/ApplicationCore/Windows/WindowsApplication.hpp"
 
 namespace Nenuphar
 {
-
-    class WindowsWindow : public WindowBase
+    
+    class WindowsWindow : public Window
     {
         friend WindowsApplication;
+
     public:
 
-        WindowID GetID() const override;
+        virtual WindowID GetID() const override;
 
-        const WindowDefinition& GetWindowDefinition() const override;
+        virtual const WindowDefinition& GetWindowDefinition() const override;
 
-        const WindowSignals& GetWindowSignals() const override;
+        virtual WindowDefinition& GetWindowDefinition() override;
 
-        bool IsWindowMaximized() const override;
+        virtual bool IsWindowMaximized() const override;
 
-        bool IsWindowMinimized() const override;
+        virtual bool IsWindowMinimized() const override;
 
-        bool IsVisible() const override;
+        virtual bool IsVisible() const override;
 
-        void* GetOSWindowHandle() const override;
+        virtual void* GetOSWindowHandle() const override;
 
-        void PoolEvent() const override;
+        virtual void Hide() override;
 
-        void Hide() override;
+        virtual void Show() override;
 
-        void Show() override;
+        virtual void Restore() override;
 
-        void Restore() override;
+        virtual void Maximize() override;
 
-        void Maximize() override;
+        virtual void Destroy() override;
 
-        void Destroy() override;
+        virtual void ReshapeWindow(UInt width, UInt height) override;
 
-        void ReshapeWindow(Int width, Int height) override;
+        virtual void SetTitle(StringView title) override;
 
-        void SetTitle(StringView title) override;
+        HWND GetHWND();
 
-        WindowsWindow(WindowsApplication& inApplication, WindowDefinition inDefinition);
+        WindowsWindow(WindowsApplication& application, const WindowDefinition& definition);
 
-        ~WindowsWindow() override = default;
-
-    private:
-        HWND Initialize();
-        Int ProcessEvent(MSG msg);
+        virtual ~WindowsWindow() override;
 
     private:
-        WindowSignals m_windowSignals;
+        bool IsValid();
+
+        void InitializeWindowHandle();
+
+    private:
         WindowDefinition m_definition;
-        WindowsApplication& windowsApplication;
-        HWND hwnd;
+        WindowsApplication& m_windowsApplication;
+        HWND m_hwnd;
         WindowID ID;
         static WindowID LastID;
     };
 
 }
+
+#endif

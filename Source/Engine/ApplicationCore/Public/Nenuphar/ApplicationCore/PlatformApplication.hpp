@@ -1,36 +1,78 @@
 #pragma once
 
-#include "Application.hpp"
+#include "Nenuphar/ApplicationCore/Application.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
+
 
 namespace Nenuphar
 {
 
-    class PlatformApplication : public Application
+    class Window;
+    class WindowDefinition;
+    class PlatformApplication;
+    class ApplicationMessageHandler;
+
+
+    /**
+     * @brief 
+     * 
+     * @return SharedRef<PlatformApplication> 
+     */
+    SharedRef<PlatformApplication> PlatformAppGet();
+
+
+    /**
+     * @brief 
+     * 
+     */
+    class PlatformApplication
     {
     public:
 
         /**
-         * Platform application singleton.
-         *
-         * \brief
-         * \return Platform application single instance.
+         * @brief 
+         * 
          */
-        static PlatformApplication& GetPlatformApplication();
+        virtual bool Initialize() = 0;
 
         /**
-         * Application singleton.
-         *
-         * \brief
-         * \return Application single instance.
+         * @brief
+         * 
          */
-        static Application& GetApplication();
+        virtual void SetApplicationMessageHandler(SharedRef<ApplicationMessageHandler> handler) = 0;
 
-    private:
         /**
-         * Singleton
+         * @brief 
+         * 
+         * @return
          */
-        static SharedRef<PlatformApplication> Application;
+        virtual bool PumpMessages() = 0;
 
+        /**
+         * @brief Create a new Window.
+         * 
+         * @return SharedRef<Window> 
+         */
+        virtual SharedRef<Window> MakeWindow(const WindowDefinition& definition) = 0; 
+
+        /**
+         * @brief Get the absolute time.
+         * 
+         * @return double 
+         */
+        virtual double GetAbsoluteTime() const = 0;
+        
+        /**
+         * @brief 
+         * 
+         */
+        virtual void Destroy() = 0;
+        
+        /**
+         * @brief Destroy the Platform Application object
+         * 
+         */
+        virtual ~PlatformApplication() = default;
     };
-
+    
 }

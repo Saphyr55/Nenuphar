@@ -1,60 +1,63 @@
 #pragma once
 
-#include "WindowDefinition.hpp"
-#include "WindowInterface.hpp"
-#include "PlatformApplication.hpp"
+#include "Nenuphar/Common/Common.hpp"
 
 namespace Nenuphar
 {
 
-    class WindowBase;
+    using WindowID = UInt16;
 
-    class Window : public WindowInterface
+    struct WindowDefinition
+    {
+        String Title;
+        Int Width;
+        Int Height;
+    };
+
+
+    enum class WindowMode : Int
+    {
+        Fullscreen,
+
+        WindowedFullscreen,
+
+        Windowed,
+    };
+
+
+    class Window
     {
     public:
+        virtual const WindowDefinition& GetWindowDefinition() const = 0;
 
-        void PoolEvent() const override;
+        virtual WindowDefinition& GetWindowDefinition() = 0;
 
-        const WindowDefinition& GetWindowDefinition() const override;
+        virtual WindowID GetID() const = 0;
 
-        const WindowSignals& GetWindowSignals() const override;
+        virtual bool IsWindowMaximized() const = 0;
 
-        WindowID GetID() const override;
+        virtual bool IsWindowMinimized() const = 0;
 
-        bool IsWindowMaximized() const override;
+        virtual bool IsVisible() const = 0;
 
-        bool IsWindowMinimized() const override;
+        virtual void* GetOSWindowHandle() const = 0;
 
-        bool IsVisible() const override;
+        virtual void Hide() = 0;
 
-        void* GetOSWindowHandle() const override;
+        virtual void Show() = 0;
 
-        void Hide() override;
+        virtual void Restore() = 0;
 
-        void Show() override;
+        virtual void Maximize() = 0;
 
-        void Restore() override;
+        virtual void Destroy() = 0;
 
-        void Maximize() override;
+        virtual void ReshapeWindow(UInt width, UInt height) = 0;
 
-        void Destroy() override;
+        virtual void SetTitle(StringView title) = 0;
 
-        void ReshapeWindow(int width, int height) override;
+        virtual ~Window() = default;
 
-        void SetTitle(StringView title) override;
-
-        inline WindowBase& Base() { return *m_base; }
-
-    public:
-        Window(
-            const WindowDefinition& definition, 
-            PlatformApplication& app = PlatformApplication::GetPlatformApplication());
-
-        Window(StringView title, Int width, Int height);
-
-        ~Window() override = default;
-
-    private:
-        SharedRef<WindowBase> m_base;
     };
+
 }

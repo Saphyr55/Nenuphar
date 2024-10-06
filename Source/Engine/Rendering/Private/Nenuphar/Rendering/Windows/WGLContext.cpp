@@ -1,9 +1,38 @@
 #include "Nenuphar/Rendering/Windows/WGLContext.hpp"
-#include "Nenuphar/Core/Core.hpp"
-#include "Nenuphar/Common/Debug/Debug.hpp"
+
+#if NP_PLATFORM_WINDOWS
+
+#include "Nenuphar/Core/Debug.hpp"
+
+#include "Nenuphar/Core/Logger/Logger.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
+#include "Nenuphar/Rendering/RenderDevice.hpp"
+
+#include <glad/glad.h>
+
+#include <memory>
 
 namespace Nenuphar
 {
+
+    UniquePtr<GraphicsContext> GraphicsContext::Create(RenderAPI api, SharedRef<Window> window)
+    {
+        NCHECK(window);
+        switch (api)
+        {
+            case RenderAPI::OpenGL: {
+                WGLContext::Init();
+                auto ww = std::reinterpret_pointer_cast<WindowsWindow>(window);
+                auto deviceContext = MakeUnique<WindowsDeviceContext>(ww);
+                return MakeUnique<WGLContext>(std::move(deviceContext));
+            }
+            case RenderAPI::None: {
+                NCHECK(false)
+                return nullptr;
+            }
+        }
+    }
 
     WGLContext::WGLContext(Ptr<WindowsDeviceContext> deviceContext)
         : m_deviceContext(std::move(deviceContext))
@@ -12,56 +41,56 @@ namespace Nenuphar
 
         HDC handler = m_deviceContext->GetHDC();
         Int pixelFormatAttributes[] =
-        {
-            WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
-            WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
-            WGL_DOUBLE_BUFFER_ARB,  GL_TRUE,
-            WGL_ACCELERATION_ARB,   WGL_FULL_ACCELERATION_ARB,
-            WGL_PIXEL_TYPE_ARB,     WGL_TYPE_RGBA_ARB,
-            WGL_COLOR_BITS_ARB,     32,
-            WGL_DEPTH_BITS_ARB,     24,
-            WGL_STENCIL_BITS_ARB,   8,
-            0
-        };
+                {
+                        WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+                        WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
+                        WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
+                        WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
+                        WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
+                        WGL_COLOR_BITS_ARB, 32,
+                        WGL_DEPTH_BITS_ARB, 24,
+                        WGL_STENCIL_BITS_ARB, 8,
+                        0};
 
         Int pixelFormat = 0;
         UInt numFormats = 0;
-        wglChoosePixelFormatARB
-        (
-            handler,
-            pixelFormatAttributes,
-            nullptr,
-            1,
-            &pixelFormat,
-            &numFormats
-        );
-        NP_ASSERT(numFormats);
+        wglChoosePixelFormatARB(
+                handler,
+                pixelFormatAttributes,
+                nullptr,
+                1,
+                &pixelFormat,
+                &numFormats);
 
         PIXELFORMATDESCRIPTOR pixelFormatDesc = {};
         {
-            DescribePixelFormat
-            (
-                handler,
-                pixelFormat,
-                sizeof(PIXELFORMATDESCRIPTOR),
-                &pixelFormatDesc
-            );
-            SetPixelFormat
-            (
-                handler,
-                pixelFormat,
-                &pixelFormatDesc
-            );
+            DescribePixelFormat(
+                    handler,
+                    pixelFormat,
+                    sizeof(PIXELFORMATDESCRIPTOR),
+                    &pixelFormatDesc);
+            SetPixelFormat(
+                    handler,
+                    pixelFormat,
+                    &pixelFormatDesc);
         }
 
+        Int majorVersion = 4;
+        Int minorVersion = 6;
+
         Int openGLAttributes[] =
-        {
-            WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
-            WGL_CONTEXT_MINOR_VERSION_ARB, 6,
-            WGL_CONTEXT_PROFILE_MASK_ARB, 
-            WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-            0
-        };
+                {
+                        WGL_CONTEXT_MAJOR_VERSION_ARB,
+                        majorVersion,
+                        WGL_CONTEXT_MINOR_VERSION_ARB,
+                        minorVersion,
+#if defined(_DEBUG) || defined(DEBUG)
+                        WGL_CONTEXT_FLAGS_ARB,
+                        WGL_CONTEXT_DEBUG_BIT_ARB,
+#endif
+                        WGL_CONTEXT_PROFILE_MASK_ARB,
+                        WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+                        0};
 
         m_context = wglCreateContextAttribsARB(handler, 0, openGLAttributes);
 
@@ -73,6 +102,23 @@ namespace Nenuphar
 
         Current();
 
+        NP_INFO(WGLContext::WGLContext, "Setup WGL context.");
+
+#if defined(_DEBUG) || defined(DEBUG)
+
+        int contextFlags = 0;
+        glGetIntegerv(GL_CONTEXT_FLAGS, &contextFlags);
+
+        if (contextFlags & GL_CONTEXT_FLAG_DEBUG_BIT)
+        {
+            OpenGLInitDebugger();
+            NP_INFO(WGLContext::WGLContext, "WGL context was setup in debug mode.");
+        }
+        else
+        {
+            NP_ERROR(WGLContext::WGLContext, "Failed to setup WGL context in debug mode.");
+        }
+#endif
     }
 
     WGLContext::~WGLContext()
@@ -93,31 +139,29 @@ namespace Nenuphar
 
         auto classId = RegisterClassEx(&windowClass);
 
-        HWND dummyWindow = CreateWindowEx
-        (
-            0,
-            MAKEINTATOM(classId),
-            appName,
-            0,
-            CW_USEDEFAULT,
-            CW_USEDEFAULT,
-            CW_USEDEFAULT,
-            CW_USEDEFAULT,
-            0,
-            0,
-            windowClass.hInstance,
-            0
-        );
+        HWND dummyWindow = CreateWindowEx(
+                0,
+                MAKEINTATOM(classId),
+                appName,
+                0,
+                CW_USEDEFAULT,
+                CW_USEDEFAULT,
+                CW_USEDEFAULT,
+                CW_USEDEFAULT,
+                0,
+                0,
+                windowClass.hInstance,
+                0);
 
         HDC dummyDC = GetDC(dummyWindow);
 
         PIXELFORMATDESCRIPTOR pfd = {};
         pfd.nSize = sizeof(pfd);
         pfd.nVersion = 1;
-        pfd.dwFlags = 
-            PFD_DRAW_TO_WINDOW | 
-            PFD_SUPPORT_OPENGL | 
-            PFD_DOUBLEBUFFER   ;
+        pfd.dwFlags =
+                PFD_DRAW_TO_WINDOW |
+                PFD_SUPPORT_OPENGL |
+                PFD_DOUBLEBUFFER;
         pfd.iLayerType = PFD_MAIN_PLANE;
         pfd.iPixelType = PFD_TYPE_RGBA;
         pfd.cAlphaBits = 8;
@@ -171,5 +215,6 @@ namespace Nenuphar
         wglSwapLayerBuffers(m_deviceContext->GetHDC(), WGL_SWAP_MAIN_PLANE);
     }
 
-}
+}// namespace Nenuphar
 
+#endif

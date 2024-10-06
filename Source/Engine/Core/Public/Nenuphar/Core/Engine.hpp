@@ -2,22 +2,17 @@
 
 #include <functional>
 
-#include "Nenuphar/Common/Instanciate.hpp"
-#include "Nenuphar/Common/Type/Type.hpp"
-
 namespace Nenuphar
 {
 
-    class Engine final
+    class Engine
     {
     public:
-        void Initialize(int argc, const char** argv);
+        static int LoopRun(const std::function<void()>& runnable);
 
-        static int Start(const std::function<void()>& runnable);
-
+        static bool HasStarted;
+        static bool IsFinish;
     };
 
-    inline Bool GIsFinish = false;
-    const inline Ptr<Engine> GEngine = MakeUnique<Engine>();
 
 }

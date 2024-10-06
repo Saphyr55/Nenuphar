@@ -47,7 +47,7 @@ namespace Nenuphar
     using Word16 = UInt16;
     using Word32 = UInt32;
     using Word64 = UInt64;
-    using Word = std::size_t;
+    using Word = Word8;
 
     using String = std::string;
     using StringView = std::string_view;
@@ -63,8 +63,8 @@ namespace Nenuphar
     template<typename T>
     using WeakPtr = std::weak_ptr<T>;
 
-    template<typename T>
-    using UniquePtr = std::unique_ptr<T>;
+    template<typename T, typename D = std::default_delete<T>>
+    using UniquePtr = std::unique_ptr<T, D>;
 
     template<typename T>
     using SharedRef = std::shared_ptr<T>;
@@ -74,7 +74,5 @@ namespace Nenuphar
 
     template<class... Ts>
     OverLoaded(Ts...) -> OverLoaded<Ts...>;
-
-    using Buffer = Word8[];
 
 }

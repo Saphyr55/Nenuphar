@@ -1,4 +1,3 @@
-# Generated from CLion C/C++ Code Style settings
 BasedOnStyle: LLVM
 AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
@@ -10,15 +9,16 @@ AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: Never
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: None
-AllowShortIfStatementsOnASingleLine: Never
+AllowShortIfStatementsOnASingleLine: Always
 AllowShortLambdasOnASingleLine: None
-AllowShortLoopsOnASingleLine: false
+AllowShortLoopsOnASingleLine: true
 AlwaysBreakAfterReturnType: None
-AlwaysBreakTemplateDeclarations: Yes
+AlwaysBreakTemplateDeclarations: MultiLine
 BreakBeforeBraces: Custom
 BraceWrapping:
   AfterCaseLabel: false
   AfterClass: true
+  AfterStruct: true
   AfterControlStatement: Always
   AfterEnum: true
   AfterFunction: true
@@ -31,7 +31,7 @@ BraceWrapping:
   SplitEmptyRecord: true
 BreakBeforeBinaryOperators: None
 BreakBeforeTernaryOperators: true
-BreakConstructorInitializers: BeforeColon
+BreakConstructorInitializers: BeforeComma
 BreakInheritanceList: BeforeComma
 ColumnLimit: 0
 CompactNamespaces: false
@@ -46,7 +46,7 @@ ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: true
 PointerAlignment: Left
 ReflowComments: false
-SpaceAfterCStyleCast: true
+SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: false
 SpaceAfterTemplateKeyword: false
 SpaceBeforeAssignmentOperators: true

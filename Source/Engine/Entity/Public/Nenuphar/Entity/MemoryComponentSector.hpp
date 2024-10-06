@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Nenuphar/Core/Core.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Entity/ComponentBuffer.hpp"
 
-#include <unordered_set>
 
 namespace Nenuphar
 {
@@ -11,7 +10,7 @@ namespace Nenuphar
     /**
      *
      */
-    using MemorySectorId = Word32;
+    using MemorySectorId = UInt32;
 
     /**
      *
@@ -19,7 +18,7 @@ namespace Nenuphar
     using MemoryComponentLayout = std::vector<ComponentTI>;
 
     template<typename ...T>
-    MemoryComponentLayout MakeMemoryComponentLayout()
+    inline MemoryComponentLayout MakeMemoryComponentLayout()
     {
         return { GetComponentTI<T>()... };
     }
@@ -43,7 +42,7 @@ namespace Nenuphar
         // The identifier of the sector containing the current entity.
         MemorySectorId SectorId;
         // The column number in the memory sector.
-        Word Column;
+        std::size_t Column;
     };
 
     /**
@@ -83,7 +82,7 @@ namespace Nenuphar
          *
          * @return
          */
-        [[nodiscard]] inline Word Size() const { return m_count; }
+        [[nodiscard]] inline std::size_t Size() const { return m_count; }
 
         /**
          *
@@ -96,14 +95,14 @@ namespace Nenuphar
          * @param row
          * @return
          */
-        ComponentBuffer& BufferAt(Word index);
+        ComponentBuffer& BufferAt(std::size_t index);
 
         /**
          *
          * @param cti
          * @param bufferElementSize
          */
-        void AddBuffer(ComponentTI cti, Word bufferElementSize);
+        void AddBuffer(ComponentTI cti, std::size_t bufferElementSize);
 
         /**
          *
@@ -129,28 +128,46 @@ namespace Nenuphar
          * @param index
          * @return
          */
-        ComponentBuffer& operator[](Word index);
+        ComponentBuffer& operator[](std::size_t index);
 
         /**
          *
          * @param cti
          * @return
          */
-        Word IndexOf(ComponentTI cti) const;
+        std::size_t IndexOf(ComponentTI cti) const;
 
         /**
          *
          * @return
          */
-        Word Extends();
+        std::size_t Extends();
 
         /**
-         *
-         * @param id
-         * @param layout
+         * @brief Construct a Memory Component Sector instance.
+         * 
+         * @param id 
+         * @param layout 
          */
         MemoryComponentSector(MemorySectorId id, MemoryComponentLayout layout);
 
+        /**
+         * @brief Delete the copy of a new Memory Component Sector instance.
+         * 
+         */
+        MemoryComponentSector(const MemoryComponentSector&) = delete;
+
+        /**
+         * @brief Delete the move of a Memory Component Sector instance.
+         * 
+         */
+        MemoryComponentSector(MemoryComponentSector&&) = delete;
+
+        /**
+         * @brief Default Memory Component Sector destructor.
+         * 
+         */
+        ~MemoryComponentSector() = default;
 
     private:
         // The identifier of this sector.
@@ -168,7 +185,7 @@ namespace Nenuphar
         // The memory component layout.
         MemoryComponentLayout m_layout;
         //
-        Word m_count;
+        std::size_t m_count;
         // Graph component.
         GraphEdges m_edges;
     };

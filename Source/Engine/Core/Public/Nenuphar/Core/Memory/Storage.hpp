@@ -7,9 +7,9 @@ namespace Nenuphar::Details
 {
 
     template<typename K>
-    struct StorageBase
-    {
-
+    class StorageBase
+    {  
+    public:
         /**
          *
          * @param key
@@ -48,7 +48,7 @@ namespace Nenuphar::Details
      * Represent the component buffer, store all component by indices.
      */
     template<typename K, typename V>
-    struct Storage : public Details::StorageBase<K>
+    class Storage : public Details::StorageBase<K>
     {
     public:
 

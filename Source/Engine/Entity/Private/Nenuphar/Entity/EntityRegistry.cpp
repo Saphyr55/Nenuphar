@@ -1,69 +1,111 @@
 #include "Nenuphar/Entity/EntityRegistry.hpp"
+#include "Nenuphar/Entity/Entity.hpp"
 
 
 namespace Nenuphar
 {
 
-    MemoryComponentSector& EntityRegistry::AddNode(MemoryComponentLayout layout)
+    Entity EntityRegistry::Create(std::string_view name)
     {
-        MemoryComponentLayout& signature = layout;
-        MemoryComponentLayout newLayout;
-        ComponentTI lastCti = signature[0];
+        auto entity = GMaxTIndex;
 
-        auto& last = RootSector();
-        auto& it = RootSector();
-
-        std::size_t depth = 0;
-        for (const auto& cti: layout)
+        if (m_entities.size() == 0)
         {
-            newLayout.push_back(cti);
-            auto& edges = it.Edges();
-
-            if (!edges.contains(cti))
-            {
-                MemoryComponentSectorEdge edge;
-            }
+            NCHECK(m_maxEntityID < MAX_ENTITIES);
+            entity = m_maxEntityID++;
+        }
+        else
+        {
+            entity = m_entities.back();
+            m_entities.pop_back();
         }
 
-        return it;
-    }
+        m_entityMasks.Add(entity, {});
 
-    Entity EntityRegistry::Create()
-    {
-        Entity entity = m_entities.size();
-        m_entities.emplace(entity);
-
-        MemoryComponentSector& sector = *m_sectors[0];
-
-        MemorySectorBinding binding(sector.Id(), sector.Extends());
-        m_entityBinding.SectorOfEntity().insert({ entity, binding});
+        if (!name.empty())
+        {
+            m_entityNames[entity] = name;
+        }
 
         return entity;
     }
 
-    EntityRegistry::EntityRegistry()
-        : m_sectors()
-        , m_entities()
-        , m_sectorByComponent()
-        , m_entityBinding()
+    std::string EntityRegistry::GetEntityName(Entity entity)
     {
-        auto sector = MakeUnique<MemoryComponentSector>(0, MemoryComponentLayout());
-        m_sectors.insert({ 0, std::move(sector) });
+        NCHECK(m_entityMasks.Get(entity) && entity > 0)
+
+        return m_entityNames[entity];
     }
 
     void EntityRegistry::Remove(Entity entity)
     {
+        NCHECK(m_entityMasks.Get(entity) && entity > 0)
+
+        std::string name = GetEntityName(entity);
+        ComponentMask& mask = GetEntityMask(entity);
+
+        RemoveFromGroup(mask, entity);
+
+        for (int i = 0; i < MAX_COMPONENTS; i++)
+        {
+            if (mask[i] == 1)
+            {
+                m_componentPools[i]->Remove(entity);
+            }
+        }
+
+        m_entityMasks.Remove(entity);
+        m_entityNames.erase(entity);
+        m_entities.push_back(entity);
+
+        entity = NULL_ENTITY;
     }
 
-    MemoryComponentSector& EntityRegistry::GetSector(MemorySectorId id)
+    void EntityRegistry::RemoveFromGroup(ComponentMask& mask, Entity entity)
     {
-        return *m_sectors[id];
+        if (mask.none())
+        {
+            return;
+        }
+
+        EntitySparseSet<Entity>& group = GetGroupedEntities(mask);
+        group.Remove(entity);
+
+        // Delete grouping if it's empty
+        if (group.IsEmpty())
+        {
+            m_groupings.erase(mask);
+        }
     }
 
-    MemoryComponentSector& EntityRegistry::RootSector()
+    EntityRegistry::ComponentMask& EntityRegistry::GetEntityMask(Entity entity)
     {
-        return GetSector(0);
+        ComponentMask* mask = m_entityMasks.Get(entity);
+        NCHECK(mask);
+        return *mask;
+    }
+
+    void EntityRegistry::AssignToGroup(ComponentMask& mask, Entity entity)
+    {
+        // If mask is empty, no group
+        if (mask.none())
+        {
+            return;
+        }
+
+        m_groupings.emplace(std::piecewise_construct,
+                            std::forward_as_tuple(mask),
+                            std::forward_as_tuple());
+
+        m_groupings[mask].Add(entity, std::move(entity));
+    }
+
+    EntitySparseSet<Entity>& EntityRegistry::GetGroupedEntities(ComponentMask& mask)
+    {
+        auto found = m_groupings.find(mask);
+        NCHECK(found != m_groupings.end());
+        return found->second;
     }
 
 
-}
+}// namespace Nenuphar

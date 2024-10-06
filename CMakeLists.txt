@@ -15,7 +15,8 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
 
 # Include cmake module for Nénuphar Module.
-include(NpAddModule)
+include(NPModule)
+include(NPBuild)
 
 if(NENUPHAR_TEST_ENABLE)
     include(CTest)
@@ -38,10 +39,6 @@ add_compile_definitions(NP_PROJECT_DIR="${CMAKE_SOURCE_DIR}")
 # Configure properties.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-if(WIN32)
-    add_compile_definitions(NP_PLATFORM_WINDOWS)
-endif()
-
 
 # ===================================================================================================
 # BuildTool.
@@ -60,14 +57,18 @@ add_subdirectory(Source/Engine/Math)
 add_subdirectory(Source/Engine/ApplicationCore)
 add_subdirectory(Source/Engine/EventSystem)
 add_subdirectory(Source/Engine/InputSystem)
+add_subdirectory(Source/Engine/Model)
 add_subdirectory(Source/Engine/Rendering)
+add_subdirectory(Source/Engine/RenderLight)
 add_subdirectory(Source/Engine/Entity)
+add_subdirectory(Source/Engine/Asset)
+add_subdirectory(Source/Engine/Graphics)
 
 
 # ===================================================================================================
 # Samples.
 # ===================================================================================================
-add_subdirectory(Source/Sample/Genesis)
+add_subdirectory(Source/Samples/Genesis)
 
 
 # ===================================================================================================
@@ -76,6 +77,8 @@ add_subdirectory(Source/Sample/Genesis)
 add_subdirectory(Source/ThirdParty/fmt)
 add_subdirectory(Source/ThirdParty/glad)
 add_subdirectory(Source/ThirdParty/stb)
+add_subdirectory(Source/ThirdParty/tinyobj)
+
 
 # If the variable NENUPHAR_TEST_ENABLE is ON, add Catch2.
 if(NENUPHAR_TEST_ENABLE)

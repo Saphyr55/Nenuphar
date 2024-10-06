@@ -1,38 +1,38 @@
 #include "NPBuild/NPBuild.hpp"
 
-#include <Nenuphar/Core/Core.hpp>
-
-#include <iostream>
 #include <fstream>
 #include <filesystem>
 
-using namespace Nenuphar;
+constexpr auto GTemplateFormat = R"(#pragma once
 
-int main(int argc, char const *argv[])
+#ifdef NSHARED
+    // Exports
+    #ifdef _MSC_VER
+        #define NAPI __declspec(dllexport)
+    #else
+        #define NAPI __attribute__((visibility("default")))
+    #endif
+#else
+    #define NAPI
+#endif
+)"; 
+
+int main(int argc, const char* argv[])
 {
 
-    for (int i = 0; i < argc; i++)
-    {
-        NP_INFO(NPBuild::Main, "'{}'", argv[i]);
-    }
-    
     if (argc < 2)
     {
-        NP_ERROR(NPBuild::Main, "Missing filepath generated file as argument.");
         return EXIT_FAILURE;
     }
-
-    const char* FilePathArg = argv[1];
-
-    std::filesystem::path FilePath{ FilePathArg };
-    std::filesystem::create_directories(FilePath.parent_path());
-
-    std::ofstream GeneratedFile(FilePath);
-    GeneratedFile << "#pragma once\n";
     
-    GeneratedFile.close();
+    const char* filePathArg = argv[1];
 
-    NP_INFO(NPBuild::Main, "Finish to generate files.");
+    std::filesystem::path filePath{ filePathArg };
+    std::filesystem::create_directories(filePath.parent_path());
+
+    std::ofstream generatedFile(filePath);
+    generatedFile << GTemplateFormat;
+    generatedFile.close();
 
     return EXIT_SUCCESS;
 

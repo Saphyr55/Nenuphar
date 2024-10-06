@@ -1,9 +1,10 @@
 #pragma once
 
+
 namespace Nenuphar::Input
 {
-
-    enum class Button : Int
+	
+    enum class Button : int
 	{
 		Left = 1,
 		Middle = 2,

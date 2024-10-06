@@ -1,19 +1,17 @@
 #pragma once
 
-#include <functional>
-#include <memory>
+#include "Nenuphar/Rendering/Shader.hpp"
+#include "Nenuphar/Rendering/Uniform.hpp"
 
 #include <glad/glad.h>
-
-#include "Nenuphar/Common/Common.hpp"
+#include <string_view>
 
 namespace Nenuphar
 {
+    constexpr const char* GVertexFileExtension = ".Vertex.glsl";
+    constexpr const char* GFragmentFileExtension = ".Fragment.glsl";
 
-    using OpenGLProgramID = UInt;
-    using OpenGLShaderID = UInt;
     using OpenGLShaderStatus = UInt;
-
 
 	class OpenGLShader;
 
@@ -28,52 +26,59 @@ namespace Nenuphar
 
 	class OpenGLShaderPart
 	{
+    public:
+        void Source(const char* source) const;
 
-	friend class OpenGLShader;
+		inline OpenGLShaderType Type() const { return m_shaderType; }
 
-	private:
-		void Source(const char* source) const;
-		void Compile() const;
+        inline ShaderId Id() const { return m_shaderID; }
 
-	public:
-		explicit OpenGLShaderPart(OpenGLShaderType type);
+        void Compile() const;
+
+        void CheckInfo(ShaderId status) const;
+		
+    public:
+        explicit OpenGLShaderPart(OpenGLShaderType type);
 		~OpenGLShaderPart();
 
 	private:
-		void CheckInfo(OpenGLShaderID status) const;
-
-	private:
 		OpenGLShaderType m_shaderType;
-		OpenGLShaderID m_shaderID;
+		ShaderId m_shaderID;
 	};
 
 
-	class OpenGLShader
+	class OpenGLShader : public Shader
 	{
+	public:
+	    virtual void Use() const override;
+
+        virtual UniformLocation GetUniformLocation(std::string_view name) const override;
+
+        virtual ShaderProgramId Id() const override;
+
+        virtual UniformUpdater GetUniformUpdater() const override;
 
 	public:
+        void CheckInfo(OpenGLShaderStatus status) const;
 
-		void Use() const;
+        void Link();
+	
+		OpenGLShader& Attach(OpenGLShaderType st, StringView source);
 
-		OpenGLShaderID GetID() const { return m_programID; }
-
-        void Link() const;
-
-		const OpenGLShader& Attach(OpenGLShaderType st, StringView source) const;
-
-        OpenGLShader(StringView vs, StringView fs);
+    public:
+        OpenGLShader(std::string_view vertexSource, StringView fragmentSource);
         OpenGLShader();
 		~OpenGLShader();
 
-    private:
-        void CheckInfo(OpenGLShaderStatus status) const;
-
 	private:
-		OpenGLProgramID m_programID = -1;
-        mutable std::vector<std::unique_ptr<OpenGLShaderPart>> m_parts;
+		ShaderProgramId m_programID = -1;
+        std::vector<UniquePtr<OpenGLShaderPart>> m_parts;
     };
 
+	//
+	SharedRef<OpenGLShader> ShaderCreateProgram(std::string_view shaderName);
 
+	// 
     void SetupShaderProgram(OpenGLShader& program, StringView vs, StringView fs);
 
 }

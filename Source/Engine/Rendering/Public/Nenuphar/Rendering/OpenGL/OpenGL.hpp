@@ -11,12 +11,12 @@
 #include "Nenuphar/Math/Math.hpp"
 
 namespace Nenuphar
-{
+{	
     
-    enum OpenGLFormatPixel : Int
+    enum OpenGLFormatPixel : UInt
 	{
-		RGBA = GL_RGBA,
-		RGB = GL_RGB,
+		RGBA = GL_RGBA8,
+		RGB = GL_RGB8,
         RED = GL_RED
 	};
 
@@ -78,6 +78,8 @@ namespace Nenuphar
     void LinkProgram(UInt32 program);
 
     UInt32 CreateProgram();
+
+    void DeleteProgram(UInt32 program);
 
     void SetUniform(Int location, Matrix4f value);
 

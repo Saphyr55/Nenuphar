@@ -1,5 +1,7 @@
 #include "Nenuphar/Core/Logger/Logger.hpp"
-#include "Nenuphar/Core/Logger/ConsoleColor.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Core/Debug.hpp"
+#include "Nenuphar/Core/IO/ConsoleColor.hpp"
 
 #include <chrono>
 #include <iomanip>
@@ -8,14 +10,21 @@
 namespace Nenuphar
 {
 
-    Ptr<Logger> Logger::Instance = std::make_unique<Logger>("Nenuphar.Engine");
-
-    Logger& Logger::GetLogger()
+    SharedRef<Logger> GInstance;
+    
+    void DefineLogger(SharedRef<Logger> logger)
     {
-        return *Instance;
+        NCHECK(logger)
+        GInstance = logger;
     }
 
-    String Logger::LevelString(const Level level)
+    SharedRef<Logger> GetMainLogger()
+    {
+        NCHECK(GInstance)
+        return GInstance;
+    }
+
+    String Logger::LevelString(const Level& level)
     {
         switch (level)
         {
@@ -36,7 +45,7 @@ namespace Nenuphar
         return "N";
     }
 
-    String Logger::LevelColor(const Level level)
+    String Logger::LevelColor(const Level& level)
     {
         switch (level)
         {
@@ -57,7 +66,7 @@ namespace Nenuphar
         return ConsoleColor::Reset();
     }
 
-    String Logger::LevelTextColor(const Level level)
+    String Logger::LevelTextColor(const Level& level)
     {
         switch (level)
         {
@@ -83,13 +92,13 @@ namespace Nenuphar
     {
     }
 
-    String Logger::Details(const TimePoint<SysClock> now)
+    String Logger::Details(const TimePoint<SysClock> time)
     {
         std::ostringstream oss;
         oss << std::this_thread::get_id();
 
         std::stringstream ss;
-        const auto InTime = std::chrono::system_clock::to_time_t(now);
+        const auto InTime = std::chrono::system_clock::to_time_t(time);
         ss << std::put_time(std::localtime(&InTime), "%Y-%m-%d %X");
 
         return fmt::format("{} {} {} ", ss.str(), oss.str(), name);

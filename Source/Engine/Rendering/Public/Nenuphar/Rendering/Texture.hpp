@@ -1,19 +1,19 @@
 #pragma once
 
-#include "Nenuphar/Common/Common.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
+#include "RenderHandle.hpp"
 
-namespace Nenuphar
+
+namespace Nenuphar 
 {
-
-    using TextureID = UInt32;
-
-    struct DataImage
+    
+    class Texture : public RenderHandle
     {
-        Word8* Data;
-        Int Format;
-        Int Width;
-        Int Height;
-    };
+    public:
+        virtual void Destroy() = 0;
 
+    private:
+        UInt m_id;
+    };
 
 }

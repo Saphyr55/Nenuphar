@@ -23,8 +23,6 @@ namespace Nenuphar
     struct MouseWheelEvent
 	{
         Float Delta;
-        Float PosX;
-        Float PosY;
     };
 
 	struct KeyEvent

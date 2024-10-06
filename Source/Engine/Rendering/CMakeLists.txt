@@ -8,13 +8,15 @@ set(TARGET          Engine.Rendering)
 set(GROUP           Engine)
 set(DEPS            fmt::fmt
                     stb
-                    glad 
-                    Engine.Common 
+                    glad
+                    Engine.Common
                     Engine.Math
-                    Engine.Core 
+                    Engine.Core
+                    Engine.Model
                     Engine.ApplicationCore
                     Engine.EventSystem
                     Engine.InputSystem
+                    Engine.Asset
                     )
 
 add_library_module(${TARGET} STATIC ${LOCATION})

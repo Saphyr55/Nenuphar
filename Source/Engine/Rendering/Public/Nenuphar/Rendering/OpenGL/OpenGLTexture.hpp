@@ -1,121 +1,93 @@
 #pragma once
 
-#include "Nenuphar/Common/Common.hpp"
-#include "Nenuphar/Core/Resource/Resource.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Rendering/Image.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
+
+
+#include <glad/glad.h>
+
 
 namespace Nenuphar
 {
 
-    template<OpenGLTextureTarget target>
-    class OpenGLTexture
-	{
+    using OpenGLTextureHandle = UInt;
+    using OpenGLTextureUnit = UInt;
+
+    /**
+     * @brief 
+     * 
+     * @param info 
+     * @return OpenGLFormatPixel 
+     */
+    GLenum OpenGLImageFormat(const ImageFormat& format);
+
+    /**
+     * @brief 
+     * 
+     * @param format 
+     * @return GLenum 
+     */
+    GLenum OpenGLTextureStorageFormat(const ImageFormat& format);
+
+    /**
+     * @brief 
+     * 
+     * @param target 
+     */
+    void OpenGLUnbindTexture(OpenGLTextureTarget target);
+
+    /**
+     * @brief 
+     * 
+     */
+    class OpenGLTexture : public Texture
+    {
     public:
-		struct Parameter
-    	{
-			auto WithParameter(UInt pName, Int param) const -> const Parameter&;
-			auto WithParameter(UInt pName, Float param) const -> const Parameter&;
-			auto WithParameter(UInt pName, const Int* param) const -> const Parameter&;
-			auto WithParameter(UInt pName, const Float* param) const -> const Parameter&;
-		};
+        struct Rect
+        {
+            Int X;
+            Int Y;
+            std::size_t Width;
+            std::size_t Height;
+        };
+
+        static SharedRef<OpenGLTexture> Create(const ImageDefinition& imageDefinition,
+                                               const Rect& rect, const Int& level = 0);
+
+    public:
+        void SetParameter(UInt pName, Int param) const;
+
+        void SetParameter(UInt pName, Float param) const;
+
+        void SetParameter(UInt pName, const Int* param) const;
+
+        void SetParameter(UInt pName, const Float* param) const;
+
+        void Initialize();
+
+        void Destroy();
+
+        void SubImage(Int level, const Rect& rect, const void* pixels);
+
+        void BindTextureUnit(OpenGLTextureUnit unit);
 
         void Bind() const;
-        void Unbind() const;
 
-		explicit operator TextureID() { return texture; }
+        inline OpenGLTextureHandle GetHandle() const
+        {
+            return m_handle;
+        }
 
-		static OpenGLTexture<target> LoadFromImage(const Path& path, const std::function<void(const DataImage&, Parameter)>&);
-
-        OpenGLTexture();
+        OpenGLTexture(const ImageDefinition& imageDefinition);
+        ~OpenGLTexture();
 
     private:
-        TextureID texture{};
+        ImageFormat m_formatPixel;
+        OpenGLTextureHandle m_handle;
+        ImageDefinition m_imageDefinition;
     };
 
-    /**
-     *
-     */
-    using OpenGLTexture2D = OpenGLTexture<OpenGLTextureTarget::Texture2D>;
 
-    /**
-     *
-     */
-    class OpenGLRegistry
-    {
-    private:
-        std::unordered_map<TextureID, OpenGLTexture2D> m_registry;
-    };
-
-    /**
-     *
-     */
-    template<OpenGLTextureTarget target>
-    OpenGLTexture<target>::OpenGLTexture()
-    {
-        glGenTextures(1, &texture);
-        Bind();
-    }
-
-    template<OpenGLTextureTarget target>
-	void OpenGLTexture<target>::Bind() const
-	{
-		glBindTexture(target, texture);
-	}
-
-	template<OpenGLTextureTarget target>
-	void OpenGLTexture<target>::Unbind() const
-	{
-		glBindTexture(target, 0);
-	}
-
-    void LoadDataImage(const Path& path, const std::function<void(const DataImage&)>& f);
-
-	void TexImage2D(UInt target, Int level, const DataImage& dataImage);
-
-	void GenerateMipmap(UInt target);
-
-	void ActiveTexture(UInt slot);
-
-    void DefaultParameterTexture(const DataImage& dataImage, OpenGLTexture<Texture2D>::Parameter parameter);
-
-    template<OpenGLTextureTarget target>
-	auto OpenGLTexture<target>::Parameter::WithParameter(UInt pName, Int param) const -> const Parameter&
-    {
-		glTexParameteri(target, pName, param);
-		return *this;
-	}
-
-	template<OpenGLTextureTarget target>
-	auto OpenGLTexture<target>::Parameter::WithParameter(UInt pName, Float param) const -> const Parameter&
-    {
-		glTexParameterf(target, pName, param);
-		return *this;
-	}
-
-	template<OpenGLTextureTarget target>
-	auto OpenGLTexture<target>::Parameter::WithParameter(UInt pName, const Int* param) const -> const Parameter&
-    {
-		glTexParameteriv(target, pName, param);
-		return *this;
-	}
-
-	template<OpenGLTextureTarget target>
-	auto OpenGLTexture<target>::Parameter::WithParameter(UInt pName, const Float* param) const -> const Parameter&
-    {
-		glTexParameterfv(target, pName, param);
-		return *this;
-	}
-
-	template<OpenGLTextureTarget target>
-    OpenGLTexture<target> OpenGLTexture<target>::LoadFromImage(const Path& path, const std::function<void(const DataImage&, OpenGLTexture::Parameter)>& f)
-	{
-        OpenGLTexture<target> texture;
-		texture.Bind();
-		LoadDataImage(path, std::bind(f, std::placeholders::_1, OpenGLTexture::Parameter()));
-		texture.Unbind();
-		return texture;
-	}
-
-
-}
+}// namespace Nenuphar

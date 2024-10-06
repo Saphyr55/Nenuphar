@@ -1,7 +1,6 @@
 #pragma once
 
 #include <typeindex>
-#include <any>
 
 #include "Nenuphar/Core/Core.hpp"
 
@@ -28,7 +27,7 @@ namespace Nenuphar
      * @return
      */
     template<typename C>
-    ComponentTI GetComponentTI()
+    inline ComponentTI GetComponentTI()
     {
         return typeid(C);
     }
