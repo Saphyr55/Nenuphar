@@ -48,8 +48,7 @@ void RenderData::OnRenderData(SharedRef<Np::CommandBuffer> commandBuffer, Np::En
         });
 
         RenderCommandDrawModel(commandBuffer, shader->GetRegistry(), *rModel.Model);
-    }
-    
+    }   
 }
 
 RenderData RenderData::Create(SharedRef<RenderDevice> device)

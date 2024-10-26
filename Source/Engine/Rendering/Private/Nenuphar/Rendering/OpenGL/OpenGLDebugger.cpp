@@ -144,7 +144,7 @@ namespace Nenuphar
                             int line)
     {
         GLenum errorCode = 0;
-        while ((errorCode = glGetError()) != GL_NO_ERROR && !Engine::IsFinish)
+        while ((errorCode = glGetError()) != GL_NO_ERROR)
         {
             std::string error;
             switch (errorCode)
@@ -180,7 +180,7 @@ namespace Nenuphar
 
     void OpenGLClearError()
     {
-        while ((glGetError() != GL_NO_ERROR) && !Engine::IsFinish);
+        while ((glGetError() != GL_NO_ERROR));
     }
 
 }// namespace Nenuphar

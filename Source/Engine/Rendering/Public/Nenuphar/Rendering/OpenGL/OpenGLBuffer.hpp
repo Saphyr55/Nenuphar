@@ -10,7 +10,7 @@ namespace Nenuphar
 {
 
     using OpenGLBufferHandle = UInt;
-
+    
     class OpenGLImmutableBuffer : public RenderBuffer
     {
     public:

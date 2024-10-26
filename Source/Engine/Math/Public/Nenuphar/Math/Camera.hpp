@@ -24,7 +24,7 @@ namespace Nenuphar
         Camera(const Camera&) = default;
         ~Camera() = default;
     };
-
+    
     struct OrbitCamera
     {
     public:

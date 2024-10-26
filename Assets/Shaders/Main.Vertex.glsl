@@ -1,8 +1,8 @@
 #version 450 core
 
-layout (location = 0) in vec3 InPosition;
-layout (location = 1) in vec3 InNormal;
-layout (location = 2) in vec2 InUV;
+layout (location = 0) in vec3 APosition;
+layout (location = 1) in vec3 ANormal;
+layout (location = 2) in vec2 AUV;
 
 out VertexData
 {
@@ -21,13 +21,13 @@ uniform mat4 UModel;
 
 void main()
 {
-	Out.UV = InUV;
-	Out.Position = vec3(UModel * vec4(InPosition, 1.0));
-	Out.Normal = InNormal;
-	
+	Out.UV = AUV;
+	Out.Position = vec3(UModel * vec4(APosition, 1.0));
+	Out.Normal = mat3(transpose(inverse(UModel))) * ANormal;
+
 	gl_Position = 
 		  UMainUniformBlock.Projection 
 		* UMainUniformBlock.View 
 		* UModel
-		* vec4(InPosition, 1.0);
+		* vec4(APosition, 1.0);
 }

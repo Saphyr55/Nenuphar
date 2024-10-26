@@ -21,20 +21,20 @@ namespace Nenuphar
         uniformRegistry
             ->Register("UModel", Matrix4f::Identity())
             .Register("UTexture", Int(0))
-
+            
             .Register("UCameraPosition", Vector3f(0.0f))
 
-            .Register("ULight.Position", Vector3f(1.0f))
-            .Register("ULight.Ambient", Vector3f(0.8f))
+            .Register("ULight.Position", Vector3f(0.0f))
+            .Register("ULight.Ambient", Vector3f(0.1f))
             .Register("ULight.Diffuse", Vector3f(0.5f))
             .Register("ULight.Specular", Vector3f(1.0f))
 
+            .Register("UMaterial.Textures[0]", Int(0))
+            .Register("UMaterial.Textures[1]", Int(0))
+            .Register("UMaterial.ArraySize", 0)
             .Register("UMaterial.Diffuse", Vector3f(0.5f))
             .Register("UMaterial.Specular", Vector3f(1.0f))
-            .Register("UMaterial.Shininess", 1.0f)
-            .Register("UMaterial.SpecularTexture", Int(0))
-            .Register("UMaterial.DiffuseTexture", Int(0));
-
+            .Register("UMaterial.Shininess", 1.0f);
     }
 
     OpenGLMainShaderProgram::~OpenGLMainShaderProgram()
@@ -62,10 +62,7 @@ namespace Nenuphar
 
         NCHECK(&m_OpenGLMainShader.UMainUniformBlock)
 
-        ubo->Bind();
-        ubo->BufferData(&m_OpenGLMainShader.UMainUniformBlock, OpenGLBufferUsage::DynamicDraw);
-        ubo->Unbind();
-
+        ubo->BufferData(&m_OpenGLMainShader.UMainUniformBlock, OpenGLBufferUsage::StaticDraw);
         ubo->BindBufferBase(bindingIndex);
             
         m_OpenGLMainShader.MainUniformBuffer = ubo;

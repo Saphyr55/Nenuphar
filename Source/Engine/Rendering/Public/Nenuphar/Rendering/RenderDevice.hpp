@@ -79,7 +79,7 @@ namespace Nenuphar
                                                            const std::vector<VIndice>& indices) = 0;
 
         /**
-         * @brief Create a Texture object
+         * @brief Create a Texture
          * 
          * @return SharedRef<Texture> 
          */

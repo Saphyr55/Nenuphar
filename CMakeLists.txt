@@ -69,6 +69,7 @@ add_subdirectory(Source/Engine/Graphics)
 # Samples.
 # ===================================================================================================
 add_subdirectory(Source/Samples/Genesis)
+add_subdirectory(Source/Samples/StanfordBunny)
 
 
 # ===================================================================================================

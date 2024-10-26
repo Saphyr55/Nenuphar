@@ -15,13 +15,12 @@
 #include <glad/glad.h>
 
 namespace Nenuphar
-{	
-	
+{
+
     static const UniformUpdater GUpdater = [](auto location, auto value) {
-        std::visit(OverLoaded{
-                           [&](auto value) {
-                               SetUniform(location, value);
-                           }},
+        std::visit(OverLoaded{[&](auto value) {
+                       SetUniform(location, value);
+                   }},
                    value);
     };
 

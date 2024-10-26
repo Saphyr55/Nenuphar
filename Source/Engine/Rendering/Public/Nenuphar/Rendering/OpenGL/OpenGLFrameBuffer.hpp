@@ -1,12 +1,19 @@
 #pragma once
 
-#include "Nenuphar/Rendering/FrameBuffer.hpp"
+#include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Rendering/Framebuffer.hpp"
 
 namespace Nenuphar 
 {
-    class OpenGLFrameBuffer : public FrameBuffer
-    {
-        
+    class OpenGLFramebuffer : public Framebuffer
+    {  
+    public:
+        void Initialize();
+
+        virtual void Destroy() override;
+
+    private:
+        UInt m_handle; 
     };
 
 }

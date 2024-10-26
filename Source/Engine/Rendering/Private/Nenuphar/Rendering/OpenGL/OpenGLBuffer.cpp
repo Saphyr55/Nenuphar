@@ -12,7 +12,7 @@ namespace Nenuphar
     {
         SharedRef<OpenGLImmutableBuffer> buffer = MakeSharedRef<OpenGLImmutableBuffer>();
         buffer->Initialize();
-        buffer->SetBufferStorage(size, data, 0);
+        buffer->SetBufferStorage(size, data, GL_DYNAMIC_STORAGE_BIT);
         return buffer;
     }
 

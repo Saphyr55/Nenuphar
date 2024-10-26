@@ -1,8 +1,8 @@
-#include "Genesis/Genesis.hpp"
-#include "Genesis/Camera.hpp"
-#include "Genesis/GenesisApplicationMessageHandler.hpp"
-#include "Genesis/RenderData.hpp"
-#include "Genesis/Transform.hpp"
+#include "StanfordBunny/StanfordBunnyApp.hpp"
+#include "StanfordBunny/Camera.hpp"
+#include "StanfordBunny/SBApplicationMessageHandler.hpp"
+#include "StanfordBunny/RenderData.hpp"
+#include "StanfordBunny/Transform.hpp"
 
 
 #include "Nenuphar/ApplicationCore/Application.hpp"
@@ -34,23 +34,23 @@ namespace Np = Nenuphar;
 
 static Vector3f GDefaultPosition(0.0f, 0.0f, 0.0f);
 
-GenesisApp::GenesisApp()
+StanfordBunnyApp::StanfordBunnyApp()
     : Cube(CreateCubeModel())
     , DeltaTime(0.0)
 {
 }
 
-Np::AppContext* GenesisApp::ProvideAppContext()
+Np::AppContext* StanfordBunnyApp::ProvideAppContext()
 {
     return &Context;
 }
 
-Bool GenesisApp::OnInitialize()
+Bool StanfordBunnyApp::OnInitialize()
 {
     EventHandler = MakeSharedRef<WindowEventHandler>();
 
     Np::SharedRef<Np::ApplicationMessageHandler> messageHandler =
-            MakeSharedRef<GenesisApplicationMessageHandler>(EventHandler);
+            MakeSharedRef<SBApplicationMessageHandler>(EventHandler);
 
     Np::PlatformAppGet()->SetApplicationMessageHandler(messageHandler);
 
@@ -81,37 +81,26 @@ Bool GenesisApp::OnInitialize()
     Registry.AddComponent<Velocity>(ECamera, Velocity(0.005f));
 
     // Sponza entity.
-    RenderableModel rSponzaModel;
-    rSponzaModel.Model = &MainRenderData.SponzaAsset->GetModel();
-    RenderCommandSubmitModel(Device, *rSponzaModel.Model);
+    RenderableModel rBunnyModel;
+    rBunnyModel.Model = &MainRenderData.BunnyAsset->GetModel();
+    RenderCommandSubmitModel(Device, *rBunnyModel.Model);
 
-    Transform sponzaTransform;
-    sponzaTransform.Scale = Vector3f(0.2f);
-    sponzaTransform.Translation = GDefaultPosition;
+    Transform bunnyTransform;
+    bunnyTransform.Scale = Vector3f(2.0f);
+    bunnyTransform.Translation = GDefaultPosition;
 
-    ESponza = Registry.Create();
-    Registry.AddComponent<Transform>(ESponza, sponzaTransform);
-    Registry.AddComponent<RenderableModel>(ESponza, rSponzaModel);
-
-    // Light source
-    RenderableModel rLightModel;
-    rLightModel.Model = &Cube;
-    RenderCommandSubmitModel(Device, *rLightModel.Model);
-
-    Transform lightTransform;
-    lightTransform.Scale = Vector3f(1.0f);
-    lightTransform.Translation = Vector3f(0.0f, 300.0f, 0.0f);
+    EBunny = Registry.Create();
+    Registry.AddComponent<Transform>(EBunny, bunnyTransform);
+    Registry.AddComponent<RenderableModel>(EBunny, rBunnyModel);
 
     Np::Light light;
-    light.Position = Vector3f(0.0f, 300.0f, 0.0f);
-    light.Ambient = Vector3f(0.2f);
-    light.Diffuse = Vector3f(0.9f);
+    light.Position = Vector3f(0.0f, 10.0f, 0.0f);
+    light.Ambient = Vector3f(0.2f, 0.2f, 0.2f);
+    light.Diffuse = Vector3f(0.9f, 0.9f, 0.9f);
     light.Specular = Vector3f(1.0f);
 
     Np::Entity ELight = Registry.Create();
-    Registry.AddComponent<Transform>(ELight, lightTransform);
     Registry.AddComponent<Np::Light>(ELight, light);
-    Registry.AddComponent<RenderableModel>(ELight, rLightModel);
 
     auto& orbitCameraComponent = Registry.GetComponent<OrbitCamera>(ECamera);
     auto& cameraVelocity = Registry.GetComponent<Velocity>(ECamera);
@@ -124,7 +113,7 @@ Bool GenesisApp::OnInitialize()
     return true;
 }
 
-void GenesisApp::OnTick(Double deltaTime)
+void StanfordBunnyApp::OnTick(Double deltaTime)
 {
     DeltaTime = deltaTime;
 
@@ -149,7 +138,7 @@ void GenesisApp::OnTick(Double deltaTime)
     viewport.X = 0;
     viewport.Y = 0;
 
-    Vector4f backgroundColor(1 / 255.0f, 10 / 255.0f, 33 / 255.0f, 255 / 255.0f);
+    Vector4f backgroundColor(240 / 255.0f, 240 / 255.0f, 240 / 255.0f, 240 / 255.0f);
 
     SharedRef<Np::MainShaderProgram> shader = Device->GetMainShaderProgram();
 
@@ -173,7 +162,7 @@ void GenesisApp::OnTick(Double deltaTime)
     Device->GetGraphicsContext()->SwapBuffers();
 }
 
-void GenesisApp::OnClose()
+void StanfordBunnyApp::OnClose()
 {
     for (auto& [e, transform, rModel]: Registry.View<Transform, RenderableModel>())
     {
@@ -186,7 +175,7 @@ void GenesisApp::OnClose()
     }
 }
 
-double GenesisApp::GetDeltaTime()
+double StanfordBunnyApp::GetDeltaTime()
 {
     return DeltaTime;
 }

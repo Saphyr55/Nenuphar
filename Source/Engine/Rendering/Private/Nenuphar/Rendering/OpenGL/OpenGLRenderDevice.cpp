@@ -21,8 +21,12 @@ namespace Nenuphar
     void OpenGLRenderDevice::Enable()
     {
         NP_GL_CHECK_CALL(glEnable(GL_DEPTH_TEST));
+
         NP_GL_CHECK_CALL(glEnable(GL_BLEND));
         NP_GL_CHECK_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
+        NP_GL_CHECK_CALL(glEnable(GL_CULL_FACE));
+        NP_GL_CHECK_CALL(glCullFace(GL_FRONT));
     }
 
     SharedRef<Shader> OpenGLRenderDevice::CreateShader(const ShaderConstructOptions& options)
@@ -55,7 +59,7 @@ namespace Nenuphar
                                                          const TextureConstructOptions& option)
     {
         NCHECK(asset)
-
+    
         OpenGLTexture::Rect rect;
         rect.X = 0;
         rect.Y = 0;

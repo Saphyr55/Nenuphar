@@ -24,7 +24,7 @@ namespace Nenuphar
     void Mesh::Destroy()
     {
         RenderHandle->Destroy();
-        for (auto& mat : Materials) 
+        for (auto& mat: Materials)
         {
             mat.DiffuseTexture->Destroy();
             mat.SpecularTexture->Destroy();
@@ -48,12 +48,11 @@ namespace Nenuphar
         switch (textureExtraInfo.TTM)
         {
             case TextureTypeModel::Diffuse: {
-                registry->Get<Int>("UTexture").UpdateValue((Int)slot);
-                registry->Get<Int>("UMaterial.DiffuseTexture").UpdateValue((Int)slot);
+                registry->Get<Int>("UMaterial.Textures[0]").UpdateValue((Int)slot);
                 break;
             }
             case TextureTypeModel::Specular: {
-                registry->Get<Int>("UMaterial.SpecularTexture").UpdateValue((Int)slot);
+                registry->Get<Int>("UMaterial.Textures[1]").UpdateValue((Int)slot);
                 break;
             }
         }
@@ -66,23 +65,34 @@ namespace Nenuphar
         std::vector<TextureExtraInfo> textures;
 
         for (auto& material: mesh.Materials)
-        {
-            TextureExtraInfo diffuseTexture;
-            diffuseTexture.Texture = material.DiffuseTexture;
-            diffuseTexture.TTM = TextureTypeModel::Diffuse;
+        {   
+            if (material.DiffuseTexture)
+            {
+                TextureExtraInfo diffuseTexture;
+                diffuseTexture.Texture = material.DiffuseTexture;
+                diffuseTexture.TTM = TextureTypeModel::Diffuse;
+                
+                textures.push_back(std::move(diffuseTexture));
+            }
 
-            TextureExtraInfo specularTexture;
-            specularTexture.Texture = material.SpecularTexture;
-            specularTexture.TTM = TextureTypeModel::Specular;
+            if (material.SpecularTexture)
+            {
+                TextureExtraInfo specularTexture;
+                specularTexture.Texture = material.SpecularTexture;
+                specularTexture.TTM = TextureTypeModel::Specular;
 
-            textures.push_back(std::move(diffuseTexture));
-            textures.push_back(std::move(specularTexture));
+                textures.push_back(std::move(specularTexture));
+            }
 
             // TODO: Pipepline and binding.
             commandBuffer->Record([registry, material] {
                 ApplyMaterial(material, registry);
             });
         }
+
+        commandBuffer->Record([size=textures.size(), registry] {
+            registry->Get<Int>("UMaterial.ArraySize").UpdateValue((Int)size);
+        });
 
         for (std::size_t slot = 0; slot < textures.size(); slot++)
         {
@@ -94,8 +104,11 @@ namespace Nenuphar
             }
 
             // TODO: Pipepline and binding.
-            commandBuffer->Record([registry, slot, &textureExtraInfo]() {
-                ApplyMaterialTexture(textureExtraInfo, registry, slot);
+            commandBuffer->Record([registry, slot, &textureExtraInfo] {
+                if (textureExtraInfo.Texture)
+                {
+                    ApplyMaterialTexture(textureExtraInfo, registry, slot);
+                }
             });
         }
 
