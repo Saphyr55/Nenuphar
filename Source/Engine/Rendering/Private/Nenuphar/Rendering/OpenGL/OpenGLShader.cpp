@@ -114,13 +114,14 @@ namespace Nenuphar
         Int success;
         char infoLog[size];
         NP_GL_CHECK_CALL(glGetShaderiv(m_shaderID, status, &success));
-
+        
         if (!success)
         {
             NP_GL_CHECK_CALL(glGetShaderInfoLog(m_shaderID, size, nullptr, infoLog));
             NP_ERROR(OpenGLShaderPart::CheckInfo, "OpenGL Shader : {}", infoLog);
-            throw std::exception();
         }
+
+        NCHECK(success)
     }
 
     void OpenGLShader::CheckInfo(OpenGLShaderStatus status) const
@@ -134,8 +135,9 @@ namespace Nenuphar
         {
             NP_GL_CHECK_CALL(glGetProgramInfoLog(m_programID, size, nullptr, infoLog));
             NP_ERROR(OpenGLShader::CheckInfo, "OpenGL Program : {}", infoLog);
-            throw std::exception();
         }
+        
+        NCHECK(success)
     }
 
     OpenGLShader::OpenGLShader(std::string_view vs, std::string_view fs)

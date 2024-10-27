@@ -64,10 +64,12 @@ namespace Nenuphar
 
     void OpenGLSkybox::Initialize(const std::array<SharedRef<ImageAsset>, 6>& assets, RenderDevice* device)
     {
+        NCHECK(assets.front())
+
         m_renderHandle = device->CreateRenderHandle(GSkyboxVertices, GSkyboxIndices);
         m_count = GSkyboxIndices.size();
 
-        NCHECK(assets.front())
+        NP_GL_CHECK_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 
         UInt w = assets.at(0)->Definition.Width;
         UInt h = assets.at(0)->Definition.Height;
@@ -102,11 +104,12 @@ namespace Nenuphar
                     asset->Definition.Data);
         }
 
+        NP_GL_CHECK_CALL(glGenerateTextureMipmap(m_textureHandle));
         NP_GL_CHECK_CALL(glTextureParameteri(m_textureHandle, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
         NP_GL_CHECK_CALL(glTextureParameteri(m_textureHandle, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
         NP_GL_CHECK_CALL(glTextureParameteri(m_textureHandle, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
         NP_GL_CHECK_CALL(glTextureParameteri(m_textureHandle, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-        NP_GL_CHECK_CALL(glTextureParameteri(m_textureHandle, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+        NP_GL_CHECK_CALL(glTextureParameteri(m_textureHandle, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
     }
 
 }// namespace Nenuphar

@@ -48,8 +48,7 @@ namespace Nenuphar
         }
 
         constexpr std::size_t bindingIndex = 0;
-        m_OpenGLMainShader.Delegate = ShaderCreateProgram(GMaterialShaderName);
-        m_OpenGLMainShader.Delegate->Use();
+        m_OpenGLMainShader.Delegate = ShaderCreateProgram(GMaterialShaderName);        
         m_OpenGLMainShader.MainUniformRegistry = MakeSharedRef<UniformRegistry>(m_OpenGLMainShader.Delegate);
         MaterialShaderInitializeUniformRegistry(m_OpenGLMainShader.MainUniformRegistry);
         

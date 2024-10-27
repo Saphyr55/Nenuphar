@@ -145,38 +145,37 @@ void StanfordBunnyApp::OnTick(Double deltaTime)
 
     // We obtain a projection matrix using the perspective matrix with a fov of 45
     // degrees, the window aspect, and 0.1 close up and 100 far away.
-    Matrix4f projection = Matrix4f::Perspective(Np::Radians(45), aspect, 0.1f, 10000.0f);
-
+    Matrix4f projection = Matrix4f::Perspective(Np::Radians(65), aspect, 0.1f, 10000.0f);
+    
     // We obtain the view in function of the camera.
     Matrix4f view = Matrix4f::LookAt(camera.Position(), camera.Target, camera.Up);
 
+    SharedRef<Np::CommandBuffer> commandBuffer = Device->CreateCommandBuffer();
+    
+    commandBuffer->Clear();
+
+    Vector4f backgroundColor(240 / 255.0f, 240 / 255.0f, 240 / 255.0f, 240 / 255.0f);
+    commandBuffer->ClearColor(backgroundColor);
+    
     Np::Viewport viewport;
     viewport.Width = width;
     viewport.Height = height;
     viewport.X = 0;
     viewport.Y = 0;
-    
-    Vector4f backgroundColor(240 / 255.0f, 240 / 255.0f, 240 / 255.0f, 240 / 255.0f);
-    
-    SharedRef<Np::MaterialShaderProgram> shader = Device->GetMaterialShaderProgram();
-    SharedRef<Np::SkyboxShaderProgram> skyboxShader = Device->GetSkyboxShaderProgram();
-
-    SharedRef<Np::CommandBuffer> commandBuffer = Device->CreateCommandBuffer();
-    
-    commandBuffer->Clear();
-    commandBuffer->ClearColor(backgroundColor);
     commandBuffer->SetViewport(viewport);
-    
+
     RenderCommand updateProjectionView = Device->CreateProjectionViewCommand(projection, view);
     commandBuffer->Record(updateProjectionView);
-    
+
+    SharedRef<Np::SkyboxShaderProgram> skyboxShader = Device->GetSkyboxShaderProgram();
+    commandBuffer->RenderSkybox(skyboxShader, Skybox);
+
+    SharedRef<Np::MaterialShaderProgram> shader = Device->GetMaterialShaderProgram();
     commandBuffer->Record([&] {
         shader->GetRegistry()->Get<Vector3f>("UCameraPosition").UpdateValue(camera.Position());
     });
 
     MainRenderData.OnRenderData(commandBuffer, Registry);
-    
-    commandBuffer->RenderSkybox(skyboxShader, Skybox, projection, view);
 
     CommandQueue->Submit(commandBuffer);
     CommandQueue->Execute();

@@ -27,9 +27,6 @@ namespace Nenuphar
 
         NP_GL_CHECK_CALL(glEnable(GL_BLEND))
         NP_GL_CHECK_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA))
-        
-        NP_GL_CHECK_CALL(glEnable(GL_CULL_FACE));
-        NP_GL_CHECK_CALL(glCullFace(GL_FRONT));
 
         NP_GL_CHECK_CALL(glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS))
     }
@@ -65,10 +62,10 @@ namespace Nenuphar
             mainUniformBlock.Projection = projection;
             mainUniformBlock.View = view;
 
-            m_UMainUniformBlock = mainUniformBlock;
+            m_uMainUniformBlock = mainUniformBlock;
 
             m_mainUniformBuffer->Bind();
-            m_mainUniformBuffer->BufferSubData(offset, size, &m_UMainUniformBlock);
+            m_mainUniformBuffer->BufferSubData(offset, size, &m_uMainUniformBlock);
             m_mainUniformBuffer->Unbind();
         };
     }
@@ -118,16 +115,16 @@ namespace Nenuphar
         : RenderDevice(renderAPI, window)
     {
         
-        m_UMainUniformBlock = MainUniformBlock();
-
-        m_mainShaderProgram = MakeSharedRef<OpenGLMaterialShaderProgram>();
-        m_mainShaderProgram->Initialize();
+        m_uMainUniformBlock = MainUniformBlock();
 
         m_skyboxShaderProgram = MakeSharedRef<OpenGLSkyboxShaderProgram>();
         m_skyboxShaderProgram->Initialize();
     
+        m_mainShaderProgram = MakeSharedRef<OpenGLMaterialShaderProgram>();
+        m_mainShaderProgram->Initialize();
+
         m_mainUniformBuffer = MakeSharedRef<OpenGLUniformBuffer>(sizeof(MainUniformBlock));
-        m_mainUniformBuffer->BufferData(&m_UMainUniformBlock, OpenGLBufferUsage::StaticDraw);
+        m_mainUniformBuffer->BufferData(&m_uMainUniformBlock, OpenGLBufferUsage::StaticDraw);
         m_mainUniformBuffer->BindBufferBase(GMainBindingBlockIndex);
     }
 

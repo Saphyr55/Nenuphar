@@ -46,8 +46,6 @@ namespace Nenuphar
 
     struct OpenGLRenderSkyboxCommand
     {
-        Matrix4f Projection;
-        Matrix4f View;
         SharedRef<SkyboxShaderProgram> Shader;
         SharedRef<OpenGLSkybox> Skybox;
         SharedRef<OpenGLVertexArray> VAO;
@@ -76,10 +74,7 @@ namespace Nenuphar
 
         virtual void DrawIndexed(SharedRef<RenderHandle> handle, UInt indexCount) override;
 
-        void RenderSkybox(SharedRef<SkyboxShaderProgram> shader,
-                          SharedRef<Skybox> skybox,
-                          const Matrix4f& projection,
-                          const Matrix4f& view) override;
+        void RenderSkybox(SharedRef<SkyboxShaderProgram> shader, SharedRef<Skybox> skybox) override;
 
         virtual void Record(const RenderCommand& command) override;
 

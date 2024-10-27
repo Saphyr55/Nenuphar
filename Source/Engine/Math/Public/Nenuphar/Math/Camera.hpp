@@ -48,7 +48,7 @@ namespace Nenuphar
     public:
         OrbitCamera& operator=(const OrbitCamera&);
         OrbitCamera& operator=(OrbitCamera&&);
-
+        
         OrbitCamera(Float Theta, Float Phi, Float Radius, Vector3f Target, Vector3f Up);
         OrbitCamera() = default;
         OrbitCamera(OrbitCamera&&) = default;
@@ -62,8 +62,8 @@ namespace Nenuphar
         OrbitCamera newCamera(camera);
         newCamera.Theta += radians;
 
-        // Keep azimuth angle within range (0..2PI],
-        // it's not necessary, just to have it nicely output
+        // Keep azimuth angle within range (0,2PI],
+        // it's not necessary, just to have it nicely output.
         newCamera.Theta = std::fmod(newCamera.Theta, FullCircle);
         if (newCamera.Theta < 0.0f)
         {

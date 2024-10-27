@@ -14,8 +14,8 @@ layout(std140, binding = 0) uniform MainUniformBlock
 
 void main()
 {	
-	UVW = APosition; //vec3(APosition.xy, APosition.z);
-	
+	UVW = vec3(APosition.xy, APosition.z);
+
 	vec4 Position = 
 		  UMainUniformBlock.Projection 
 		* mat4(mat3(UMainUniformBlock.View))

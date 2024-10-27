@@ -1,14 +1,15 @@
 #include "StanfordBunny/Camera.hpp"
-#include "StanfordBunny/WindowEventHandler.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/InputSystem/InputSystem.hpp"
 #include "Nenuphar/Math/Camera.hpp"
+#include "StanfordBunny/WindowEventHandler.hpp"
 
-static OrbitCamera DefaultCamera((float)Radians(45.0f),
-                                 (float)Radians(45.0f),
-                                 3.0f,
-                                 Vector3f(0.0, 0.0, 0.0),
-                                 Vector3f(0.0f, 1.0f, 0.0f));
+
+static OrbitCamera DefaultOrbitCamera((float)Radians(45.0f),
+                                      (float)Radians(45.0f),
+                                      3.0f,
+                                      Vector3f(0.0, 0.0, 0.0),
+                                      Vector3f(0.0f, 1.0f, 0.0f));
 
 void InitCamera(Np::SharedRef<WindowEventHandler> windowEventHandler, Np::OrbitCamera& camera, const Velocity& velocity)
 {
@@ -30,7 +31,7 @@ Void ResetCameraTarget(const Np::KeyEvent& evt, Np::OrbitCamera& camera)
 {
     if (evt.Key == Input::Key::R)
     {
-        camera.Target = DefaultCamera.Target;
+        camera.Target = DefaultOrbitCamera.Target;
     }
 }
 

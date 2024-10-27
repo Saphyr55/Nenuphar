@@ -30,18 +30,10 @@ namespace Nenuphar
             return;
         }
         
-        m_delegate = ShaderCreateProgram(GSkyboxShaderName);
-        m_delegate->Use();
-        
+        m_delegate = ShaderCreateProgram(GSkyboxShaderName);        
         m_mainUniformRegistry = MakeSharedRef<UniformRegistry>(m_delegate);
         SkyboxShaderInitializeUniformRegistry(m_mainUniformRegistry);
         
-        UInt skyboxMainBlockIndex = OpenGL_GetUniformBlock(m_delegate, GMainUniformBlockName);
-        NP_GL_CHECK_CALL(glUniformBlockBinding(
-            m_delegate->Id(), 
-            skyboxMainBlockIndex, 
-            GMainBindingBlockIndex))
-            
         m_isInitialize = true;
     }
 

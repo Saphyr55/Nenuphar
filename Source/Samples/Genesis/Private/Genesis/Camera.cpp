@@ -4,7 +4,7 @@
 #include "Nenuphar/InputSystem/InputSystem.hpp"
 #include "Nenuphar/Math/Camera.hpp"
 
-static OrbitCamera DefaultCamera((float)Radians(45.0f),
+static OrbitCamera DefaultOrbitCamera((float)Radians(45.0f),
                                  (float)Radians(45.0f),
                                  3.0f,
                                  Vector3f(0.0, 0.0, 0.0),
@@ -30,7 +30,7 @@ Void ResetCameraTarget(const Np::KeyEvent& evt, Np::OrbitCamera& camera)
 {
     if (evt.Key == Input::Key::R)
     {
-        camera.Target = DefaultCamera.Target;
+        camera.Target = DefaultOrbitCamera.Target;
     }
 }
 

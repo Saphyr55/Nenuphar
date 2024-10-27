@@ -15,13 +15,13 @@ namespace Nenuphar
 
         texture->Initialize();
         texture->SubImage(level, rect, imageDefinition.Data);
+        
+        NP_GL_CHECK_CALL(glGenerateTextureMipmap(texture->GetHandle()));
 
         texture->SetParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
         texture->SetParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
-        texture->SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
         texture->SetParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        NP_GL_CHECK_CALL(glGenerateTextureMipmap(texture->GetHandle()));
+        texture->SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 
         return texture;
     }

@@ -35,10 +35,7 @@ namespace Nenuphar
 
         virtual void BindTexture(SharedRef<Texture> texture, UInt slot) = 0;
 
-        virtual void RenderSkybox(SharedRef<SkyboxShaderProgram> shader,
-                                  SharedRef<Skybox> skybox,
-                                  const Matrix4f& projection,
-                                  const Matrix4f& view) = 0;
+        virtual void RenderSkybox(SharedRef<SkyboxShaderProgram> shader, SharedRef<Skybox> skybox) = 0;
 
         virtual void DrawIndexed(SharedRef<RenderHandle> handle, UInt indexCount) = 0;
 

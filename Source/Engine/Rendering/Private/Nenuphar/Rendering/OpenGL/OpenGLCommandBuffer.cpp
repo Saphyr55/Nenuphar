@@ -57,10 +57,7 @@ namespace Nenuphar
         Record(std::move(command));
     }
 
-    void OpenGLCommandBuffer::RenderSkybox(SharedRef<SkyboxShaderProgram> shader,
-                                           SharedRef<Skybox> skybox,
-                                           const Matrix4f& projection,
-                                           const Matrix4f& view)
+    void OpenGLCommandBuffer::RenderSkybox(SharedRef<SkyboxShaderProgram> shader,  SharedRef<Skybox> skybox)
     {
         NCHECK(skybox)
         NCHECK(shader)
@@ -75,8 +72,6 @@ namespace Nenuphar
         command.Shader = shader;
         command.Skybox = openGLSkybox;
         command.VAO = vao;
-        command.Projection = projection;
-        command.View = view;
 
         Record(std::move(command));
     }
@@ -97,14 +92,15 @@ namespace Nenuphar
 
     void OpenGLCommandBuffer::Execute(const OpenGLRenderSkyboxCommand& command)
     {
-        NP_GL_CHECK_CALL(glDepthMask(GL_FALSE))
+        NP_GL_CHECK_CALL(glDepthFunc(GL_LEQUAL))
         
-        command.Shader->GetRegistry()->Get<Int>("USkybox").UpdateValue(command.Skybox->GetTextureHandle());
+        command.Shader->GetDelegate()->Use();
         command.VAO->Bind();
         command.Skybox->BindTextureUnit(0);
-
+        
         NP_GL_CHECK_CALL(glDrawElements(GL_TRIANGLES, command.Skybox->GetCount(), GL_UNSIGNED_INT, 0))
-        NP_GL_CHECK_CALL(glDepthMask(GL_TRUE))
+
+        NP_GL_CHECK_CALL(glDepthFunc(GL_LESS))
     }
 
     void OpenGLCommandBuffer::Execute(const OpenGLViewportCommand& command)

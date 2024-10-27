@@ -42,7 +42,7 @@ namespace Nenuphar
         virtual ~OpenGLRenderDevice() override;
 
     private:
-        MainUniformBlock m_UMainUniformBlock;
+        MainUniformBlock m_uMainUniformBlock;
         SharedRef<OpenGLUniformBuffer> m_mainUniformBuffer;
         SharedRef<OpenGLSkyboxShaderProgram> m_skyboxShaderProgram;
         SharedRef<OpenGLMaterialShaderProgram> m_mainShaderProgram;
