@@ -1,7 +1,5 @@
 #pragma once
 
-#include "StanfordBunny/StanfordBunnyApp.hpp"
-#include "Nenuphar/ApplicationCore/Application.hpp"
 #include "Nenuphar/ApplicationCore/ApplicationMessageHandler.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/InputSystem/Event.hpp"

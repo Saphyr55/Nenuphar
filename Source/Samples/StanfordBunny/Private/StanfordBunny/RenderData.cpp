@@ -20,7 +20,7 @@
 
 void RenderData::OnRenderData(SharedRef<Np::CommandBuffer> commandBuffer, Np::EntityRegistry& registry)
 {
-    SharedRef<Np::MainShaderProgram> shader = Device->GetMainShaderProgram();
+    SharedRef<Np::MaterialShaderProgram> shader = Device->GetMaterialShaderProgram();
 
     for (auto& [e, transform, rModel]: registry.View<Transform, RenderableModel>())
     {
@@ -53,7 +53,7 @@ RenderData RenderData::Create(SharedRef<RenderDevice> device)
     device->Enable();
 
     // Use render device to get the main shader program.
-    Np::SharedRef<Np::MainShaderProgram> shader = device->GetMainShaderProgram();
+    Np::SharedRef<Np::MaterialShaderProgram> shader = device->GetMaterialShaderProgram();
 
     // Get the singleton asset registry.
     Np::AssetRegistry& assets = Np::AssetRegistry::Instance();

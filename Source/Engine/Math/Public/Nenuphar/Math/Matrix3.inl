@@ -113,6 +113,15 @@ Matrix3<R>::Matrix3(R r)
 }
 
 template<Real R>
+Matrix3<R>::Matrix3(Matrix4<R> mat4)
+    : Matrix3(
+              mat4.GetCol(0),
+              mat4.GetCol(1),
+              mat4.GetCol(2))
+{
+}
+
+template<Real R>
 auto Matrix3<R>::operator*(Mat m) -> Mat
 {
     Mat result(0);

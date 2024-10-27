@@ -1,9 +1,12 @@
 #pragma once
 
 #include "Nenuphar/Common/Type/Type.hpp"
+#include "Nenuphar/Math/Matrix4.hpp"
 #include "Nenuphar/Rendering/CommandBuffer.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLSkybox.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLVertexArray.hpp"
+#include "Nenuphar/Rendering/Skybox.hpp"
 #include "Nenuphar/Rendering/UniformRegistry.hpp"
 #include <variant>
 
@@ -41,13 +44,23 @@ namespace Nenuphar
         UInt Slot;
     };
 
+    struct OpenGLRenderSkyboxCommand
+    {
+        Matrix4f Projection;
+        Matrix4f View;
+        SharedRef<SkyboxShaderProgram> Shader;
+        SharedRef<OpenGLSkybox> Skybox;
+        SharedRef<OpenGLVertexArray> VAO;
+    };
+
     using OpenGLRenderCommandTypes = std::variant<
             OpenGLRenderCommand,
             OpenGLViewportCommand,
             OpenGLClearCommand,
             OpenGLClearColorCommand,
             OpenGLDrawIndexedCommand,
-            OpenGLBindTextureCommand>;
+            OpenGLBindTextureCommand,
+            OpenGLRenderSkyboxCommand>;
 
 
     class OpenGLCommandBuffer : public CommandBuffer
@@ -60,8 +73,13 @@ namespace Nenuphar
         virtual void SetViewport(const Viewport& viewport) override;
 
         virtual void BindTexture(SharedRef<Texture> texture, UInt slot) override;
-        
+
         virtual void DrawIndexed(SharedRef<RenderHandle> handle, UInt indexCount) override;
+
+        void RenderSkybox(SharedRef<SkyboxShaderProgram> shader,
+                          SharedRef<Skybox> skybox,
+                          const Matrix4f& projection,
+                          const Matrix4f& view) override;
 
         virtual void Record(const RenderCommand& command) override;
 
@@ -73,6 +91,7 @@ namespace Nenuphar
         void Execute(const OpenGLClearColorCommand& command);
         void Execute(const OpenGLDrawIndexedCommand& command);
         void Execute(const OpenGLBindTextureCommand& command);
+        void Execute(const OpenGLRenderSkyboxCommand& command);
 
         void Record(OpenGLRenderCommandTypes command);
 

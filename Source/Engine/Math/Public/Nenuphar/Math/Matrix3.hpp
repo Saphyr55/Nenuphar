@@ -3,6 +3,7 @@
 #include <array>
 
 #include "Nenuphar/Math/CommonMath.hpp"
+#include "Nenuphar/Math/Matrix4.hpp"
 #include "Nenuphar/Math/Vector3.hpp"
 
 template<Real R>
@@ -20,6 +21,7 @@ struct Matrix3
     Matrix3(R r);
     Matrix3(R m11, R m21, R m31, R m12, R m22, R m32, R m13, R m23, R m33);
     Matrix3(const Vec& col_1, const Vec& col_2, const Vec& col_3);
+    Matrix3(Matrix4<R> mat4);
 
     static Matrix3 Identity();
     static std::array<R, 3 * 3> ValueArray(Mat mat);

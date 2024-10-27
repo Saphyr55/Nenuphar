@@ -19,8 +19,8 @@ namespace Nenuphar
         Int format;
         Int width;
         Int height;
-
-        stbi_set_flip_vertically_on_load(true);
+        
+        stbi_set_flip_vertically_on_load(options.Flip);
 
         definition.Data = stbi_load(
                 filePath.GetFilePath().c_str(),

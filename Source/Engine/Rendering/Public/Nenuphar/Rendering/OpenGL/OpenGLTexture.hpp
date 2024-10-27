@@ -79,7 +79,7 @@ namespace Nenuphar
         {
             return m_handle;
         }
-
+        
         OpenGLTexture(const ImageDefinition& imageDefinition);
         ~OpenGLTexture();
 

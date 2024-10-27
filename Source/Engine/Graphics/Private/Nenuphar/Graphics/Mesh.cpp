@@ -35,7 +35,7 @@ namespace Nenuphar
     {
         mesh.RenderHandle = renderDevice->CreateRenderHandle(mesh.Vertices, mesh.Indices);
     }
-
+    
     void ApplyMaterial(const Material& material, SharedRef<UniformRegistry> registry)
     {
         registry->Get<Vector3f>("UMaterial.Diffuse").UpdateValue(material.Diffuse);

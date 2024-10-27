@@ -21,7 +21,6 @@ namespace Nenuphar
     template<typename A>
     concept CIsAssetOptions = std::is_base_of_v<AssetOptions, A>;
 
-    
     class Asset
     {
     public:
@@ -30,7 +29,7 @@ namespace Nenuphar
         virtual ~Asset() = default;
 
         AssetHandle GetHandle();
-
+        
     private:
         AssetHandle m_handle;
     };

@@ -14,6 +14,7 @@
 #include "Nenuphar/Rendering/Shader.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
 #include "Nenuphar/Rendering/Vertex.hpp"
+#include "Skybox.hpp"
 
 #include <vector>
 
@@ -67,6 +68,15 @@ namespace Nenuphar
          * @return SharedRef<Shader> 
          */
         virtual SharedRef<Shader> CreateShader(const ShaderConstructOptions& options) = 0;
+        
+        /**
+         * @brief Create a Projection View Command object
+         * 
+         * @param projection 
+         * @param view 
+         * @return RenderCommand 
+         */
+        virtual RenderCommand CreateProjectionViewCommand(const Matrix4f& projection, const Matrix4f& view) = 0;
 
         /**
          * @brief Create a Render Handle
@@ -101,11 +111,27 @@ namespace Nenuphar
         virtual SharedRef<CommandQueue> CreateCommandQueue() = 0;
 
         /**
-         * @brief Get the Main Shader Program
+         * @brief Get the Material Shader Program
          * 
          * @return SharedRef<MainShaderProgram> 
          */
-        virtual SharedRef<MainShaderProgram> GetMainShaderProgram() = 0;
+        virtual SharedRef<MaterialShaderProgram> GetMaterialShaderProgram() = 0;
+
+        /**
+        
+         * @brief Get the Skybox Shader Program
+         * 
+         * @return SharedRef<SkyboxShaderProgram> 
+         */
+        virtual SharedRef<SkyboxShaderProgram> GetSkyboxShaderProgram() = 0;
+        
+        /**
+         * @brief Create a Skybox object
+         * 
+         * @param faces 
+         * @return SharedRef<Skybox> 
+         */
+        virtual SharedRef<Skybox> CreateSkybox(const std::array<SharedRef<ImageAsset>, 6>& faces) = 0;
 
         /**
          * @brief Get the Graphics Context

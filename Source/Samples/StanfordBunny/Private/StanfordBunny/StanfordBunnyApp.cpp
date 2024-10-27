@@ -1,4 +1,5 @@
 #include "StanfordBunny/StanfordBunnyApp.hpp"
+#include "Nenuphar/Core/Debug.hpp"
 #include "StanfordBunny/Camera.hpp"
 #include "StanfordBunny/SBApplicationMessageHandler.hpp"
 #include "StanfordBunny/RenderData.hpp"
@@ -28,11 +29,12 @@
 #include "Nenuphar/Rendering/RenderDevice.hpp"
 #include "Nenuphar/Rendering/Shader.hpp"
 
+#include <array>
 #include <glad/glad.h>
 
 namespace Np = Nenuphar;
 
-static Vector3f GDefaultPosition(0.0f, 0.0f, 0.0f);
+static Vector3f GDefaultPosition(0.0f, 5.0f, 0.0f);
 
 StanfordBunnyApp::StanfordBunnyApp()
     : Cube(CreateCubeModel())
@@ -58,12 +60,12 @@ Bool StanfordBunnyApp::OnInitialize()
     assets.EmplaceLoader<Np::ImageAsset, Np::AssetOptions, Np::ImageAssetLoader>();
     assets.EmplaceLoader<Np::ModelAsset, Np::ModelAssetOptions, Np::ModelAssetLoader>();
 
-    Np::WindowDefinition definition("Genesis Sample Application", 1080, 720);
+    Np::WindowDefinition definition("Stanford Bunny", 1080, 720);
 
     MainWindow = Np::PlatformAppGet()->MakeWindow(definition);
     Device = Np::RenderDevice::Create(Np::RenderAPI::OpenGL, MainWindow);
     MainRenderData = RenderData::Create(Device);
-
+    
     EventHandler->SetWindow(MainWindow);
 
     EventHandler->OnClose().ConnectHandler([&](auto) {
@@ -72,7 +74,10 @@ Bool StanfordBunnyApp::OnInitialize()
     });
 
     EventHandler->OnResize().ConnectHandler([&](auto& event) {
-        OnTick(GetDeltaTime());
+        if (Np::AppGetCurrent()->IsRunning())
+        {
+            OnTick(GetDeltaTime());
+        }
     });
 
     // Camera entity.
@@ -80,7 +85,7 @@ Bool StanfordBunnyApp::OnInitialize()
     Registry.AddComponent<OrbitCamera>(ECamera, DefaultOrbitCameraFactory());
     Registry.AddComponent<Velocity>(ECamera, Velocity(0.005f));
 
-    // Sponza entity.
+    // Bunny entity.
     RenderableModel rBunnyModel;
     rBunnyModel.Model = &MainRenderData.BunnyAsset->GetModel();
     RenderCommandSubmitModel(Device, *rBunnyModel.Model);
@@ -106,9 +111,24 @@ Bool StanfordBunnyApp::OnInitialize()
     auto& cameraVelocity = Registry.GetComponent<Velocity>(ECamera);
 
     InitCamera(EventHandler, orbitCameraComponent, cameraVelocity);
+
     CommandQueue = Device->CreateCommandQueue();
 
     MainWindow->Show();
+        
+    ImageAssetOptions skyboxLoadOptions;
+    skyboxLoadOptions.Flip = false;
+    
+    Skybox = Device->CreateSkybox({
+        assets.Load<ImageAsset>("/skybox/skybox/right.jpg", skyboxLoadOptions),
+        assets.Load<ImageAsset>("/skybox/skybox/left.jpg", skyboxLoadOptions),
+        assets.Load<ImageAsset>("/skybox/skybox/top.jpg", skyboxLoadOptions),
+        assets.Load<ImageAsset>("/skybox/skybox/bottom.jpg", skyboxLoadOptions),
+        assets.Load<ImageAsset>("/skybox/skybox/front.jpg", skyboxLoadOptions),
+        assets.Load<ImageAsset>("/skybox/skybox/back.jpg", skyboxLoadOptions)
+    });
+    NCHECK(Skybox)
+    
 
     return true;
 }
@@ -121,40 +141,42 @@ void StanfordBunnyApp::OnTick(Double deltaTime)
 
     Int width = MainWindow->GetWindowDefinition().Width;
     Int height = MainWindow->GetWindowDefinition().Height;
-    Float aspect = width / (Float)height;
-
-    Vector3f cameraPosition = camera.Position();
+    Float aspect = width / (Float) height;
 
     // We obtain a projection matrix using the perspective matrix with a fov of 45
     // degrees, the window aspect, and 0.1 close up and 100 far away.
     Matrix4f projection = Matrix4f::Perspective(Np::Radians(45), aspect, 0.1f, 10000.0f);
 
     // We obtain the view in function of the camera.
-    Matrix4f view = Matrix4f::LookAt(cameraPosition, camera.Target, camera.Up);
+    Matrix4f view = Matrix4f::LookAt(camera.Position(), camera.Target, camera.Up);
 
     Np::Viewport viewport;
     viewport.Width = width;
     viewport.Height = height;
     viewport.X = 0;
     viewport.Y = 0;
-
+    
     Vector4f backgroundColor(240 / 255.0f, 240 / 255.0f, 240 / 255.0f, 240 / 255.0f);
-
-    SharedRef<Np::MainShaderProgram> shader = Device->GetMainShaderProgram();
+    
+    SharedRef<Np::MaterialShaderProgram> shader = Device->GetMaterialShaderProgram();
+    SharedRef<Np::SkyboxShaderProgram> skyboxShader = Device->GetSkyboxShaderProgram();
 
     SharedRef<Np::CommandBuffer> commandBuffer = Device->CreateCommandBuffer();
-
+    
     commandBuffer->Clear();
     commandBuffer->ClearColor(backgroundColor);
     commandBuffer->SetViewport(viewport);
-
+    
+    RenderCommand updateProjectionView = Device->CreateProjectionViewCommand(projection, view);
+    commandBuffer->Record(updateProjectionView);
+    
     commandBuffer->Record([&] {
-        shader->UpdateProjection(projection);
-        shader->UpdateView(view);
-        shader->GetRegistry()->Get<Vector3f>("UCameraPosition").UpdateValue(cameraPosition);
+        shader->GetRegistry()->Get<Vector3f>("UCameraPosition").UpdateValue(camera.Position());
     });
 
     MainRenderData.OnRenderData(commandBuffer, Registry);
+    
+    commandBuffer->RenderSkybox(skyboxShader, Skybox, projection, view);
 
     CommandQueue->Submit(commandBuffer);
     CommandQueue->Execute();
@@ -173,6 +195,8 @@ void StanfordBunnyApp::OnClose()
     {
         rModel.Model->Destroy();
     }
+
+    Skybox->Destroy();
 }
 
 double StanfordBunnyApp::GetDeltaTime()

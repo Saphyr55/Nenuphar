@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Nenuphar/Rendering/Skybox.hpp"
 #include "StanfordBunny/RenderData.hpp"
 
 #include "Nenuphar/ApplicationCore/Application.hpp"
@@ -39,6 +40,7 @@ private:
     Np::EntityRegistry Registry;
     Np::Entity ECamera;
     Np::Entity EBunny;
+    Np::SharedRef<Np::Skybox> Skybox;
     Np::SharedRef<WindowEventHandler> EventHandler;
     Np::SharedRef<Np::CommandQueue> CommandQueue;
     Np::SharedRef<Np::RenderDevice> Device;

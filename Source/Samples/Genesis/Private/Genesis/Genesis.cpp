@@ -4,7 +4,6 @@
 #include "Genesis/RenderData.hpp"
 #include "Genesis/Transform.hpp"
 
-
 #include "Nenuphar/ApplicationCore/Application.hpp"
 #include "Nenuphar/ApplicationCore/ApplicationMessageHandler.hpp"
 #include "Nenuphar/ApplicationCore/PlatformApplication.hpp"
@@ -151,7 +150,7 @@ void GenesisApp::OnTick(Double deltaTime)
 
     Vector4f backgroundColor(1 / 255.0f, 10 / 255.0f, 33 / 255.0f, 255 / 255.0f);
 
-    SharedRef<Np::MainShaderProgram> shader = Device->GetMainShaderProgram();
+    SharedRef<Np::MaterialShaderProgram> shader = Device->GetMaterialShaderProgram();
 
     SharedRef<Np::CommandBuffer> commandBuffer = Device->CreateCommandBuffer();
 
@@ -159,10 +158,10 @@ void GenesisApp::OnTick(Double deltaTime)
     commandBuffer->ClearColor(backgroundColor);
     commandBuffer->SetViewport(viewport);
 
+    RenderCommand updateProjectionView = Device->CreateProjectionViewCommand(projection, view);
+    commandBuffer->Record(updateProjectionView);
     commandBuffer->Record([&] {
-        shader->UpdateProjection(projection);
-        shader->UpdateView(view);
-        shader->GetRegistry()->Get<Vector3f>("UCameraPosition").UpdateValue(cameraPosition);
+        shader->GetRegistry()->Get<Vector3f>("UCameraPosition").UpdateValue(camera.Position());
     });
 
     MainRenderData.OnRenderData(commandBuffer, Registry);

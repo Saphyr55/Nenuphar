@@ -35,7 +35,7 @@ namespace Nenuphar
         Path fragmentFilepath = FromAssets("/Shaders/" + fragmentFileName);
         Path::TRes fragmentResult = ReadFileContent(fragmentFilepath);
         NCHECK(fragmentResult.HasValue())
-
+        
         // Create the main OpenGL shader.
         return MakeSharedRef<OpenGLShader>(vertexResult.Value(), fragmentResult.Value());
     };

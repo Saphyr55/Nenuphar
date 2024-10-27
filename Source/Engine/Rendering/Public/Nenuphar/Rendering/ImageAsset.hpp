@@ -13,10 +13,10 @@ namespace Nenuphar
     {
         ImageDefinition Definition;
     };
-
+    
     struct ImageAssetOptions : AssetOptions
     {
-
+        Bool Flip = true;
     };
 
     class ImageAssetLoader : public AssetLoader<ImageAsset, ImageAssetOptions>

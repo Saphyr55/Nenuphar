@@ -4,8 +4,11 @@
 #include "Nenuphar/Rendering/CommandBuffer.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGL.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLDebugger.hpp"
+#include "Nenuphar/Rendering/OpenGL/OpenGLSkybox.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLTexture.hpp"
 #include "Nenuphar/Rendering/OpenGL/OpenGLVertexArray.hpp"
+#include "Nenuphar/Rendering/Shader.hpp"
+#include "glad/glad.h"
 
 #include <memory>
 #include <variant>
@@ -54,6 +57,30 @@ namespace Nenuphar
         Record(std::move(command));
     }
 
+    void OpenGLCommandBuffer::RenderSkybox(SharedRef<SkyboxShaderProgram> shader,
+                                           SharedRef<Skybox> skybox,
+                                           const Matrix4f& projection,
+                                           const Matrix4f& view)
+    {
+        NCHECK(skybox)
+        NCHECK(shader)
+
+        SharedRef<OpenGLSkybox> openGLSkybox = std::reinterpret_pointer_cast<OpenGLSkybox>(skybox);
+        SharedRef<OpenGLVertexArray> vao = std::reinterpret_pointer_cast<OpenGLVertexArray>(openGLSkybox->GetRenderHandle());
+
+        NCHECK(openGLSkybox)
+        NCHECK(vao)
+
+        OpenGLRenderSkyboxCommand command;
+        command.Shader = shader;
+        command.Skybox = openGLSkybox;
+        command.VAO = vao;
+        command.Projection = projection;
+        command.View = view;
+
+        Record(std::move(command));
+    }
+
     void OpenGLCommandBuffer::DrawIndexed(SharedRef<RenderHandle> handle, UInt indexCount)
     {
         OpenGLDrawIndexedCommand command;
@@ -66,6 +93,18 @@ namespace Nenuphar
     void OpenGLCommandBuffer::Execute(const OpenGLRenderCommand& command)
     {
         command.Command();
+    }
+
+    void OpenGLCommandBuffer::Execute(const OpenGLRenderSkyboxCommand& command)
+    {
+        NP_GL_CHECK_CALL(glDepthMask(GL_FALSE))
+        
+        command.Shader->GetRegistry()->Get<Int>("USkybox").UpdateValue(command.Skybox->GetTextureHandle());
+        command.VAO->Bind();
+        command.Skybox->BindTextureUnit(0);
+
+        NP_GL_CHECK_CALL(glDrawElements(GL_TRIANGLES, command.Skybox->GetCount(), GL_UNSIGNED_INT, 0))
+        NP_GL_CHECK_CALL(glDepthMask(GL_TRUE))
     }
 
     void OpenGLCommandBuffer::Execute(const OpenGLViewportCommand& command)
