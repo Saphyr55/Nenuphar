@@ -34,12 +34,13 @@ public:
     ~StanfordBunnyApp() = default;
 
 private:
-    double DeltaTime;
+    Np::Double DeltaTime;
     Np::Model Cube;
     Np::AppContext Context;
     Np::EntityRegistry Registry;
     Np::Entity ECamera;
     Np::Entity EBunny;
+    Np::Entity ELight;
     Np::SharedRef<Np::Skybox> Skybox;
     Np::SharedRef<WindowEventHandler> EventHandler;
     Np::SharedRef<Np::CommandQueue> CommandQueue;

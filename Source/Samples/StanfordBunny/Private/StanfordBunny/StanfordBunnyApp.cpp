@@ -1,9 +1,11 @@
 #include "StanfordBunny/StanfordBunnyApp.hpp"
 #include "Nenuphar/Core/Debug.hpp"
+#include "Nenuphar/Rendering/Light/DirectionalLight.hpp"
 #include "StanfordBunny/Camera.hpp"
-#include "StanfordBunny/SBApplicationMessageHandler.hpp"
 #include "StanfordBunny/RenderData.hpp"
+#include "StanfordBunny/SBApplicationMessageHandler.hpp"
 #include "StanfordBunny/Transform.hpp"
+
 
 
 #include "Nenuphar/ApplicationCore/Application.hpp"
@@ -29,12 +31,12 @@
 #include "Nenuphar/Rendering/RenderDevice.hpp"
 #include "Nenuphar/Rendering/Shader.hpp"
 
-#include <array>
 #include <glad/glad.h>
 
 namespace Np = Nenuphar;
 
-static Vector3f GDefaultPosition(0.0f, 5.0f, 0.0f);
+static constexpr Vector3f GDefaultPosition(0.0f, 10.0f, 0.0f);
+static constexpr Vector4f GBackgroundColor(240 / 255.0f, 240 / 255.0f, 240 / 255.0f, 255 / 255.0f);
 
 StanfordBunnyApp::StanfordBunnyApp()
     : Cube(CreateCubeModel())
@@ -64,8 +66,9 @@ Bool StanfordBunnyApp::OnInitialize()
 
     MainWindow = Np::PlatformAppGet()->MakeWindow(definition);
     Device = Np::RenderDevice::Create(Np::RenderAPI::OpenGL, MainWindow);
-    MainRenderData = RenderData::Create(Device);
     
+    MainRenderData = RenderData::Create(Device);
+
     EventHandler->SetWindow(MainWindow);
 
     EventHandler->OnClose().ConnectHandler([&](auto) {
@@ -91,44 +94,41 @@ Bool StanfordBunnyApp::OnInitialize()
     RenderCommandSubmitModel(Device, *rBunnyModel.Model);
 
     Transform bunnyTransform;
-    bunnyTransform.Scale = Vector3f(2.0f);
+    bunnyTransform.Scale = Vector3f(0.1f);
     bunnyTransform.Translation = GDefaultPosition;
 
     EBunny = Registry.Create();
     Registry.AddComponent<Transform>(EBunny, bunnyTransform);
     Registry.AddComponent<RenderableModel>(EBunny, rBunnyModel);
 
-    Np::Light light;
-    light.Position = Vector3f(0.0f, 10.0f, 0.0f);
-    light.Ambient = Vector3f(0.2f, 0.2f, 0.2f);
-    light.Diffuse = Vector3f(0.9f, 0.9f, 0.9f);
+    Np::DirectionalLight light;
+    light.Direction = Vector3f(-0.2f, -1.0f, -0.3f);
+    light.Ambient = Vector3f(0.2f);
+    light.Diffuse = Vector3f(0.9f);
     light.Specular = Vector3f(1.0f);
 
-    Np::Entity ELight = Registry.Create();
-    Registry.AddComponent<Np::Light>(ELight, light);
+    ELight = Registry.Create();
+    Registry.AddComponent<Np::DirectionalLight>(ELight, light);
 
     auto& orbitCameraComponent = Registry.GetComponent<OrbitCamera>(ECamera);
     auto& cameraVelocity = Registry.GetComponent<Velocity>(ECamera);
 
     InitCamera(EventHandler, orbitCameraComponent, cameraVelocity);
-
+    
     CommandQueue = Device->CreateCommandQueue();
 
     MainWindow->Show();
-        
+
     ImageAssetOptions skyboxLoadOptions;
     skyboxLoadOptions.Flip = false;
     
-    Skybox = Device->CreateSkybox({
-        assets.Load<ImageAsset>("/skybox/skybox/right.jpg", skyboxLoadOptions),
-        assets.Load<ImageAsset>("/skybox/skybox/left.jpg", skyboxLoadOptions),
-        assets.Load<ImageAsset>("/skybox/skybox/top.jpg", skyboxLoadOptions),
-        assets.Load<ImageAsset>("/skybox/skybox/bottom.jpg", skyboxLoadOptions),
-        assets.Load<ImageAsset>("/skybox/skybox/front.jpg", skyboxLoadOptions),
-        assets.Load<ImageAsset>("/skybox/skybox/back.jpg", skyboxLoadOptions)
-    });
+    Skybox = Device->CreateSkybox({assets.Load<ImageAsset>("/skybox/skybox/right.jpg", skyboxLoadOptions),
+                                   assets.Load<ImageAsset>("/skybox/skybox/left.jpg", skyboxLoadOptions),
+                                   assets.Load<ImageAsset>("/skybox/skybox/top.jpg", skyboxLoadOptions),
+                                   assets.Load<ImageAsset>("/skybox/skybox/bottom.jpg", skyboxLoadOptions),
+                                   assets.Load<ImageAsset>("/skybox/skybox/front.jpg", skyboxLoadOptions),
+                                   assets.Load<ImageAsset>("/skybox/skybox/back.jpg", skyboxLoadOptions)});
     NCHECK(Skybox)
-    
 
     return true;
 }
@@ -137,26 +137,24 @@ void StanfordBunnyApp::OnTick(Double deltaTime)
 {
     DeltaTime = deltaTime;
 
-    Np::OrbitCamera& camera = Registry.GetComponent<OrbitCamera>(ECamera);
+    Np::OrbitCamera& camera = Registry.GetComponent<Np::OrbitCamera>(ECamera);
 
     Int width = MainWindow->GetWindowDefinition().Width;
     Int height = MainWindow->GetWindowDefinition().Height;
-    Float aspect = width / (Float) height;
+    Float aspect = width / (Float)height;
 
     // We obtain a projection matrix using the perspective matrix with a fov of 45
     // degrees, the window aspect, and 0.1 close up and 100 far away.
     Matrix4f projection = Matrix4f::Perspective(Np::Radians(65), aspect, 0.1f, 10000.0f);
-    
+
     // We obtain the view in function of the camera.
     Matrix4f view = Matrix4f::LookAt(camera.Position(), camera.Target, camera.Up);
 
     SharedRef<Np::CommandBuffer> commandBuffer = Device->CreateCommandBuffer();
-    
-    commandBuffer->Clear();
 
-    Vector4f backgroundColor(240 / 255.0f, 240 / 255.0f, 240 / 255.0f, 240 / 255.0f);
-    commandBuffer->ClearColor(backgroundColor);
-    
+    commandBuffer->Clear();
+    commandBuffer->ClearColor(GBackgroundColor);
+
     Np::Viewport viewport;
     viewport.Width = width;
     viewport.Height = height;
@@ -164,11 +162,8 @@ void StanfordBunnyApp::OnTick(Double deltaTime)
     viewport.Y = 0;
     commandBuffer->SetViewport(viewport);
 
-    RenderCommand updateProjectionView = Device->CreateProjectionViewCommand(projection, view);
+    Np::RenderCommand updateProjectionView = Device->CreateProjectionViewCommand(projection, view);
     commandBuffer->Record(updateProjectionView);
-
-    SharedRef<Np::SkyboxShaderProgram> skyboxShader = Device->GetSkyboxShaderProgram();
-    commandBuffer->RenderSkybox(skyboxShader, Skybox);
 
     SharedRef<Np::MaterialShaderProgram> shader = Device->GetMaterialShaderProgram();
     commandBuffer->Record([&] {
@@ -176,6 +171,9 @@ void StanfordBunnyApp::OnTick(Double deltaTime)
     });
 
     MainRenderData.OnRenderData(commandBuffer, Registry);
+
+    SharedRef<Np::SkyboxShaderProgram> skyboxShader = Device->GetSkyboxShaderProgram();
+    commandBuffer->RenderSkybox(skyboxShader, Skybox);
 
     CommandQueue->Submit(commandBuffer);
     CommandQueue->Execute();
@@ -186,11 +184,6 @@ void StanfordBunnyApp::OnTick(Double deltaTime)
 void StanfordBunnyApp::OnClose()
 {
     for (auto& [e, transform, rModel]: Registry.View<Transform, RenderableModel>())
-    {
-        rModel.Model->Destroy();
-    }
-
-    for (auto& [e, light, transform, rModel]: Registry.View<Np::Light, Transform, RenderableModel>())
     {
         rModel.Model->Destroy();
     }

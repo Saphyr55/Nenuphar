@@ -61,7 +61,7 @@ namespace Nenuphar
     {
         NCHECK(skybox)
         NCHECK(shader)
-
+    
         SharedRef<OpenGLSkybox> openGLSkybox = std::reinterpret_pointer_cast<OpenGLSkybox>(skybox);
         SharedRef<OpenGLVertexArray> vao = std::reinterpret_pointer_cast<OpenGLVertexArray>(openGLSkybox->GetRenderHandle());
 
@@ -93,13 +93,13 @@ namespace Nenuphar
     void OpenGLCommandBuffer::Execute(const OpenGLRenderSkyboxCommand& command)
     {
         NP_GL_CHECK_CALL(glDepthFunc(GL_LEQUAL))
-        
-        command.Shader->GetDelegate()->Use();
-        command.VAO->Bind();
-        command.Skybox->BindTextureUnit(0);
-        
-        NP_GL_CHECK_CALL(glDrawElements(GL_TRIANGLES, command.Skybox->GetCount(), GL_UNSIGNED_INT, 0))
 
+        command.Shader->GetDelegate()->Use();
+        command.Skybox->BindTextureUnit(0);
+
+        command.VAO->Bind();
+        NP_GL_CHECK_CALL(glDrawElements(GL_TRIANGLES, command.Skybox->GetCount(), GL_UNSIGNED_INT, 0))
+        
         NP_GL_CHECK_CALL(glDepthFunc(GL_LESS))
     }
 

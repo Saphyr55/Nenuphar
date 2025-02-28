@@ -27,6 +27,31 @@
 #include <unordered_set>
 #include <vector>
 
+struct VertexKey
+{
+    tinyobj::index_t idx;// Store the full index_t for complete vertex identity
+
+    bool operator==(const VertexKey& other) const
+    {
+        return idx.vertex_index == other.idx.vertex_index &&
+               idx.normal_index == other.idx.normal_index &&
+               idx.texcoord_index == other.idx.texcoord_index;
+    }
+};
+
+// Hash function for VertexKey
+template<>
+struct std::hash<VertexKey>
+{
+    std::size_t operator()(const VertexKey& k) const
+    {
+        // Combine hashes of the indices
+        std::size_t h1 = std::hash<int>()(k.idx.vertex_index);
+        std::size_t h2 = std::hash<int>()(k.idx.normal_index);
+        std::size_t h3 = std::hash<int>()(k.idx.texcoord_index);
+        return h1 ^ (h2 << 1) ^ (h3 << 2);
+    }
+};
 
 namespace Nenuphar
 {
@@ -37,7 +62,7 @@ namespace Nenuphar
         using TRes = ModelLoader::TRes;
         AssetRegistry& assets = AssetRegistry::Instance();
         bool toSubmit = options.IsSubmit && options.RenderDevice;
-        
+
         NP_INFO(TOLModelLoader::Load, "Loading the obj file '{}'", path.GetFilePath());
 
         if (!path.IsExists())
@@ -87,7 +112,7 @@ namespace Nenuphar
 
         ImageAssetOptions imageOptions;
         imageOptions.IsFromAsset = false;
-        
+
         TextureConstructOptions textureConstructOptions;
         textureConstructOptions.AutoRelease = options.AutoReleaseTextue;
 
@@ -97,7 +122,7 @@ namespace Nenuphar
             material.Diffuse = Vector3f(m.diffuse[0], m.diffuse[1], m.diffuse[2]);
             material.Specular = Vector3f(m.specular[0], m.specular[1], m.specular[2]);
             material.Shininess = m.shininess;
-            
+
             if (m.diffuse_texname.length() > 0)
             {
                 std::string v = mtlPathDir->GetFilePath() + m.diffuse_texname;
@@ -135,6 +160,8 @@ namespace Nenuphar
             inMaterials.push_back(material);
         }
 
+        std::unordered_map<VertexKey, VIndice> uniqueVertices;
+
         // Loop over shapes
         for (const tinyobj::shape_t& shape: shapes)
         {
@@ -144,15 +171,16 @@ namespace Nenuphar
             std::vector<VIndice> indices;
             std::unordered_set<UInt> mat_ids;
             std::vector<Material> mats;
+            std::vector<std::size_t> faceOffsets;
 
             // Loop over faces(polygon)
             std::size_t index_offset = 0;
             for (std::size_t f = 0; f < mesh.num_face_vertices.size(); f++)
             {
-                std::size_t fv = size_t(mesh.num_face_vertices[f]);
+                UInt8 fv = mesh.num_face_vertices[f];
 
                 // Loop over vertices in the face.
-                for (std::size_t v = 0; v < fv; v++)
+                for (UInt8 v = 0; v < fv; v++)
                 {
                     // access to vertex
                     tinyobj::index_t idx = mesh.indices[index_offset + v];
@@ -192,6 +220,7 @@ namespace Nenuphar
 
                 // per-face material
                 int m = mesh.material_ids.at(f);
+
                 if (m < 0)
                 {
                     continue;
@@ -200,7 +229,7 @@ namespace Nenuphar
                 tinyobj::material_t& material = materials.at(m);
 
                 Material inMaterial = inMaterials.at(m);
-                inMaterial.Id = UInt(m);
+                inMaterial.Id = m;
                 if (!mat_ids.contains(inMaterial.Id))
                 {
                     mat_ids.emplace(inMaterial.Id);
@@ -210,7 +239,8 @@ namespace Nenuphar
 
             Mesh ownMesh(std::move(vertices),
                          std::move(indices),
-                         std::move(mats));
+                         std::move(mats),
+                         std::move(faceOffsets));
 
             if (toSubmit)
             {

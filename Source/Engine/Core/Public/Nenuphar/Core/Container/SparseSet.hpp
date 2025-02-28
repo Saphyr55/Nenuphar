@@ -150,7 +150,6 @@ namespace Nenuphar
         auto left = std::move(m_denseValue[deletedIndex]);
         auto right = std::move(tmp);
 
-        // std::swap(m_denseValue.back(), m_denseValue[deletedIndex] );
         std::swap(m_denseIdentification.back(), m_denseIdentification[deletedIndex]);
 
         m_denseValue.pop_back();

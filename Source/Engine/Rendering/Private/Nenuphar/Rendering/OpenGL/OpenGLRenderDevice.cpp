@@ -25,8 +25,10 @@ namespace Nenuphar
     {
         NP_GL_CHECK_CALL(glEnable(GL_DEPTH_TEST))
 
+        NP_GL_CHECK_CALL(glEnable(GL_MULTISAMPLE))
+
         NP_GL_CHECK_CALL(glEnable(GL_BLEND))
-        NP_GL_CHECK_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA))
+        NP_GL_CHECK_CALL(glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE))
 
         NP_GL_CHECK_CALL(glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS))
     }
@@ -39,7 +41,7 @@ namespace Nenuphar
     SharedRef<RenderHandle> OpenGLRenderDevice::CreateRenderHandle(
             const std::vector<Vertex>& vertices,
             const std::vector<VIndice>& indices)
-    {   
+    {
         SharedRef<OpenGLImmutableBuffer> vbo = OpenGLImmutableBuffer::Create(vertices);
         SharedRef<OpenGLImmutableBuffer> ebo = OpenGLImmutableBuffer::Create(indices);
         SharedRef<OpenGLVertexArray> vao = OpenGLVertexArray::Create(vbo->GetHandle(), ebo->GetHandle());
@@ -51,7 +53,7 @@ namespace Nenuphar
     {
         return MakeSharedRef<OpenGLCommandBuffer>();
     }
-    
+
     RenderCommand OpenGLRenderDevice::CreateProjectionViewCommand(const Matrix4f& projection, const Matrix4f& view)
     {
         return [&] {
@@ -79,7 +81,7 @@ namespace Nenuphar
                                                          const TextureConstructOptions& option)
     {
         NCHECK(asset)
-    
+
         OpenGLTexture::Rect rect;
         rect.X = 0;
         rect.Y = 0;
@@ -95,7 +97,7 @@ namespace Nenuphar
 
         return texture;
     }
-    
+
     SharedRef<Skybox> OpenGLRenderDevice::CreateSkybox(const std::array<SharedRef<ImageAsset>, 6>& faces)
     {
         return OpenGLSkybox::Create(faces, this);
@@ -114,14 +116,13 @@ namespace Nenuphar
     OpenGLRenderDevice::OpenGLRenderDevice(RenderAPI renderAPI, SharedRef<Window> window)
         : RenderDevice(renderAPI, window)
     {
-        
         m_uMainUniformBlock = MainUniformBlock();
+
+        m_mainShaderProgram = MakeSharedRef<OpenGLMaterialShaderProgram>();
+        m_mainShaderProgram->Initialize();
 
         m_skyboxShaderProgram = MakeSharedRef<OpenGLSkyboxShaderProgram>();
         m_skyboxShaderProgram->Initialize();
-    
-        m_mainShaderProgram = MakeSharedRef<OpenGLMaterialShaderProgram>();
-        m_mainShaderProgram->Initialize();
 
         m_mainUniformBuffer = MakeSharedRef<OpenGLUniformBuffer>(sizeof(MainUniformBlock));
         m_mainUniformBuffer->BufferData(&m_uMainUniformBlock, OpenGLBufferUsage::StaticDraw);

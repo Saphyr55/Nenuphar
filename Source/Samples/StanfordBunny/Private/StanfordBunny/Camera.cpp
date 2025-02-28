@@ -8,7 +8,7 @@
 static OrbitCamera DefaultOrbitCamera((float)Radians(45.0f),
                                       (float)Radians(45.0f),
                                       3.0f,
-                                      Vector3f(0.0, 0.0, 0.0),
+                                      Vector3f(0.0f, 0.0f, 0.0f),
                                       Vector3f(0.0f, 1.0f, 0.0f));
 
 void InitCamera(Np::SharedRef<WindowEventHandler> windowEventHandler, Np::OrbitCamera& camera, const Velocity& velocity)

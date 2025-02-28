@@ -9,12 +9,12 @@ namespace Nenuphar
     
     struct Material
     {
-        UInt Id;
+        Int Id;
 
         Vector3f Diffuse;
         Vector3f Specular;
         Float Shininess;
-
+        
         SharedRef<Texture> DiffuseTexture;
         SharedRef<Texture> SpecularTexture;
     };

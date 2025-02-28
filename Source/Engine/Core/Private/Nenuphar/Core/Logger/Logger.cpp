@@ -3,7 +3,7 @@
 #include "Nenuphar/Core/Debug.hpp"
 #include "Nenuphar/Core/IO/ConsoleColor.hpp"
 
-#include <chrono>
+#include <ctime>
 #include <iomanip>
 #include <thread>
 
@@ -98,8 +98,10 @@ namespace Nenuphar
         oss << std::this_thread::get_id();
 
         std::stringstream ss;
-        const auto InTime = std::chrono::system_clock::to_time_t(time);
-        ss << std::put_time(std::localtime(&InTime), "%Y-%m-%d %X");
+        std::time_t rawtime = std::time(nullptr);
+        std::tm timeinfo;
+        localtime_s(&timeinfo, &rawtime);
+        ss << std::put_time(&timeinfo, "%Y-%m-%d %X");
 
         return fmt::format("{} {} {} ", ss.str(), oss.str(), name);
     }

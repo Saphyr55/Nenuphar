@@ -1,6 +1,7 @@
 #include "Nenuphar/Graphics/Mesh.hpp"
 #include "Nenuphar/Common/Type/Type.hpp"
 #include "Nenuphar/Core/Debug.hpp"
+#include "Nenuphar/Graphics/Material.hpp"
 #include "Nenuphar/Rendering/CommandBuffer.hpp"
 #include "Nenuphar/Rendering/RenderDevice.hpp"
 #include "Nenuphar/Rendering/Texture.hpp"
@@ -35,7 +36,7 @@ namespace Nenuphar
     {
         mesh.RenderHandle = renderDevice->CreateRenderHandle(mesh.Vertices, mesh.Indices);
     }
-    
+
     void ApplyMaterial(const Material& material, SharedRef<UniformRegistry> registry)
     {
         registry->Get<Vector3f>("UMaterial.Diffuse").UpdateValue(material.Diffuse);
@@ -65,13 +66,18 @@ namespace Nenuphar
         std::vector<TextureExtraInfo> textures;
 
         for (auto& material: mesh.Materials)
-        {   
+        {
+            // TODO: Pipepline and binding.
+            commandBuffer->Record([registry, material] {
+                ApplyMaterial(material, registry);
+            });
+
             if (material.DiffuseTexture)
             {
                 TextureExtraInfo diffuseTexture;
                 diffuseTexture.Texture = material.DiffuseTexture;
                 diffuseTexture.TTM = TextureTypeModel::Diffuse;
-                
+
                 textures.push_back(std::move(diffuseTexture));
             }
 
@@ -83,18 +89,13 @@ namespace Nenuphar
 
                 textures.push_back(std::move(specularTexture));
             }
-
-            // TODO: Pipepline and binding.
-            commandBuffer->Record([registry, material] {
-                ApplyMaterial(material, registry);
-            });
         }
 
-        commandBuffer->Record([size=textures.size(), registry] {
+        commandBuffer->Record([size = mesh.Materials.size(), registry] {
             registry->Get<Int>("UMaterial.ArraySize").UpdateValue((Int)size);
         });
 
-        for (std::size_t slot = 0; slot < textures.size(); slot++)
+        for (int slot = 0; slot < textures.size(); slot++)
         {
             TextureExtraInfo& textureExtraInfo = textures.at(slot);
 

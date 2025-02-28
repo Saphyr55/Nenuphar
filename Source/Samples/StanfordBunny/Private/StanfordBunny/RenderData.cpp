@@ -1,4 +1,5 @@
 #include "StanfordBunny/RenderData.hpp"
+#include "Nenuphar/Rendering/Light/DirectionalLight.hpp"
 #include "StanfordBunny/Transform.hpp"
 
 #include "Nenuphar/Asset/AssetRegistry.hpp"
@@ -34,14 +35,14 @@ void RenderData::OnRenderData(SharedRef<Np::CommandBuffer> commandBuffer, Np::En
         RenderCommandDrawModel(commandBuffer, shader->GetRegistry(), *rModel.Model);
     }
     
-    for (auto& [e, light]: registry.View<Np::Light>())
+    for (auto& [e, light]: registry.View<Np::DirectionalLight>())
     {
         commandBuffer->Record([=] {
             shader->GetDelegate()->Use();
-            shader->GetRegistry()->Get<Vector3f>("ULight.Position").UpdateValue(light.Position);
-            shader->GetRegistry()->Get<Vector3f>("ULight.Ambient").UpdateValue(light.Ambient);
-            shader->GetRegistry()->Get<Vector3f>("ULight.Diffuse").UpdateValue(light.Diffuse);
-            shader->GetRegistry()->Get<Vector3f>("ULight.Specular").UpdateValue(light.Specular);
+            shader->GetRegistry()->Get<Vector3f>("UDirectionalLight.Direction").UpdateValue(light.Direction);
+            shader->GetRegistry()->Get<Vector3f>("UDirectionalLight.Ambient").UpdateValue(light.Ambient);
+            shader->GetRegistry()->Get<Vector3f>("UDirectionalLight.Diffuse").UpdateValue(light.Diffuse);
+            shader->GetRegistry()->Get<Vector3f>("UDirectionalLight.Specular").UpdateValue(light.Specular);
         });
     }
     
@@ -62,8 +63,10 @@ RenderData RenderData::Create(SharedRef<RenderDevice> device)
     Np::TOLModelAssetOptions sponzaOptions;
     sponzaOptions.RenderDevice = device;
     sponzaOptions.IsSubmit = true;
-    sponzaOptions.MtlPathDir = Np::FromAssets("/Models/bunny/");
-    std::string filepath = "/Models/bunny/bunny.obj";
+    // sponzaOptions.MtlPathDir = Np::FromAssets("/Models/bunny/");
+    // std::string filepath = "/Models/bunny/bunny.obj";
+    sponzaOptions.MtlPathDir = Np::FromAssets("/sponza/");
+    std::string filepath = "/sponza/sponza.obj";
     Np::ModelAssetRef sponzaAsset = assets.Load<Np::ModelAsset, Np::TOLModelAssetOptions>(filepath, sponzaOptions);
     NCHECK(sponzaAsset)
 

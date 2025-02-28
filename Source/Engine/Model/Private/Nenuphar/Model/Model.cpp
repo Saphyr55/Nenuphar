@@ -44,7 +44,7 @@ namespace Nenuphar
         std::vector<VIndice> Indices{0, 1, 2,
                                      0, 2, 3};
 
-        return Model({Mesh(std::move(Vertices), std::move(Indices), {})});
+        return Model({Mesh(std::move(Vertices), std::move(Indices), {}, {})});
     };
 
     Model CreateCubeModel()
@@ -73,7 +73,7 @@ namespace Nenuphar
                 2, 1, 4,
                 0, 2, 7};
 
-        return Model({Mesh(std::move(CubeVertices), std::move(CubeIndices), {})});
+        return Model({Mesh(std::move(CubeVertices), std::move(CubeIndices), {}, {})});
     };
 
 }// namespace Nenuphar
